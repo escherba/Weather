@@ -12,7 +12,6 @@
 
 @implementation WeatherForecast
 
-
 @synthesize location;
 @synthesize date;
 
@@ -97,9 +96,9 @@ didReceiveData:(NSData *)data
 
 - (void)fetchContent:(NSArray *)nodes {
 	//NSString *result = @"";
-	for (GDataXMLElement *node in nodes) {
-		NSLog(@"%@", node);
-	}
+	//for (GDataXMLElement *node in nodes) {
+	//	NSLog(@"%@", node);
+	//}
 }
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection 
@@ -108,7 +107,9 @@ didReceiveData:(NSData *)data
 	
     GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:responseData options:0 error:&error];
     if (doc == nil || error != nil) {
-		NSLog(@"%@", [error localizedDescription]);
+		//NSLog(@"%@", [error localizedDescription]);
+        [doc release];
+        [error release];
 		return;
 	}
 	GDataXMLElement *weather = (GDataXMLElement *)[[doc nodesForXPath:@"/xml_api_reply/weather" error:&error] objectAtIndex:0];

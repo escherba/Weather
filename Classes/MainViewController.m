@@ -12,7 +12,8 @@
 @implementation MainViewController
 
 @synthesize forecast;
-
+@synthesize loadingActivityIndicator;
+@synthesize location;
 
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller {
     
@@ -102,6 +103,7 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	[super viewDidLoad];
+    location = [[NSString alloc] init];
 	[self refreshView:self];
 }
 
@@ -122,6 +124,7 @@
 
 - (void)dealloc {
 	
+    [location release];
 	[loadingActivityIndicator release];
 	
 	[nameLabel release];

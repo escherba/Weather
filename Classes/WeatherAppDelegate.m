@@ -15,18 +15,24 @@
 
 @synthesize window;
 @synthesize mainViewController;
-
+@synthesize updateLocation;
+@synthesize locationManager;
 
 #pragma mark -
 #pragma mark Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
-    
-	/*MainViewController *aController = 
+    /*
+	MainViewController *aController = 
 	  [[MainViewController alloc] initWithNibName:@"MainView" bundle:nil];
 	self.mainViewController = aController;
 	[aController release];*/
 	
+    // Create instance of LocationManager object
+    NSLog(@"Creating locationManager");
+    self.locationManager = [[[CLLocationManager alloc] init] autorelease];
+    self.locationManager.delegate = self;
+    
     // Override point for customization after application launch.  
 	WeatherForecast *forecast = [[WeatherForecast alloc] init];
 	self.mainViewController.forecast = forecast;
@@ -87,11 +93,30 @@
      */
 }
 
-
 - (void)dealloc {
+    [locationManager release];
     [mainViewController release];
     [window release];
     [super dealloc];
+}
+
+
+# pragma mark CLLocationManager methods
+
+- (void)locationManager:(CLLocationManager *) manager 
+    didUpdateToLocation:(CLLocation *)newLocation 
+           fromLocation:(CLLocation *)oldLocation
+{
+    NSLog(@"Location: %@", [newLocation description]);
+    if (newLocation != oldLocation) {
+        [self.mainViewController.loadingActivityIndicator startAnimating];
+    }
+}
+
+-(void)locationManager:(CLLocationManager *) manager
+      didFailWithError:(NSError *)error
+{
+    NSLog(@"Error: %@", [error description]);
 }
 
 @end
