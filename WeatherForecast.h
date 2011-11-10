@@ -34,8 +34,7 @@
 	NSMutableArray *days;
 	NSMutableArray *icons;
 	NSMutableArray *temps;
-	NSMutableArray *conditions;
-	
+	NSMutableArray *conditions;	
 }
 
 @property (nonatomic, retain) NSString *location;

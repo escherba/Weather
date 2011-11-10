@@ -10,13 +10,18 @@
 
 @protocol FlipsideViewControllerDelegate;
 
+@class WeatherAppDelegate;
 
 @interface FlipsideViewController : UIViewController {
 	id <FlipsideViewControllerDelegate> delegate;
+    IBOutlet UISwitch *toggleSwitch;
+    WeatherAppDelegate *appDelegate;
 }
+
 
 @property (nonatomic, assign) id <FlipsideViewControllerDelegate> delegate;
 - (IBAction)done:(id)sender;
+- (IBAction)switchThrown;
 @end
 
 

@@ -12,7 +12,7 @@
 @interface MainViewController : UIViewController <FlipsideViewControllerDelegate> {
 	
 	WeatherForecast *forecast;
-	
+    NSString *location;
 	IBOutlet UIActivityIndicatorView *loadingActivityIndicator;
 	
 	IBOutlet UILabel *nameLabel;
@@ -50,5 +50,7 @@
 - (void)updateView;
 
 @property (nonatomic, retain) WeatherForecast *forecast;
+@property(nonatomic, retain) UIActivityIndicatorView *loadingActivityIndicator;
+@property(nonatomic,retain) NSString *location;
 
 @end
