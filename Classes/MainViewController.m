@@ -15,8 +15,8 @@
 @synthesize loadingActivityIndicator;
 @synthesize location;
 
-- (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller {
-    
+- (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller
+{
 	[self dismissModalViewControllerAnimated:YES];
 }
 
@@ -25,7 +25,6 @@
 	
 	FlipsideViewController *controller = [[FlipsideViewController alloc] initWithNibName:@"FlipsideView" bundle:nil];
 	controller.delegate = self;
-	
 	controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	[self presentModalViewController:controller animated:YES];
 	
