@@ -21,11 +21,11 @@
     if (!appDelegate) {
         appDelegate = (WeatherAppDelegate *) [[UIApplication sharedApplication] delegate];
     }
-    toggleSwitch.on = appDelegate.updateLocation;
+    toggleSwitch.on = [[appDelegate.defaults objectForKey:@"checkLocation"] boolValue];
 }
 
 - (IBAction)done:(id)sender {
-    appDelegate.updateLocation = toggleSwitch.on;
+    [appDelegate.defaults setObject:[NSNumber numberWithBool:toggleSwitch.on] forKey:@"checkLocation"];
 	[self.delegate flipsideViewControllerDidFinish:self];	
 }
 

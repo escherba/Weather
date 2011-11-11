@@ -15,14 +15,18 @@
     UIWindow *window;
     MainViewController *mainViewController;
     
-    BOOL updateLocation;
+    NSUserDefaults *defaults;
     CLLocationManager *locationManager;
+    NSDate *locationManagerStartDate;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet MainViewController *mainViewController;
-@property (nonatomic) BOOL updateLocation;
+@property (nonatomic, retain) NSUserDefaults* defaults;
 @property (nonatomic, retain) CLLocationManager* locationManager;
+
+- (BOOL)isValidLocation:(CLLocation *)newLocation
+        withOldLocation:(CLLocation *)oldLocation;
 
 @end
 
