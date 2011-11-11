@@ -14,21 +14,15 @@
 
 @synthesize delegate;
 
-- (id)init {
-    self = [super init];
-    if (self) {
-        appDelegate = (WeatherAppDelegate *) [[UIApplication sharedApplication] delegate];
-    }
-    return self;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor viewFlipsideBackgroundColor];
-    
+    if (!appDelegate) {
+        appDelegate = (WeatherAppDelegate *) [[UIApplication sharedApplication] delegate];
+    }
     toggleSwitch.on = appDelegate.updateLocation;
 }
-
 
 - (IBAction)done:(id)sender {
     appDelegate.updateLocation = toggleSwitch.on;
@@ -36,23 +30,11 @@
 }
 
 - (IBAction)switchThrown {
-    if (!appDelegate) {
-        appDelegate = (WeatherAppDelegate *) [[UIApplication sharedApplication] delegate];
-    }
-    if (appDelegate) {
-        NSLog(@"ok");
-        
-        if (toggleSwitch.on) {
-            NSLog(@"on");
-            [appDelegate.locationManager startUpdatingLocation];
-        } else {
-            NSLog(@"off");
-            [appDelegate.locationManager stopUpdatingLocation];
-        }
+    if (toggleSwitch.on) {
+        [appDelegate.locationManager startUpdatingLocation];
     } else {
-        NSLog(@"appDelegate evaluates to false");
+        [appDelegate.locationManager stopUpdatingLocation];
     }
-    NSLog(@"finished switch thrown");
 }
 
 - (void)didReceiveMemoryWarning {
