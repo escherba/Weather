@@ -9,29 +9,34 @@
 #import "WeatherAppDelegate.h"
 #import "MainViewController.h"
 #import "WeatherForecast.h"
+#import "FindNearbyPlace.h"
 
 @implementation WeatherAppDelegate
 
 
 @synthesize window;
 @synthesize mainViewController;
-@synthesize updateLocation;
 @synthesize locationManager;
+@synthesize defaults;
 
 #pragma mark -
 #pragma mark Application lifecycle
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     /*
 	MainViewController *aController = 
 	  [[MainViewController alloc] initWithNibName:@"MainView" bundle:nil];
 	self.mainViewController = aController;
 	[aController release];*/
 	
+    self.defaults = [NSUserDefaults standardUserDefaults];
+    //BOOL checkLocation = (BOOL)[self.defaults stringForKey:@"checkLocation"];
+
     // Create instance of LocationManager object
-    NSLog(@"Creating locationManager");
+    //NSLog(@"Creating locationManager");
     self.locationManager = [[[CLLocationManager alloc] init] autorelease];
     self.locationManager.delegate = self;
+    locationManagerStartDate = [[NSDate date] retain];
     
     // Override point for customization after application launch.  
 	WeatherForecast *forecast = [[WeatherForecast alloc] init];
@@ -95,6 +100,7 @@
 
 - (void)dealloc {
     [locationManager release];
+    [locationManagerStartDate release];
     [mainViewController release];
     [window release];
     [super dealloc];
@@ -107,10 +113,58 @@
     didUpdateToLocation:(CLLocation *)newLocation 
            fromLocation:(CLLocation *)oldLocation
 {
-    NSLog(@"Location: %@", [newLocation description]);
-    if (newLocation != oldLocation) {
-        [self.mainViewController.loadingActivityIndicator startAnimating];
+    if (![self isValidLocation:newLocation withOldLocation:oldLocation]) {
+        return;
     }
+    NSLog(@"=> horiz: %f, vert: %f", [newLocation horizontalAccuracy],[newLocation verticalAccuracy]);
+    //NSLog(@"Location: %@", [newLocation description]);
+    if (newLocation != oldLocation) {
+        
+        // start spinning loading indicator
+        [self.mainViewController.loadingActivityIndicator startAnimating];
+        FindNearbyPlace *find = [[FindNearbyPlace alloc] init];
+        NSString *latitude = [NSString stringWithFormat:@"%f",
+                              newLocation.coordinate.latitude];
+        NSString *longitude = [NSString stringWithFormat:@"%f",
+                               newLocation.coordinate.longitude];
+        [find queryServiceWithLat:latitude andLong:longitude];
+    }
+}
+
+
+/*
+ * validating location data according to:
+ * http://troybrant.net/blog/2010/02/detecting-bad-corelocation-data/
+ */
+- (BOOL)isValidLocation:(CLLocation *)newLocation
+        withOldLocation:(CLLocation *)oldLocation
+{
+    // Filter out nil locations
+    if (!newLocation) {
+        return NO;
+    }
+    
+    // Filter out points by invalid accuracy
+    if (newLocation.horizontalAccuracy < 0) {
+        return NO;
+    }
+    
+    // Filter out points that are out of order
+    NSTimeInterval secondsSinceLastPoint =
+    [newLocation.timestamp timeIntervalSinceDate:oldLocation.timestamp];
+    if (secondsSinceLastPoint < 0) {
+        return NO;
+    }
+    
+    // Filter out points created before the manager was initialized
+    NSTimeInterval secondsSinceManagerStarted =
+    [newLocation.timestamp timeIntervalSinceDate:locationManagerStartDate];
+    if (secondsSinceManagerStarted < 0) {
+        return NO;
+    }
+    
+    // The newLocation is good to use
+    return YES;
 }
 
 -(void)locationManager:(CLLocationManager *) manager

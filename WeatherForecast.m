@@ -6,9 +6,10 @@
 //  Copyright 2011 Boston University. All rights reserved.
 //
 
+#import <CoreLocation/CoreLocation.h>
 #import "WeatherForecast.h"
 #import "MainViewController.h"
-#import "GDataXMLNode.h"
+#import "JSONKit.h"
 
 @implementation WeatherForecast
 
@@ -28,15 +29,17 @@
 
 #pragma mark Instance Methods
 
-- (void)queryService:(NSString *)city
+- (void)queryService:(CLLocationCoordinate2D)coord
   withParent:(UIViewController *)controller
 {
+    
 	viewController = (MainViewController *)controller;
 	[responseData release];
 	responseData = [[NSMutableData data] retain];
 	
-	NSString *url = [NSString stringWithFormat:@"http://www.google.com/ig/api?weather=%@", city];
-
+	NSString *url = [NSString stringWithFormat:@"http://free.worldweatheronline.com/feed/weather.ashx?q=%f,%f&format=json&num_of_days=5&key=d90609c900092229111111", coord.latitude, coord.longitude];
+    NSLog(@"%@", url);
+    
 	theURL = [NSURL URLWithString:url];
 	NSURLRequest *request = [NSURLRequest requestWithURL:theURL];
 	[[[NSURLConnection alloc] initWithRequest:request delegate:self] autorelease];
@@ -103,65 +106,61 @@ didReceiveData:(NSData *)data
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection 
 {	
-    NSError *error;
+    //NSError *error;
 	
-    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:responseData options:0 error:&error];
-    if (doc == nil || error != nil) {
-		//NSLog(@"%@", [error localizedDescription]);
-        [doc release];
-        [error release];
-		return;
-	}
-	GDataXMLElement *weather = (GDataXMLElement *)[[doc nodesForXPath:@"/xml_api_reply/weather" error:&error] objectAtIndex:0];
-	
+    // get content using JSONKit
+    JSONDecoder *parser = [JSONDecoder decoder]; // autoreleased
+    NSDictionary *data 
+    = [[parser objectWithData:responseData] objectForKey:@"data"];
+
+    if (!data) {
+        NSLog(@"no data received");
+        return;
+    }
+    NSLog(@"received data ok");
+    
 	// Forecast Information ///////////////////////////////////////
-	
-	GDataXMLElement *forecast = (GDataXMLElement *)[[weather nodesForXPath:@"forecast_information" error:&error] objectAtIndex:0];
-	location = [[[forecast nodesForXPath:@"city/@data" error:&error] objectAtIndex:0] stringValue];
-	date = [[[forecast nodesForXPath:@"forecast_date/@data" error:&error] objectAtIndex:0] stringValue];
-	
+	location = [[[data objectForKey:@"request"] objectAtIndex:0] objectForKey:@"query"];
+
+    
 	// Current Conditions /////////////////////////////////////////
+    NSDictionary *current_condition = [[data objectForKey:@"current_condition"] objectAtIndex:0];
+	icon =[[[current_condition objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"];
+	temp = [NSString stringWithFormat:@"%@F (%@C)", [current_condition objectForKey:@"temp_F"], [current_condition objectForKey:@"temp_C"]];
+	humidity = [current_condition objectForKey:@"humidity"];
+	wind = [current_condition objectForKey:@"windspeedMiles"];
+	condition = [[[current_condition objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"];
 	
-	GDataXMLElement *current_conditions = (GDataXMLElement *)[[weather nodesForXPath:@"current_conditions" error:&error] objectAtIndex:0];
-	icon = [NSString stringWithFormat:@"http://www.google.com%@", [[[current_conditions nodesForXPath:@"icon/@data" error:&error] objectAtIndex:0] stringValue]];
-	NSString *temp_f = [[[current_conditions nodesForXPath:@"temp_f/@data" error:&error] objectAtIndex:0] stringValue];
-	NSString *temp_c = [[[current_conditions nodesForXPath:@"temp_c/@data" error:&error] objectAtIndex:0] stringValue];
-	temp = [NSString stringWithFormat:@"%@F (%@C)", temp_f, temp_c];
-	
-	humidity = [[[current_conditions nodesForXPath:@"humidity/@data" error:&error] objectAtIndex:0] stringValue];
-	wind = [[[current_conditions nodesForXPath:@"wind_condition/@data" error:&error] objectAtIndex:0] stringValue];
-	condition = [[[current_conditions nodesForXPath:@"condition/@data" error:&error] objectAtIndex:0] stringValue];
-	
-	// Forecast Conditions ////////////////////////////////////////
-	
+	// 5-day forecast ////////////////////////////////////////
+	NSArray *forecast = [data objectForKey:@"weather"];
+    
 	// Day names
-	NSArray *nodes;
 	[days release];
 	days = [[NSMutableArray alloc] init];
-	nodes = [weather nodesForXPath:@"forecast_conditions/day_of_week/@data" error:&error];
-	for (GDataXMLElement *node in nodes) {
-		[days addObject:[node stringValue]];
+	for (NSDictionary *node in forecast) {
+		[days addObject:[node objectForKey:@"date"]];
 	}
 	
 	// Icons
 	[icons release];
 	icons = [[NSMutableArray alloc] init];
-	nodes = [weather nodesForXPath:@"forecast_conditions/icon/@data" error:&error];
-	for (GDataXMLElement *node in nodes) {
-		[icons addObject:[NSString stringWithFormat:@"http://www.google.com%@", [node stringValue]]];
+	for (NSDictionary  *node in forecast) {
+		//[icons addObject:[NSString stringWithFormat:@"http://www.google.com%@", [node stringValue]]];
+        [icons addObject:[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"]];
 	}
 	
-	// Temperatures (high and low)
+	// Temperatures (high)
 	NSMutableArray *highs = [[NSMutableArray alloc] init];
-	NSMutableArray *lows = [[NSMutableArray alloc] init];
-	nodes = [weather nodesForXPath:@"forecast_conditions/high/@data" error:&error];
-	for (GDataXMLElement *node in nodes) {
-		[highs addObject:[node stringValue]];
+	for (NSDictionary  *node in forecast) {
+		[highs addObject:[node objectForKey:@"tempMaxF"]];
 	}
-	nodes = [weather nodesForXPath:@"forecast_conditions/low/@data" error:&error];
-	for (GDataXMLElement *node in nodes) {
-		[lows addObject:[node stringValue]];
+    
+    // Temperatures (low)
+    NSMutableArray *lows = [[NSMutableArray alloc] init];
+	for (NSDictionary  *node in forecast) {
+        [lows addObject:[node objectForKey:@"tempMinF"]];
 	}
+    
 	[temps release];
 	temps = [[NSMutableArray alloc] init];
 	for (NSUInteger i = 0u, mcount = MIN(highs.count, lows.count); i < mcount; i++) {
@@ -173,12 +172,9 @@ didReceiveData:(NSData *)data
 	// Conditions
 	[conditions release];
 	conditions = [[NSMutableArray alloc] init];
-	nodes = [weather nodesForXPath:@"forecast_conditions/condition/@data" error:&error];
-	for (GDataXMLElement *node in nodes) {
-		[conditions addObject:[node stringValue]];
+	for (NSDictionary  *node in forecast) {
+		[conditions addObject:[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"]];
 	}
-
-    [doc release];
 	
 	[viewController updateView];
 }

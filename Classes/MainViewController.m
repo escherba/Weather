@@ -6,14 +6,15 @@
 //  Copyright 2011 Boston University. All rights reserved.
 //
 
+#import <CoreLocation/CoreLocation.h>
 #import "MainViewController.h"
-
+#import "WeatherAppDelegate.h"
 
 @implementation MainViewController
 
 @synthesize forecast;
 @synthesize loadingActivityIndicator;
-@synthesize location;
+@synthesize locationName;
 
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller
 {
@@ -41,7 +42,13 @@
 
 - (IBAction)refreshView:(id)sender {
 	[loadingActivityIndicator startAnimating];
-	[forecast queryService:@"Boston,MA" withParent:self];
+    
+    if ( [appDelegate.defaults objectForKey:@"checkLocation"] ) {
+        [forecast queryService:[[appDelegate.locationManager location] coordinate] withParent:self];
+    } else {
+        CLLocation* defaultLocation = [[CLLocation alloc] initWithLatitude:42.500453028125584 longitude:-71.0595703125];
+        [forecast queryService:[defaultLocation coordinate] withParent:self];
+    }
 }
 
 - (void)updateView {
@@ -50,13 +57,17 @@
 	nameLabel.text = forecast.location;
 	dateLabel.text = forecast.date;
 	
+    NSURL *url;
+    NSData *data;
+    
 	// Now
 	nowTempLabel.text = forecast.temp;
 	nowHumidityLabel.text = forecast.humidity;
 	nowWindLabel.text = forecast.wind;
 	nowConditionLabel.text = forecast.condition;
-	NSURL *url = [NSURL URLWithString:(NSString *)forecast.icon];
-	NSData *data = [NSData dataWithContentsOfURL:url];
+	url = [NSURL URLWithString:(NSString *)forecast.icon];
+	data = [NSData dataWithContentsOfURL:url];
+    //NSLog(@"%@", [url absoluteString]);
 	[nowImage.image release];
 	nowImage.image = [[UIImage alloc] initWithData:data];
 	
@@ -102,7 +113,9 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	[super viewDidLoad];
-    location = [[NSString alloc] init];
+    locationName = [[NSString alloc] init];
+    
+    appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
 	[self refreshView:self];
 }
 
@@ -123,7 +136,7 @@
 
 - (void)dealloc {
 	
-    [location release];
+    [locationName release];
 	[loadingActivityIndicator release];
 	
 	[nameLabel release];

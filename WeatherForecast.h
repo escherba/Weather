@@ -21,7 +21,7 @@
 	
 	// Information
 	NSString *location;
-	NSString *date;
+	//NSString *date;
 	
 	//Current Conditions
 	UIImage *icon;
@@ -51,7 +51,7 @@
 @property (nonatomic, retain) NSMutableArray *temps;
 @property (nonatomic, retain) NSMutableArray *conditions;
 
-- (void)queryService:(NSString *)city
-  withParent:(UIViewController *)controller;
+- (void)queryService:(CLLocationCoordinate2D)coord
+        withParent:(UIViewController *)controller;
 
 @end
