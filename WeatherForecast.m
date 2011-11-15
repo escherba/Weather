@@ -27,6 +27,7 @@
 @synthesize temps;
 @synthesize conditions;
 
+#pragma mark -
 #pragma mark Instance Methods
 
 - (void)queryService:(CLLocationCoordinate2D)coord
@@ -37,6 +38,7 @@
 	[responseData release];
 	responseData = [[NSMutableData data] retain];
 	
+    // Note: if you are using this code, please apply for your own id at worldweatheronline.com
 	NSString *url = [NSString stringWithFormat:@"http://free.worldweatheronline.com/feed/weather.ashx?q=%f,%f&format=json&num_of_days=5&key=d90609c900092229111111", coord.latitude, coord.longitude];
     NSLog(@"%@", url);
     
@@ -69,6 +71,7 @@
 	[super dealloc];
 }
 
+#pragma mark -
 #pragma mark NSURLConnection delegate methods
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection
@@ -84,8 +87,8 @@
   didReceiveResponse:(NSURLResponse *)response
 {
 	[responseData setLength:0];
-	//[[responseData alloc] init];
 }
+
 - (void)connection:(NSURLConnection *)connection
 didReceiveData:(NSData *)data
 {
@@ -95,13 +98,6 @@ didReceiveData:(NSData *)data
 - (void)connection:(NSURLConnection *)connection
   didFailWithError:(NSError *)error
 {
-}
-
-- (void)fetchContent:(NSArray *)nodes {
-	//NSString *result = @"";
-	//for (GDataXMLElement *node in nodes) {
-	//	NSLog(@"%@", node);
-	//}
 }
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection 
