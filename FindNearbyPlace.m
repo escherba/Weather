@@ -25,6 +25,7 @@
     [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
+#pragma mark -
 #pragma mark NSURLConnection delegate methods
 
 -(NSURLRequest *) connection:(NSURLConnection *)connection
@@ -54,6 +55,8 @@ didFailWithError:(NSError *)error
 }
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    
+    NSLog(@"hey hey");
     //NSString *content = 
     //[[NSString alloc] initWithBytes:[responseData bytes] length:[responseData length] encoding:NSUTF8StringEncoding];
     //NSLog(@"content = %@", content);
@@ -63,7 +66,7 @@ didFailWithError:(NSError *)error
     NSDictionary *firstLocation 
     = [[[parser objectWithData:responseData] objectForKey:@"geonames"] objectAtIndex:0];
     
-    NSLog(@"Location = %@, %@, %@", [firstLocation objectForKey:@"name"], [firstLocation objectForKey:@"adminCode1"], [firstLocation objectForKey:@"countryName"]);
+    //NSLog(@"Location = %@, %@, %@", [firstLocation objectForKey:@"name"], [firstLocation objectForKey:@"adminCode1"], [firstLocation objectForKey:@"countryName"]);
     
     // set location
     appDelegate.mainViewController.locationName 

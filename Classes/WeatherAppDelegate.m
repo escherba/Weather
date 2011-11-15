@@ -107,6 +107,7 @@
 }
 
 
+#pragma mark -
 # pragma mark CLLocationManager methods
 
 - (void)locationManager:(CLLocationManager *) manager 

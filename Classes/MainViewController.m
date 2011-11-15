@@ -42,19 +42,19 @@
 
 - (IBAction)refreshView:(id)sender {
 	[loadingActivityIndicator startAnimating];
-    
     if ( [appDelegate.defaults objectForKey:@"checkLocation"] ) {
         [forecast queryService:[[appDelegate.locationManager location] coordinate] withParent:self];
     } else {
         CLLocation* defaultLocation = [[CLLocation alloc] initWithLatitude:42.500453028125584 longitude:-71.0595703125];
         [forecast queryService:[defaultLocation coordinate] withParent:self];
+        [defaultLocation release];
     }
 }
 
 - (void)updateView {
 	
 	// City and Date
-	nameLabel.text = forecast.location;
+	nameLabel.text = self.locationName;
 	dateLabel.text = forecast.date;
 	
     NSURL *url;
