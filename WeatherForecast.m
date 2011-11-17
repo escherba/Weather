@@ -10,22 +10,16 @@
 #import "WeatherForecast.h"
 #import "MainViewController.h"
 #import "JSONKit.h"
+#import "WeatherModel.h"
+
 
 @implementation WeatherForecast
 
 @synthesize location;
 @synthesize date;
 
-@synthesize icon;
-@synthesize temp;
-@synthesize humidity;
-@synthesize wind;
 @synthesize condition;
-
 @synthesize days;
-@synthesize icons;
-@synthesize temps;
-@synthesize conditions;
 
 #pragma mark -
 #pragma mark Instance Methods
@@ -57,16 +51,16 @@
 	[location release];
 	[date release];
 	
-	[icon release];
-	[temp release];
-	[humidity release];
-	[wind release];
+    // release RSCondition object
 	[condition release];
-	
-	[days release];
-	[icons release];
-	[temps release];
-	[conditions release];
+    
+    // release Days array
+    NSEnumerator *enumDays = [self.days objectEnumerator];
+    RSDay *day;
+    while (day = [enumDays nextObject]) {
+        [day release];
+    }
+	[self.days release];
 	
 	[super dealloc];
 }
@@ -102,76 +96,51 @@ didReceiveData:(NSData *)data
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection 
 {	
-    //NSError *error;
-	
     // get content using JSONKit
     JSONDecoder *parser = [JSONDecoder decoder]; // autoreleased
     NSDictionary *data 
     = [[parser objectWithData:responseData] objectForKey:@"data"];
 
     if (!data) {
-        NSLog(@"no data received");
         return;
     }
-    NSLog(@"received data ok");
     
 	// Forecast Information ///////////////////////////////////////
 	location = [[[data objectForKey:@"request"] objectAtIndex:0] objectForKey:@"query"];
 
     
 	// Current Conditions /////////////////////////////////////////
+    [self.condition release];
+    self.condition = [[RSCondition alloc] init];
+    
     NSDictionary *current_condition = [[data objectForKey:@"current_condition"] objectAtIndex:0];
-	icon =[[[current_condition objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"];
-	temp = [NSString stringWithFormat:@"%@F (%@C)", [current_condition objectForKey:@"temp_F"], [current_condition objectForKey:@"temp_C"]];
-	humidity = [current_condition objectForKey:@"humidity"];
-	wind = [current_condition objectForKey:@"windspeedMiles"];
-	condition = [[[current_condition objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"];
-	
+    if (current_condition) {
+        self.condition.iconURL
+        = [[[current_condition objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"];
+        self.condition.condition 
+        = [[[current_condition objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"];
+        self.condition.tempC = [current_condition objectForKey:@"temp_C"];
+        self.condition.tempF = [current_condition objectForKey:@"temp_F"];
+        self.condition.humidity = [current_condition objectForKey:@"humidity"];
+        self.condition.wind = [current_condition objectForKey:@"windspeedMiles"];
+    }
+    
 	// 5-day forecast ////////////////////////////////////////
-	NSArray *forecast = [data objectForKey:@"weather"];
+    NSEnumerator *enumDays = [self.days objectEnumerator];
+    RSDay *day;
+    while (day = [enumDays nextObject]) {
+        [day release];
+    }
+	[self.days release];
+	self.days = [[NSMutableArray alloc] initWithObjects:nil];
     
-	// Day names
-	[days release];
-	days = [[NSMutableArray alloc] init];
-	for (NSDictionary *node in forecast) {
-		[days addObject:[node objectForKey:@"date"]];
+    NSArray *forecast = [data objectForKey:@"weather"];
+    if (forecast) {
+        for (NSDictionary *node in forecast) {
+            [self.days addObject:[[RSDay alloc] initWithDate:[node objectForKey:@"date"] highT:[node objectForKey:@"tempMaxF"] lowT:[node objectForKey:@"tempMinF"] condition:[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"] iconURL:[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"]]];
+        }
 	}
-	
-	// Icons
-	[icons release];
-	icons = [[NSMutableArray alloc] init];
-	for (NSDictionary  *node in forecast) {
-		//[icons addObject:[NSString stringWithFormat:@"http://www.google.com%@", [node stringValue]]];
-        [icons addObject:[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"]];
-	}
-	
-	// Temperatures (high)
-	NSMutableArray *highs = [[NSMutableArray alloc] init];
-	for (NSDictionary  *node in forecast) {
-		[highs addObject:[node objectForKey:@"tempMaxF"]];
-	}
-    
-    // Temperatures (low)
-    NSMutableArray *lows = [[NSMutableArray alloc] init];
-	for (NSDictionary  *node in forecast) {
-        [lows addObject:[node objectForKey:@"tempMinF"]];
-	}
-    
-	[temps release];
-	temps = [[NSMutableArray alloc] init];
-	for (NSUInteger i = 0u, mcount = MIN(highs.count, lows.count); i < mcount; i++) {
-		[temps addObject:[NSString stringWithFormat:@"%@F/%@F", [highs objectAtIndex:i], [lows objectAtIndex:i]]];
-	}
-	[highs release];
-	[lows release];
-	
-	// Conditions
-	[conditions release];
-	conditions = [[NSMutableArray alloc] init];
-	for (NSDictionary  *node in forecast) {
-		[conditions addObject:[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"]];
-	}
-	
+
 	[viewController updateView];
 }
 

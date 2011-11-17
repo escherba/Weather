@@ -16,8 +16,13 @@
 	id <FlipsideViewControllerDelegate> delegate;
     IBOutlet UISwitch *toggleSwitch;
     WeatherAppDelegate *appDelegate;
+    
+    NSDictionary *tableContents;
+    NSArray *sortedKeys;
 }
 
+@property (nonatomic,retain) NSDictionary *tableContents;
+@property (nonatomic,retain) NSArray *sortedKeys;
 
 @property (nonatomic, assign) id <FlipsideViewControllerDelegate> delegate;
 - (IBAction)done:(id)sender;
