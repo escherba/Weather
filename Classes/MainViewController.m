@@ -9,6 +9,8 @@
 #import <CoreLocation/CoreLocation.h>
 #import "MainViewController.h"
 #import "WeatherAppDelegate.h"
+#import "WeatherModel.h"
+
 
 @implementation MainViewController
 
@@ -43,7 +45,10 @@
 - (IBAction)refreshView:(id)sender {
 	[loadingActivityIndicator startAnimating];
     if ( [appDelegate.defaults objectForKey:@"checkLocation"] ) {
-        [forecast queryService:[[appDelegate.locationManager location] coordinate] withParent:self];
+        //[forecast queryService:[[appDelegate.locationManager location] coordinate] withParent:self];
+        CLLocation* defaultLocation = [[CLLocation alloc] initWithLatitude:42.500453028125584 longitude:-71.0595703125];
+        [forecast queryService:[defaultLocation coordinate] withParent:self];
+        [defaultLocation release];
     } else {
         CLLocation* defaultLocation = [[CLLocation alloc] initWithLatitude:42.500453028125584 longitude:-71.0595703125];
         [forecast queryService:[defaultLocation coordinate] withParent:self];
@@ -55,58 +60,19 @@
 	
 	// City and Date
 	nameLabel.text = self.locationName;
-	dateLabel.text = forecast.date;
-	
-    NSURL *url;
-    NSData *data;
-    
+	dateLabel.text = self.forecast.date;
+   
 	// Now
-	nowTempLabel.text = forecast.temp;
-	nowHumidityLabel.text = forecast.humidity;
-	nowWindLabel.text = forecast.wind;
-	nowConditionLabel.text = forecast.condition;
-	url = [NSURL URLWithString:(NSString *)forecast.icon];
-	data = [NSData dataWithContentsOfURL:url];
-    //NSLog(@"%@", [url absoluteString]);
+	nowTempLabel.text = [forecast.condition formatTemperature];
+	nowHumidityLabel.text = self.forecast.condition.humidity;
+	nowWindLabel.text = self.forecast.condition.wind;
+	nowConditionLabel.text = self.forecast.condition.condition;
 	[nowImage.image release];
-	nowImage.image = [[UIImage alloc] initWithData:data];
-	
-	// Day 1
-	dayOneLabel.text = [forecast.days objectAtIndex:0];
-	dayOneTempLabel.text = [forecast.temps objectAtIndex:0];
-	dayOneChanceLabel.text = [forecast.conditions objectAtIndex:0];
-	url = [NSURL URLWithString:(NSString *)[forecast.icons objectAtIndex:0]];
-	data = [NSData dataWithContentsOfURL:url];
-	[dayOneImage.image release];
-	dayOneImage.image = [[UIImage alloc] initWithData:data];
-	
-	// Day 2
-	dayTwoLabel.text = [forecast.days objectAtIndex:1];
-	dayTwoTempLabel.text = [forecast.temps objectAtIndex:1];
-	dayTwoChanceLabel.text = [forecast.conditions objectAtIndex:1];
-	url = [NSURL URLWithString:(NSString *)[forecast.icons objectAtIndex:1]];
-	data = [NSData dataWithContentsOfURL:url];
-	[dayTwoImage.image release];
-	dayTwoImage.image = [[UIImage alloc] initWithData:data];
-	
-	// Day 3
-	dayThreeLabel.text = [forecast.days objectAtIndex:2];
-	dayThreeTempLabel.text = [forecast.temps objectAtIndex:2];
-	dayThreeChanceLabel.text = [forecast.conditions objectAtIndex:2];
-	url = [NSURL URLWithString:(NSString *)[forecast.icons objectAtIndex:2]];
-	data = [NSData dataWithContentsOfURL:url];
-	[dayThreeImage.image release];
-	dayThreeImage.image = [[UIImage alloc] initWithData:data];
+	nowImage.image = self.forecast.condition.iconData;
 
-	// Day 4
-	dayFourLabel.text = [forecast.days objectAtIndex:3];
-	dayFourTempLabel.text = [forecast.temps objectAtIndex:3];
-	dayFourChanceLabel.text = [forecast.conditions objectAtIndex:3];
-	url = [NSURL URLWithString:(NSString *)[forecast.icons objectAtIndex:3]];
-	data = [NSData dataWithContentsOfURL:url];
-	[dayFourImage.image release];
-	dayFourImage.image = [[UIImage alloc] initWithData:data];
-	
+    [_tableView reloadData];
+
+    
 	[loadingActivityIndicator stopAnimating];
 }
 
@@ -114,14 +80,21 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
     locationName = [[NSString alloc] init];
-    
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
+
+    _tableView.dataSource = self;
+    _tableView.delegate = self;
+    [self.view addSubview:_tableView];
+    
 	[self refreshView:self];
 }
 
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
+    [super viewDidUnload];
+    [locationName release];
+    _tableView = nil;
 }
 
 
@@ -147,28 +120,47 @@
 	[nowHumidityLabel release];
 	[nowWindLabel release];
 	[nowConditionLabel release];
-	
-	[dayOneLabel release];
-	[dayOneImage release];
-	[dayOneTempLabel release];
-	[dayOneChanceLabel release];
-	
-	[dayTwoLabel release];
-	[dayTwoImage release];
-	[dayTwoTempLabel release];
-	[dayTwoChanceLabel release];
-	
-	[dayThreeLabel release];
-	[dayThreeImage release];
-	[dayThreeTempLabel release];
-	[dayThreeChanceLabel release];
-	
-	[dayFourLabel release];
-	[dayFourImage release];
-	[dayFourTempLabel release];
-	[dayFourChanceLabel release];
-    
+
+    [_tableView release];
+
 	[super dealloc];
+}
+
+#pragma mark - UITableViewDelegate methods
+
+// Customize the number of sections in the table view.
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [self.forecast.days count];
+}
+
+// Customize the appearance of table view cells.
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    
+    // Configure the cell.
+    if ([tableView isEqual:_tableView]) {
+        RSDay* day = [self.forecast.days objectAtIndex:indexPath.row];
+        NSString *title = [[NSString alloc] initWithFormat:@"%@: %@", day.date, [day getHiLo]]; 
+        cell.textLabel.text = title;
+        [title release];
+        
+        cell.detailTextLabel.text = day.condition;
+        cell.imageView.image = day.iconData;
+    }
+    return cell;
 }
 
 @end
