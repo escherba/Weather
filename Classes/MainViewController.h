@@ -6,10 +6,12 @@
 //  Copyright 2011 Boston University. All rights reserved.
 //
 
+
 #import "FlipsideViewController.h"
 #import "WeatherForecast.h"
 
-@interface MainViewController : UIViewController <FlipsideViewControllerDelegate> {
+
+@interface MainViewController : UIViewController <FlipsideViewControllerDelegate, UITableViewDelegate, UITableViewDataSource> {
 	
 	WeatherForecast *forecast;
     WeatherAppDelegate *appDelegate;
@@ -24,26 +26,29 @@
 	IBOutlet UILabel *nowHumidityLabel;
 	IBOutlet UILabel *nowWindLabel;
 	IBOutlet UILabel *nowConditionLabel;
-	
+
+    IBOutlet UITableView *_tableView;
+/*
+    IBOutlet UIImageView *dayOneImage;
 	IBOutlet UILabel *dayOneLabel;
-	IBOutlet UIImageView *dayOneImage;
 	IBOutlet UILabel *dayOneTempLabel;
 	IBOutlet UILabel *dayOneChanceLabel;
-	
+
+    IBOutlet UIImageView *dayTwoImage;
 	IBOutlet UILabel *dayTwoLabel;
-	IBOutlet UIImageView *dayTwoImage;
 	IBOutlet UILabel *dayTwoTempLabel;
 	IBOutlet UILabel *dayTwoChanceLabel;
 	
+    IBOutlet UIImageView *dayThreeImage;
 	IBOutlet UILabel *dayThreeLabel;
-	IBOutlet UIImageView *dayThreeImage;
 	IBOutlet UILabel *dayThreeTempLabel;
 	IBOutlet UILabel *dayThreeChanceLabel;
 
+    IBOutlet UIImageView *dayFourImage;
 	IBOutlet UILabel *dayFourLabel;
-	IBOutlet UIImageView *dayFourImage;
 	IBOutlet UILabel *dayFourTempLabel;
 	IBOutlet UILabel *dayFourChanceLabel;
+*/
 }
 
 - (IBAction)showInfo;

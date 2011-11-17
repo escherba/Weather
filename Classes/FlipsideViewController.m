@@ -13,7 +13,8 @@
 @implementation FlipsideViewController
 
 @synthesize delegate;
-
+@synthesize tableContents;
+@synthesize sortedKeys;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
