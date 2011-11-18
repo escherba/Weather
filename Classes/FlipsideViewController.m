@@ -30,7 +30,11 @@
         appDelegate = (WeatherAppDelegate *) [[UIApplication sharedApplication] delegate];
     }
     toggleSwitch.on = [[appDelegate.defaults objectForKey:@"checkLocation"] boolValue];
+    
+    // add City view controller
     geoAddController = [[RSAddGeo alloc] initWithNibName:@"RSAddGeo" bundle:nil];
+    geoAddController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    geoAddController.delegate = self;
 }
 
 - (IBAction)done:(id)sender {
@@ -63,8 +67,6 @@
 
 - (IBAction)addCityTouchDown {
     // present modal view controller
-    geoAddController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    geoAddController.delegate = self;
     [self presentModalViewController:geoAddController animated:YES];
 }
 
@@ -78,7 +80,7 @@
 
 
 - (void)dealloc {
-        [geoAddController release];
+    [geoAddController release];
     [toggleSwitch release];
     [super dealloc];
 }
