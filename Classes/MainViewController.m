@@ -12,7 +12,6 @@
 #import "WeatherModel.h"
 //#import "FlipsideViewController.h"
 
-
 @implementation MainViewController
 
 @synthesize forecast;
@@ -25,13 +24,7 @@
 }
 
 - (IBAction)showInfo:(id)sender {    
-
-	FlipsideViewController *controller = [[FlipsideViewController alloc] initWithNibName:@"FlipsideView" bundle:nil];
-	controller.delegate = self;
-	controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-	[self presentModalViewController:controller animated:YES];
-	
-	[controller release];
+	[self presentModalViewController:flipsideController animated:YES];
 }
 
 
@@ -82,19 +75,26 @@
     locationName = [[NSString alloc] init];
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
 
+    // flipside controller
+    flipsideController = [[FlipsideViewController alloc] initWithNibName:@"FlipsideView" bundle:nil];
+	flipsideController.delegate = self;
+	flipsideController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    
     weekdayFormatter = [[NSDateFormatter alloc] init];
     [weekdayFormatter setDateFormat: @"EEEE"];
     
     _tableView.dataSource = self;
     _tableView.delegate = self;
     [self.view addSubview:_tableView];
-    
 	[self refreshView:self];
 }
 
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
+    [flipsideController release];
+    flipsideController = nil;
+    
     [super viewDidUnload];
     [locationName release];
     [weekdayFormatter release];
@@ -112,7 +112,8 @@
 
 
 - (void)dealloc {
-	
+    [flipsideController release];
+    
     [weekdayFormatter release];
     [locationName release];
 	[loadingActivityIndicator release];

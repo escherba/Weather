@@ -12,7 +12,9 @@
 
 
 @interface MainViewController : UIViewController <FlipsideViewControllerDelegate, UITableViewDelegate, UITableViewDataSource> {
-	
+
+    FlipsideViewController *flipsideController;
+    
     NSDateFormatter *weekdayFormatter;
 	WeatherForecast *forecast;
     WeatherAppDelegate *appDelegate;
