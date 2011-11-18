@@ -1,28 +1,33 @@
 //
-//  FlipsideViewController.h
-//  Weather
+// FlipsideViewController.h
+// Weather
 //
-//  Created by Eugene Scherba on 1/11/11.
-//  Copyright 2011 Boston University. All rights reserved.
+// Created by Eugene Scherba on 1/11/11.
+// Copyright 2011 Boston University. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+#import "RSAddGeo.h"
 
 @protocol FlipsideViewControllerDelegate;
 
 @class WeatherAppDelegate;
 
-@interface FlipsideViewController : UIViewController {
-	id <FlipsideViewControllerDelegate> delegate;
+@interface FlipsideViewController : UIViewController <RSAddGeoDelegate> {
+    id <FlipsideViewControllerDelegate> delegate;
     IBOutlet UISwitch *toggleSwitch;
     WeatherAppDelegate *appDelegate;
+    RSAddGeo *geoAddController;
     
     NSDictionary *tableContents;
     NSArray *sortedKeys;
 }
 
+@property (nonatomic,retain) IBOutlet UIButton *addCity;
 @property (nonatomic,retain) NSDictionary *tableContents;
 @property (nonatomic,retain) NSArray *sortedKeys;
+
+- (IBAction)addCityTouchDown;
 
 @property (nonatomic, assign) id <FlipsideViewControllerDelegate> delegate;
 - (IBAction)done:(id)sender;

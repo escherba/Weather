@@ -21,8 +21,7 @@
 @synthesize condition;
 @synthesize days;
 
-#pragma mark -
-#pragma mark Instance Methods
+#pragma mark - Instance Methods
 
 - (void)queryService:(CLLocationCoordinate2D)coord
   withParent:(UIViewController *)controller
@@ -55,18 +54,17 @@
 	[condition release];
     
     // release Days array
-    NSEnumerator *enumDays = [self.days objectEnumerator];
-    RSDay *day;
-    while (day = [enumDays nextObject]) {
-        [day release];
-    }
+    //NSEnumerator *enumDays = [self.days objectEnumerator];
+    //RSDay *day;
+    //while (day = [enumDays nextObject]) {
+    //    [day release];
+    //}
 	[self.days release];
 	
 	[super dealloc];
 }
 
-#pragma mark -
-#pragma mark NSURLConnection delegate methods
+#pragma mark - NSURLConnection delegate methods
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection
 			 willSendRequest:(NSURLRequest *)request
@@ -126,11 +124,11 @@ didReceiveData:(NSData *)data
     }
     
 	// 5-day forecast ////////////////////////////////////////
-    NSEnumerator *enumDays = [self.days objectEnumerator];
-    RSDay *day;
-    while (day = [enumDays nextObject]) {
-        [day release];
-    }
+    //NSEnumerator *enumDays = [self.days objectEnumerator];
+    //RSDay *day;
+    //while (day = [enumDays nextObject]) {
+    //    [day release];
+    //}
 	[self.days release];
 	self.days = [[NSMutableArray alloc] initWithObjects:nil];
     
@@ -141,7 +139,9 @@ didReceiveData:(NSData *)data
     if (forecast) {
         for (NSDictionary *node in forecast) {
             NSDate *dayDate = [dateFormatter dateFromString:[node objectForKey:@"date"]];
-            [self.days addObject:[[RSDay alloc] initWithDate:dayDate highT:[node objectForKey:@"tempMaxF"] lowT:[node objectForKey:@"tempMinF"] condition:[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"] iconURL:[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"]]];
+            RSDay *day = [[RSDay alloc] initWithDate:dayDate highT:[node objectForKey:@"tempMaxF"] lowT:[node objectForKey:@"tempMinF"] condition:[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"] iconURL:[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"]];
+            [self.days addObject:day];
+            [day release];
         }
 	}
 
