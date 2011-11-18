@@ -9,12 +9,19 @@
 #import <CoreLocation/CoreLocation.h>
 #import "WeatherAppDelegate.h"
 #import "FlipsideViewController.h"
+#import "RSAddGeo.h"
 
 @implementation FlipsideViewController
 
+@synthesize addCity;
 @synthesize delegate;
 @synthesize tableContents;
 @synthesize sortedKeys;
+
+- (void)geoAddControllerDidFinish:(RSAddGeo *)controller
+{
+	[self dismissModalViewControllerAnimated:YES];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -23,6 +30,7 @@
         appDelegate = (WeatherAppDelegate *) [[UIApplication sharedApplication] delegate];
     }
     toggleSwitch.on = [[appDelegate.defaults objectForKey:@"checkLocation"] boolValue];
+    geoAddController = [[RSAddGeo alloc] initWithNibName:@"RSAddGeo" bundle:nil];
 }
 
 - (IBAction)done:(id)sender {
@@ -49,8 +57,16 @@
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
+    [geoAddController release];
+    geoAddController = nil;
 }
 
+- (IBAction)addCityTouchDown {
+    // present modal view controller
+    geoAddController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    geoAddController.delegate = self;
+    [self presentModalViewController:geoAddController animated:YES];
+}
 
 /*
 // Override to allow orientations other than the default portrait orientation.
@@ -62,6 +78,7 @@
 
 
 - (void)dealloc {
+        [geoAddController release];
     [toggleSwitch release];
     [super dealloc];
 }
