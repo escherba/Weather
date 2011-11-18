@@ -26,14 +26,14 @@
 //========================================================================
 @interface RSDay : NSObject
 
-@property (nonatomic, retain) NSString* date;
+@property (nonatomic, retain) NSDate* date;
 @property (nonatomic, retain) NSString* highT;
 @property (nonatomic, retain) NSString* lowT;
 @property (nonatomic, retain) NSString* condition;
 @property (nonatomic, retain) NSString* iconURL;
 @property (readonly, nonatomic, retain) UIImage* iconData;
 
--(id)initWithDate:(NSString*)date1
+-(id)initWithDate:(NSDate*)date1
             highT:(NSString*)highT1
              lowT:(NSString*)lowT1
         condition:(NSString*)condition1
