@@ -134,13 +134,18 @@ didReceiveData:(NSData *)data
 	[self.days release];
 	self.days = [[NSMutableArray alloc] initWithObjects:nil];
     
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+
     NSArray *forecast = [data objectForKey:@"weather"];
     if (forecast) {
         for (NSDictionary *node in forecast) {
-            [self.days addObject:[[RSDay alloc] initWithDate:[node objectForKey:@"date"] highT:[node objectForKey:@"tempMaxF"] lowT:[node objectForKey:@"tempMinF"] condition:[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"] iconURL:[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"]]];
+            NSDate *dayDate = [dateFormatter dateFromString:[node objectForKey:@"date"]];
+            [self.days addObject:[[RSDay alloc] initWithDate:dayDate highT:[node objectForKey:@"tempMaxF"] lowT:[node objectForKey:@"tempMinF"] condition:[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"] iconURL:[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"]]];
         }
 	}
 
+    [dateFormatter release];
 	[viewController updateView];
 }
 

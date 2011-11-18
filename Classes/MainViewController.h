@@ -13,6 +13,7 @@
 
 @interface MainViewController : UIViewController <FlipsideViewControllerDelegate, UITableViewDelegate, UITableViewDataSource> {
 	
+    NSDateFormatter *weekdayFormatter;
 	WeatherForecast *forecast;
     WeatherAppDelegate *appDelegate;
     NSString *locationName;

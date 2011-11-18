@@ -61,7 +61,7 @@
 @synthesize iconURL = _iconURL;
 @synthesize iconData = _iconData;
 
-- (id)initWithDate:(NSString*)date1
+- (id)initWithDate:(NSDate*)date1
              highT:(NSString*) highT1
               lowT:(NSString*) lowT1
          condition:(NSString*)condition1
@@ -91,7 +91,7 @@
 
 -(NSString*) getHiLo {
     // stringWithFormat returns a string that is already autoreleased
-    return [NSString stringWithFormat:@"%@ / %@", 
+    return [NSString stringWithFormat:@"%@° / %@°", 
             self.highT, 
             self.lowT];
 }

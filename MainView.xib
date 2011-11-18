@@ -175,7 +175,7 @@
 						<string key="NSFrame">{{184, 57}, {42, 21}}</string>
 						<reference key="NSSuperview" ref="883825266"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="241105619"/>
+						<reference key="NSNextKeyView" ref="762762784"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>
@@ -321,13 +321,14 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<bool key="IBUIAlwaysBounceVertical">YES</bool>
 						<bool key="IBUIShowsHorizontalScrollIndicator">NO</bool>
+						<int key="IBUISeparatorStyle">1</int>
 						<int key="IBUISectionIndexMinimumDisplayRowCount">0</int>
 						<bool key="IBUIShowsSelectionImmediatelyOnTouchBegin">YES</bool>
 						<float key="IBUIRowHeight">64</float>
 						<float key="IBUISectionHeaderHeight">22</float>
 						<float key="IBUISectionFooterHeight">22</float>
 					</object>
-					<object class="IBUIImageView" id="241105619">
+					<object class="IBUIImageView" id="762762784">
 						<reference key="NSNextResponder" ref="883825266"/>
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{0, 91}, {64, 64}}</string>
@@ -434,7 +435,7 @@
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">nowImage</string>
 						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="241105619"/>
+						<reference key="destination" ref="762762784"/>
 					</object>
 					<int key="connectionID">122</int>
 				</object>
@@ -503,7 +504,7 @@
 							<reference ref="1054726438"/>
 							<reference ref="929393121"/>
 							<reference ref="44332964"/>
-							<reference ref="241105619"/>
+							<reference ref="762762784"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -576,7 +577,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">121</int>
-						<reference key="object" ref="241105619"/>
+						<reference key="object" ref="762762784"/>
 						<reference key="parent" ref="883825266"/>
 					</object>
 				</object>

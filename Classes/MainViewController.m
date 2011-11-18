@@ -23,9 +23,8 @@
 	[self dismissModalViewControllerAnimated:YES];
 }
 
-
 - (IBAction)showInfo:(id)sender {    
-	
+
 	FlipsideViewController *controller = [[FlipsideViewController alloc] initWithNibName:@"FlipsideView" bundle:nil];
 	controller.delegate = self;
 	controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
@@ -82,6 +81,9 @@
     locationName = [[NSString alloc] init];
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
 
+    weekdayFormatter = [[NSDateFormatter alloc] init];
+    [weekdayFormatter setDateFormat: @"EEEE"];
+    
     _tableView.dataSource = self;
     _tableView.delegate = self;
     [self.view addSubview:_tableView];
@@ -94,6 +96,7 @@
 	// e.g. self.myOutlet = nil;
     [super viewDidUnload];
     [locationName release];
+    [weekdayFormatter release];
     _tableView = nil;
 }
 
@@ -109,6 +112,7 @@
 
 - (void)dealloc {
 	
+    [weekdayFormatter release];
     [locationName release];
 	[loadingActivityIndicator release];
 	
@@ -149,11 +153,11 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
-    
+
     // Configure the cell.
     if ([tableView isEqual:_tableView]) {
         RSDay* day = [self.forecast.days objectAtIndex:indexPath.row];
-        NSString *title = [[NSString alloc] initWithFormat:@"%@: %@", day.date, [day getHiLo]]; 
+        NSString *title = [[NSString alloc] initWithFormat:@"%@: %@", [weekdayFormatter stringFromDate:day.date], [day getHiLo]]; 
         cell.textLabel.text = title;
         [title release];
         
