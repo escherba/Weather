@@ -20,6 +20,13 @@
 
 - (void)geoAddControllerDidFinish:(RSAddGeo *)controller
 {
+    // capture controller.selectedLocation
+    NSString* selectedLocation = controller.selectedLocation;
+    if (selectedLocation) {
+        NSLog(@"You selected %@", selectedLocation);
+    } else {
+        NSLog(@"You did not select a location");
+    }
 	[self dismissModalViewControllerAnimated:YES];
 }
 

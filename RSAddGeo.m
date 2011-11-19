@@ -13,16 +13,19 @@
 
 @synthesize delegate;
 @synthesize searchDisplayController;
+@synthesize selectedLocation;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = NSLocalizedString(@"Type City, State or Zip code:", @"Type City, State or Zip code:");
+        //self.title = NSLocalizedString(@"Type City, State or Zip code:", @"Type City, State or Zip code:");
+        static NSString *titleString = @"Type City, State or Zip code:";
+        self.title = titleString;
     }
     return self;
 }
-							
+
 - (void)dealloc
 {
     // properties
@@ -33,6 +36,7 @@
     [responseData release];
     [theURL release];
     
+    [self.selectedLocation release];
     [super dealloc];
 }
 
@@ -47,32 +51,22 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    
-    self.tableView.scrollEnabled = YES;
+
     apiData = [[NSMutableArray alloc] initWithObjects:nil];
     [self.tableView reloadData];
     
-
-//    for (UIView *possibleButton in searchDisplayController.searchBar.subviews)
-//    {
-//        if ([possibleButton isKindOfClass:[UIButton class]])
-//        {
-//            UIButton *cancelButton = (UIButton*)possibleButton;
-//            cancelButton.enabled = YES;
-//            break;
-//        }
-//    }
+	// Do any additional setup after loading the view, typically from a nib.
+    self.tableView.scrollEnabled = YES;
 }
 
 - (void)viewDidUnload
 {
-    [apiData release];
-    apiData = nil;
-    
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+
+    [apiData release];
+    apiData = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -83,6 +77,8 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+
+    _cancelButtonClicked = NO;
     //if (!animated) {
     //    [searchDisplayController.searchBar resignFirstResponder];
     //}
@@ -107,17 +103,18 @@
 
 #pragma mark - UISearchBarDelegate methods
 
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-    NSLog(@"ended editing");
-	//[searchBar becomeFirstResponder];
-	//[searchBar setShowsCancelButton:YES animated:YES];
-    [self.delegate geoAddControllerDidFinish:self];
+//- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+- (BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar {
+    if (!self.selectedLocation && !_cancelButtonClicked) {
+        [self.delegate geoAddControllerDidFinish:self];
+    }
+    return YES;
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar {
-    NSLog(@"cancel button clicked");
-	//[searchBar resignFirstResponder];
-	//[searchBar setShowsCancelButton:NO animated:YES];
+    _cancelButtonClicked = YES;
+    [self.selectedLocation release];
+    self.selectedLocation = nil;
     [self.delegate geoAddControllerDidFinish:self];
 }
 
@@ -125,8 +122,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // dismiss modal view
-    NSLog(@"Finished with dialog!");
+    // acquire location name and dismiss modal view
+    [self.selectedLocation release];
+    self.selectedLocation = [[apiData objectAtIndex:indexPath.row] retain];
     [self.delegate geoAddControllerDidFinish:self];
 }
 
@@ -154,8 +152,8 @@
 
     // Configure the cell.
     if ([tableView isEqual:searchDisplayController.searchResultsTableView]) {
-        NSString *text = [apiData objectAtIndex:indexPath.row];
-        cell.textLabel.text = NSLocalizedString(text, text);
+        //NSString *text = [apiData objectAtIndex:indexPath.row];
+        cell.textLabel.text = [apiData objectAtIndex:indexPath.row]; //NSLocalizedString(text, text);
     }
     return cell;
 }
@@ -167,9 +165,13 @@ shouldReloadTableForSearchString:(NSString *)searchString
 {
     [apiConnection cancel];
     [apiConnection release];
-    
+
     [responseData release];
 	responseData = [[NSMutableData data] retain];
+    _cancelButtonClicked = NO;
+    
+    [self.selectedLocation release];
+    self.selectedLocation = nil;
     
     // Note: if you are using this code, please apply for your own id at Google Places API page
     theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=false&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [searchDisplayController.searchBar text]]];
@@ -187,6 +189,10 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
     
     [responseData release];
 	responseData = [[NSMutableData data] retain];
+    _cancelButtonClicked = NO;
+    
+    [self.selectedLocation release];
+    self.selectedLocation = nil;
     
     // Note: if you are using this code, please apply for your own id at Google Places API page
     theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=false&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [searchDisplayController.searchBar text]]];
