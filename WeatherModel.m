@@ -108,7 +108,7 @@
     [self.iconData release];
     if (self.iconURL) {
         UIImage *img = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.iconURL]]];
-        _iconData = [[[img roundCornersWithRadius:3.0] imageScaledToSize:CGSizeMake(38, 38)] retain];
+        _iconData = [[[img roundCornersWithRadius:3.0] imageScaledToSize:CGSizeMake(40, 40)] retain];
         [img release];
     }
 }
