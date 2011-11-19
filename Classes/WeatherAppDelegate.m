@@ -19,19 +19,18 @@
 @synthesize locationManager;
 @synthesize defaults;
 
-#pragma mark -
-#pragma mark Application lifecycle
+#pragma mark - Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     /*
-	MainViewController *aController = 
-	  [[MainViewController alloc] initWithNibName:@"MainView" bundle:nil];
-	self.mainViewController = aController;
-	[aController release];*/
+     MainViewController *aController = 
+     [[MainViewController alloc] initWithNibName:@"MainView" bundle:nil];
+     self.mainViewController = aController;
+     [aController release];*/
 	
     self.defaults = [NSUserDefaults standardUserDefaults];
     //BOOL checkLocation = (BOOL)[self.defaults stringForKey:@"checkLocation"];
-
+    
     // Create instance of LocationManager object
     //NSLog(@"Creating locationManager");
     self.locationManager = [[[CLLocationManager alloc] init] autorelease];
@@ -46,7 +45,7 @@
     // Add the main view controller's view to the window and display.
     [self.window addSubview:mainViewController.view];
     [self.window makeKeyAndVisible];
-
+    
     return YES;
 }
 
@@ -89,8 +88,7 @@
 }
 
 
-#pragma mark -
-#pragma mark Memory management
+#pragma mark - Memory management
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
     /*
@@ -107,8 +105,7 @@
 }
 
 
-#pragma mark -
-# pragma mark CLLocationManager methods
+#pragma mark - CLLocationManager methods
 
 - (void)locationManager:(CLLocationManager *) manager 
     didUpdateToLocation:(CLLocation *)newLocation 

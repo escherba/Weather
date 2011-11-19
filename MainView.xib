@@ -49,7 +49,6 @@
 						<string key="NSFrame">{{289, 431}, {18, 19}}</string>
 						<reference key="NSSuperview" ref="883825266"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -323,6 +322,7 @@
 						<bool key="IBUIShowsHorizontalScrollIndicator">NO</bool>
 						<int key="IBUISeparatorStyle">1</int>
 						<int key="IBUISectionIndexMinimumDisplayRowCount">0</int>
+						<bool key="IBUIAllowsSelection">NO</bool>
 						<bool key="IBUIShowsSelectionImmediatelyOnTouchBegin">YES</bool>
 						<float key="IBUIRowHeight">64</float>
 						<float key="IBUISectionHeaderHeight">22</float>
@@ -331,7 +331,7 @@
 					<object class="IBUIImageView" id="762762784">
 						<reference key="NSNextResponder" ref="883825266"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{0, 91}, {64, 64}}</string>
+						<string key="NSFrame">{{9, 91}, {64, 64}}</string>
 						<reference key="NSSuperview" ref="883825266"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="776707417"/>

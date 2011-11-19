@@ -7,6 +7,7 @@
 //
 
 #import "WeatherModel.h"
+#import "UIImage+RSRoundCorners.h"
 
 //========================================================================
 @implementation RSCondition
@@ -45,7 +46,9 @@
 -(void)loadIcon {
     [self.iconData release];
     if (self.iconURL) {
-        _iconData = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.iconURL]]];
+        UIImage *img = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.iconURL]]];
+        _iconData = [[img roundCornersWithRadius:3.0] retain];
+        [img release];
     }
 }
 
@@ -104,7 +107,9 @@
 -(void)loadIcon {
     [self.iconData release];
     if (self.iconURL) {
-        _iconData = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.iconURL]]];
+        UIImage *img = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.iconURL]]];
+        _iconData = [[[img roundCornersWithRadius:3.0] imageScaledToSize:CGSizeMake(38, 38)] retain];
+        [img release];
     }
 }
 
