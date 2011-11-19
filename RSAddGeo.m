@@ -19,7 +19,6 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        //self.title = NSLocalizedString(@"Type City, State or Zip code:", @"Type City, State or Zip code:");
         static NSString *titleString = @"Type City, State or Zip code:";
         self.title = titleString;
     }
@@ -152,8 +151,7 @@
 
     // Configure the cell.
     if ([tableView isEqual:searchDisplayController.searchResultsTableView]) {
-        //NSString *text = [apiData objectAtIndex:indexPath.row];
-        cell.textLabel.text = [apiData objectAtIndex:indexPath.row]; //NSLocalizedString(text, text);
+        cell.textLabel.text = [apiData objectAtIndex:indexPath.row];
     }
     return cell;
 }
