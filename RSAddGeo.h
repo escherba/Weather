@@ -17,11 +17,11 @@
     NSURLConnection *apiConnection;
     NSMutableData *responseData;
     NSURL *theURL;
-    
+    BOOL _cancelButtonClicked;
 }
 
+@property (nonatomic, retain) NSString* selectedLocation;
 @property (strong, nonatomic) IBOutlet UISearchDisplayController *searchDisplayController;
-
 @property (nonatomic, assign) id <RSAddGeoDelegate> delegate;
 @end
 
