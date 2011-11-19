@@ -6,6 +6,7 @@
 //  Copyright 2011 Boston University. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import <CoreLocation/CoreLocation.h>
 #import "MainViewController.h"
 #import "WeatherAppDelegate.h"
@@ -164,6 +165,10 @@
         [title release];
         
         cell.detailTextLabel.text = day.condition;
+        
+        // two lines below make image corners round (also need to import <CoreLocation/CoreLocation.h>)
+        cell.imageView.layer.masksToBounds = YES;
+        cell.imageView.layer.cornerRadius = 15.0;
         cell.imageView.image = day.iconData;
     }
     return cell;
