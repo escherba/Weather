@@ -23,6 +23,7 @@
 		EF527097146B38A700335A36 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765580DF743DE002DB57D /* CoreGraphics.framework */; };
 		EF527098146B38AF00335A36 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFBD1F96146B23CD00AFCAB9 /* CoreLocation.framework */; };
 		EF68438E1476C70C009E285E /* RSAddGeo.m in Sources */ = {isa = PBXBuildFile; fileRef = EF68438D1476C70C009E285E /* RSAddGeo.m */; };
+		EF92F7E11477558600288305 /* UIImage+RSRoundCorners.m in Sources */ = {isa = PBXBuildFile; fileRef = EF92F7E01477558600288305 /* UIImage+RSRoundCorners.m */; };
 		EFF0CA961473E6D900915C8B /* WeatherModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EFF0CA951473E6D900915C8B /* WeatherModel.m */; };
 /* End PBXBuildFile section */
 
@@ -52,6 +53,8 @@
 		EF4F77A71476C6D900543F5B /* RSAddGeo.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RSAddGeo.xib; sourceTree = "<group>"; };
 		EF68438C1476C70C009E285E /* RSAddGeo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSAddGeo.h; sourceTree = "<group>"; };
 		EF68438D1476C70C009E285E /* RSAddGeo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSAddGeo.m; sourceTree = "<group>"; };
+		EF92F7DF1477558600288305 /* UIImage+RSRoundCorners.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+RSRoundCorners.h"; sourceTree = "<group>"; };
+		EF92F7E01477558600288305 /* UIImage+RSRoundCorners.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RSRoundCorners.m"; sourceTree = "<group>"; };
 		EFBD1F96146B23CD00AFCAB9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		EFF0CA941473E6D900915C8B /* WeatherModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeatherModel.h; sourceTree = "<group>"; };
 		EFF0CA951473E6D900915C8B /* WeatherModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeatherModel.m; sourceTree = "<group>"; };
@@ -132,6 +135,8 @@
 				EF01179D146CC111005D28C5 /* JSONKit.m */,
 				32CA4F630368D1EE00C91783 /* Weather_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
+				EF92F7DF1477558600288305 /* UIImage+RSRoundCorners.h */,
+				EF92F7E01477558600288305 /* UIImage+RSRoundCorners.m */,
 				44FF640D12E0CD0C00206C23 /* WeatherForecast.h */,
 				44FF640E12E0CD0C00206C23 /* WeatherForecast.m */,
 				EFF0CA941473E6D900915C8B /* WeatherModel.h */,
@@ -240,6 +245,7 @@
 				EF0117A2146CC191005D28C5 /* FindNearbyPlace.m in Sources */,
 				EFF0CA961473E6D900915C8B /* WeatherModel.m in Sources */,
 				EF68438E1476C70C009E285E /* RSAddGeo.m in Sources */,
+				EF92F7E11477558600288305 /* UIImage+RSRoundCorners.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
