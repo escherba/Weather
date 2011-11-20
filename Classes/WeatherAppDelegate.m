@@ -22,17 +22,11 @@
 #pragma mark - Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    /*
-     MainViewController *aController = 
-     [[MainViewController alloc] initWithNibName:@"MainView" bundle:nil];
-     self.mainViewController = aController;
-     [aController release];*/
-	
+
     self.defaults = [NSUserDefaults standardUserDefaults];
     //BOOL checkLocation = (BOOL)[self.defaults stringForKey:@"checkLocation"];
     
     // Create instance of LocationManager object
-    //NSLog(@"Creating locationManager");
     self.locationManager = [[[CLLocationManager alloc] init] autorelease];
     self.locationManager.delegate = self;
     locationManagerStartDate = [[NSDate date] retain];
