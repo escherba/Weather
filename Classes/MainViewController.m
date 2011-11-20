@@ -61,7 +61,6 @@
 	nowHumidityLabel.text = forecast.condition.humidity;
 	nowWindLabel.text = forecast.condition.wind;
 	nowConditionLabel.text = forecast.condition.condition;
-	//[nowImage.image release];
 	nowImage.image = forecast.condition.iconData;
 
     [_tableView reloadData];
@@ -168,10 +167,6 @@
         [title release];
         
         cell.detailTextLabel.text = day.condition;
-        
-        // two lines below make image corners round (also need to import <CoreLocation/CoreLocation.h>)
-        //cell.imageView.layer.masksToBounds = YES;
-        //cell.imageView.layer.cornerRadius = 15.0;
         cell.imageView.image = day.iconData;
     }
     return cell;

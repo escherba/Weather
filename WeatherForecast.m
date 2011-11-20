@@ -54,11 +54,6 @@
 	[condition release];
     
     // release Days array
-    //NSEnumerator *enumDays = [self.days objectEnumerator];
-    //RSDay *day;
-    //while (day = [enumDays nextObject]) {
-    //    [day release];
-    //}
 	[self.days release];
 	
 	[super dealloc];
@@ -104,34 +99,29 @@ didReceiveData:(NSData *)data
     }
     
 	// Forecast Information ///////////////////////////////////////
-	location = [[[data objectForKey:@"request"] objectAtIndex:0] objectForKey:@"query"];
-
+    [self.location release];
+	self.location = [[[data objectForKey:@"request"] objectAtIndex:0] objectForKey:@"query"];
     
 	// Current Conditions /////////////////////////////////////////
-    [self.condition release];
-    self.condition = [[RSCondition alloc] init];
-    
+    RSCondition* tmpCondition = [[RSCondition alloc] init];
+
     NSDictionary *current_condition = [[data objectForKey:@"current_condition"] objectAtIndex:0];
     if (current_condition) {
-        self.condition.iconURL
+        tmpCondition.iconURL
         = [[[current_condition objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"];
-        self.condition.condition 
+        tmpCondition.condition 
         = [[[current_condition objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"];
-        self.condition.tempC = [current_condition objectForKey:@"temp_C"];
-        self.condition.tempF = [current_condition objectForKey:@"temp_F"];
-        self.condition.humidity = [current_condition objectForKey:@"humidity"];
-        self.condition.wind = [current_condition objectForKey:@"windspeedMiles"];
+        tmpCondition.tempC = [current_condition objectForKey:@"temp_C"];
+        tmpCondition.tempF = [current_condition objectForKey:@"temp_F"];
+        tmpCondition.humidity = [current_condition objectForKey:@"humidity"];
+        tmpCondition.wind = [current_condition objectForKey:@"windspeedMiles"];
     }
     
-	// 5-day forecast ////////////////////////////////////////
-    //NSEnumerator *enumDays = [self.days objectEnumerator];
-    //RSDay *day;
-    //while (day = [enumDays nextObject]) {
-    //    [day release];
-    //}
-	[self.days release];
-	self.days = [[NSMutableArray alloc] initWithObjects:nil];
+    [self.condition release];
+    condition = tmpCondition;
     
+	// 5-day forecast ////////////////////////////////////////
+    NSMutableArray* tmpDays = [[NSMutableArray alloc] initWithObjects:nil];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd"];
 
@@ -140,11 +130,14 @@ didReceiveData:(NSData *)data
         for (NSDictionary *node in forecast) {
             NSDate *dayDate = [dateFormatter dateFromString:[node objectForKey:@"date"]];
             RSDay *day = [[RSDay alloc] initWithDate:dayDate highT:[node objectForKey:@"tempMaxF"] lowT:[node objectForKey:@"tempMinF"] condition:[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"] iconURL:[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"]];
-            [self.days addObject:day];
+            [tmpDays addObject:day];
             [day release];
         }
 	}
 
+    [self.days release];
+    days = tmpDays;
+    
     [dateFormatter release];
     [responseData release];
     responseData = nil;

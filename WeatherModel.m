@@ -72,11 +72,11 @@
 {
     self = [super init];
     if (self) {
-        self.date = [date1 retain];
-        self.lowT = [lowT1 retain];
-        self.highT = [highT1 retain];
-        self.condition = [condition1 retain];
-        self.iconURL = [iconURL1 retain];
+        date = [date1 retain];
+        lowT = [lowT1 retain];
+        highT = [highT1 retain];
+        condition = [condition1 retain];
+        _iconURL = [iconURL1 retain];
         [self loadIcon];
     }
     return self;
