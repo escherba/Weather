@@ -18,19 +18,20 @@
 @synthesize tableContents;
 @synthesize sortedKeys;
 
+
 - (void)geoAddControllerDidFinish:(RSAddGeo *)controller
 {
     // capture controller.selectedLocation
     NSString* selectedLocation = controller.selectedLocation;
     if (selectedLocation) {
-        
+
         // setting empty string for now
         [tableContents setObject:@"" forKey:selectedLocation];
-        [sortedKeys release];
-        sortedKeys = [[[tableContents allKeys] sortedArrayUsingSelector:@selector(compare:)] retain];
-        
-        // reload second table section only, with shuffle-like animation
-        [_tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationTop];
+        [sortedKeys addObject:selectedLocation];
+
+        NSArray *paths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:[_tableView numberOfRowsInSection:1] inSection:1]];
+        [_tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationTop];
+        [_tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
     }
 	[self dismissModalViewControllerAnimated:YES];
 }
@@ -50,7 +51,7 @@
 
     
     tableContents = [[NSMutableDictionary alloc] init];
-    sortedKeys = [[NSArray alloc] initWithObjects:nil];
+    sortedKeys = [[NSMutableArray alloc] init];
     
     _tableView.dataSource = self;
     _tableView.delegate = self;
@@ -143,7 +144,8 @@
         switch(indexPath.section) {
             case 0:
                 if (indexPath.row == 0) {
-                    //add a switch
+                    
+                    // add a UISwitch control on the right
                     cell.textLabel.text = @"Use Current Location:";
                     UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
                     [switchView setOn:NO animated:NO];
@@ -154,9 +156,12 @@
                 }
                 break;
             case 1:
-                // use data array
                 cell.textLabel.text = [sortedKeys objectAtIndex:indexPath.row];
                 break;
+        }
+    } else {
+        if (indexPath.section == 1) {
+            cell.textLabel.text = [sortedKeys objectAtIndex:indexPath.row];
         }
     }
     return cell;
@@ -172,14 +177,12 @@ canEditRowAtIndexPath:(NSIndexPath *)indexPath
 commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 1) {
+    if (indexPath.section == 1 && editingStyle == UITableViewCellEditingStyleDelete) {
         // remove the row
-        [tableContents removeObjectForKey:[sortedKeys objectAtIndex:indexPath.row]];
-        [sortedKeys release];
-        sortedKeys = [[[tableContents allKeys] sortedArrayUsingSelector:@selector(compare:)] retain];
-        
-        // reload second table section only, with shuffle-like animation
-        [_tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
+        NSInteger row = indexPath.row;
+        [tableContents removeObjectForKey:[sortedKeys objectAtIndex:row]];
+        [sortedKeys removeObjectAtIndex:row];
+        [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
 
