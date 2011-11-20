@@ -20,12 +20,12 @@
 
     IBOutlet UITableView *_tableView;
     NSMutableDictionary *tableContents;
-    NSArray *sortedKeys;
+    NSMutableArray *sortedKeys;
 }
 
 @property (nonatomic,retain) IBOutlet UIButton *addCity;
 @property (nonatomic,retain) NSMutableDictionary *tableContents;
-@property (nonatomic,retain) NSArray *sortedKeys;
+@property (nonatomic,retain) NSMutableArray *sortedKeys;
 
 - (IBAction)addCityTouchDown;
 
