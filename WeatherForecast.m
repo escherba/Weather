@@ -132,7 +132,7 @@ didReceiveData:(NSData *)data
 	[self.days release];
 	self.days = [[NSMutableArray alloc] initWithObjects:nil];
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd"];
 
     NSArray *forecast = [data objectForKey:@"weather"];
@@ -146,6 +146,9 @@ didReceiveData:(NSData *)data
 	}
 
     [dateFormatter release];
+    [responseData release];
+    responseData = nil;
+    
 	[viewController updateView];
 }
 

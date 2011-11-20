@@ -52,7 +52,10 @@ void addRoundedRectToPath(CGContextRef context, CGRect rect, CGFloat ovalWidth, 
     CGContextRelease(context);
     CGColorSpaceRelease(colorSpace);
     
-    return [UIImage imageWithCGImage:imageMasked];    
+    UIImage *img = [UIImage imageWithCGImage:imageMasked];
+    CGImageRelease(imageMasked);
+
+    return img;    
 }
 
 - (UIImage*)imageScaledToSize:(CGSize)size {

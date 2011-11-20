@@ -13,12 +13,13 @@
 
 @class WeatherAppDelegate;
 
-@interface FlipsideViewController : UIViewController <RSAddGeoDelegate> {
+@interface FlipsideViewController : UIViewController <RSAddGeoDelegate, UITableViewDelegate, UITableViewDataSource> {
     id <FlipsideViewControllerDelegate> delegate;
-    IBOutlet UISwitch *toggleSwitch;
+    //IBOutlet UISwitch *toggleSwitch;
     WeatherAppDelegate *appDelegate;
     RSAddGeo *geoAddController;
-    
+
+    IBOutlet UITableView *_tableView;
     NSDictionary *tableContents;
     NSArray *sortedKeys;
 }
@@ -34,8 +35,8 @@
 - (IBAction)switchThrown;
 @end
 
-
 @protocol FlipsideViewControllerDelegate
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller;
+
 @end
 
