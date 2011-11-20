@@ -20,10 +20,6 @@
 	// Google Weather Service
 	NSMutableData *responseData;
 	NSURL *theURL;
-	
-	// Information
-	NSString *location;
-	//NSString *date;
 }
 
 @property (nonatomic, retain) NSString *location;

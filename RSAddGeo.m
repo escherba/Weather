@@ -255,6 +255,8 @@ didReceiveResponse:(NSURLResponse *)response
         searchDisplayController.searchResultsTableView.hidden = NO;
     }
     [searchDisplayController.searchResultsTableView reloadData];
+    [responseData release];
+    responseData = nil;
 }
 
 @end

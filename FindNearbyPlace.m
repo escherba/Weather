@@ -56,17 +56,13 @@ didFailWithError:(NSError *)error
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
-    NSLog(@"hey hey");
     //NSString *content = 
     //[[NSString alloc] initWithBytes:[responseData bytes] length:[responseData length] encoding:NSUTF8StringEncoding];
-    //NSLog(@"content = %@", content);
     
     // get content using JSONKit
     JSONDecoder *parser = [JSONDecoder decoder]; // autoreleased
     NSDictionary *firstLocation 
     = [[[parser objectWithData:responseData] objectForKey:@"geonames"] objectAtIndex:0];
-    
-    //NSLog(@"Location = %@, %@, %@", [firstLocation objectForKey:@"name"], [firstLocation objectForKey:@"adminCode1"], [firstLocation objectForKey:@"countryName"]);
     
     // set location
     appDelegate.mainViewController.locationName 
@@ -77,7 +73,8 @@ didFailWithError:(NSError *)error
     
     // refresh main view
     [appDelegate.mainViewController refreshView: self];
-
+    [responseData release];
+    responseData = nil;
 }
 
 -(void)dealloc {

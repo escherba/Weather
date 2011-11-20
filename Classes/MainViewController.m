@@ -53,20 +53,19 @@
 - (void)updateView {
 	
 	// City and Date
-	nameLabel.text = self.locationName;
-	dateLabel.text = self.forecast.date;
+	nameLabel.text = locationName;
+	dateLabel.text = forecast.date;
    
 	// Now
 	nowTempLabel.text = [forecast.condition formatTemperature];
-	nowHumidityLabel.text = self.forecast.condition.humidity;
-	nowWindLabel.text = self.forecast.condition.wind;
-	nowConditionLabel.text = self.forecast.condition.condition;
-	[nowImage.image release];
-	nowImage.image = self.forecast.condition.iconData;
+	nowHumidityLabel.text = forecast.condition.humidity;
+	nowWindLabel.text = forecast.condition.wind;
+	nowConditionLabel.text = forecast.condition.condition;
+	//[nowImage.image release];
+	nowImage.image = forecast.condition.iconData;
 
     [_tableView reloadData];
 
-    
 	[loadingActivityIndicator stopAnimating];
 }
 
@@ -87,7 +86,7 @@
     _tableView.dataSource = self;
     _tableView.delegate = self;
     [self.view addSubview:_tableView];
-	[self refreshView:self];
+    NSLog(@"viewDidLoad");
 }
 
 - (void)viewDidUnload {
@@ -102,6 +101,10 @@
     _tableView = nil;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    NSLog(@"viewDidAppear");
+    [self refreshView:self];
+}
 
 /*
 // Override to allow orientations other than the default portrait orientation.
