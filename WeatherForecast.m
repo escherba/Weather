@@ -15,7 +15,7 @@
 
 @implementation WeatherForecast
 
-@synthesize location;
+//@synthesize location;
 @synthesize date;
 
 @synthesize condition;
@@ -47,7 +47,7 @@
 	[responseData release];
 	[theURL release];
 	
-	[location release];
+//	[location release];
 	[date release];
 	
     // release RSCondition object
@@ -99,8 +99,8 @@ didReceiveData:(NSData *)data
     }
     
 	// Forecast Information ///////////////////////////////////////
-    [self.location release];
-	self.location = [[[data objectForKey:@"request"] objectAtIndex:0] objectForKey:@"query"];
+    //[self.location release];
+	//self.location = [[[data objectForKey:@"request"] objectAtIndex:0] objectForKey:@"query"];
     
 	// Current Conditions /////////////////////////////////////////
     RSCondition* tmpCondition = [[RSCondition alloc] init];

@@ -54,7 +54,6 @@
 */
 }
 
-- (IBAction)showInfo;
 - (IBAction)refreshView:(id) sender;
 - (void)updateView;
 

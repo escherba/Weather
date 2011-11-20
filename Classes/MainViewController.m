@@ -85,7 +85,6 @@
     _tableView.dataSource = self;
     _tableView.delegate = self;
     [self.view addSubview:_tableView];
-    NSLog(@"viewDidLoad");
 }
 
 - (void)viewDidUnload {
@@ -101,7 +100,6 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    NSLog(@"viewDidAppear");
     [self refreshView:self];
 }
 

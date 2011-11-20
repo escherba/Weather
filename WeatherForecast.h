@@ -22,7 +22,7 @@
 	NSURL *theURL;
 }
 
-@property (nonatomic, retain) NSString *location;
+//@property (nonatomic, retain) NSString *location;
 @property (nonatomic, retain) NSString *date;
 
 @property (nonatomic, retain) RSCondition *condition;
