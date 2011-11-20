@@ -54,6 +54,7 @@
     
     _tableView.dataSource = self;
     _tableView.delegate = self;
+    //[_tableView setEditing: YES];
     [self.view addSubview:_tableView];
 }
 
@@ -148,6 +149,7 @@
                     [switchView setOn:NO animated:NO];
                     [switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = switchView;
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     [switchView release];
                 }
                 break;
@@ -157,28 +159,35 @@
                 break;
         }
     }
-    
     return cell;
 }
 
 - (BOOL)tableView:(UITableView *)tableView
 canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return YES;
+    return (indexPath.section == 1) ? YES : NO;
 }
 
 - (void)tableView:(UITableView *)tableView
 commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 forRowAtIndexPath:(NSIndexPath *)indexPath
-
 {
-    // remove the item from your data
-    [tableContents removeObjectForKey:[sortedKeys objectAtIndex:indexPath.row]];
-    [sortedKeys release];
-    sortedKeys = [[[tableContents allKeys] sortedArrayUsingSelector:@selector(compare:)] retain];
+    if (indexPath.section == 1) {
+        // remove the row
+        [tableContents removeObjectForKey:[sortedKeys objectAtIndex:indexPath.row]];
+        [sortedKeys release];
+        sortedKeys = [[[tableContents allKeys] sortedArrayUsingSelector:@selector(compare:)] retain];
+        
+        // reload second table section only, with shuffle-like animation
+        [_tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
+    }
+}
 
-    // refresh the table view
-    [tableView reloadData];
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return (indexPath.section == 1) 
+    ? UITableViewCellEditingStyleDelete 
+    : UITableViewCellEditingStyleNone;
 }
 
 @end
