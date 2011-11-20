@@ -6,12 +6,10 @@
 //  Copyright 2011 Boston University. All rights reserved.
 //
 
-//#import <QuartzCore/QuartzCore.h>
 #import <CoreLocation/CoreLocation.h>
 #import "MainViewController.h"
 #import "WeatherAppDelegate.h"
 #import "WeatherModel.h"
-//#import "FlipsideViewController.h"
 
 @implementation MainViewController
 
