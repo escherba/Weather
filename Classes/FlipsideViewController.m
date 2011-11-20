@@ -161,4 +161,24 @@
     return cell;
 }
 
+- (BOOL)tableView:(UITableView *)tableView
+canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+forRowAtIndexPath:(NSIndexPath *)indexPath
+
+{
+    // remove the item from your data
+    [tableContents removeObjectForKey:[sortedKeys objectAtIndex:indexPath.row]];
+    [sortedKeys release];
+    sortedKeys = [[[tableContents allKeys] sortedArrayUsingSelector:@selector(compare:)] retain];
+
+    // refresh the table view
+    [tableView reloadData];
+}
+
 @end
