@@ -143,7 +143,7 @@
             case 0:
                 if (indexPath.row == 0) {
                     //add a switch
-                    cell.textLabel.text = @"Use Current Location";
+                    cell.textLabel.text = @"Use Current Location:";
                     UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
                     [switchView setOn:NO animated:NO];
                     [switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
