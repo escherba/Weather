@@ -23,9 +23,14 @@
     // capture controller.selectedLocation
     NSString* selectedLocation = controller.selectedLocation;
     if (selectedLocation) {
-        NSLog(@"You selected %@", selectedLocation);
-    } else {
-        NSLog(@"You did not select a location");
+        
+        // setting empty string for now
+        [tableContents setObject:@"" forKey:selectedLocation];
+        [sortedKeys release];
+        sortedKeys = [[[tableContents allKeys] sortedArrayUsingSelector:@selector(compare:)] retain];
+        
+        // reload second table section only, with shuffle-like animation
+        [_tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationTop];
     }
 	[self dismissModalViewControllerAnimated:YES];
 }
@@ -43,6 +48,10 @@
     geoAddController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     geoAddController.delegate = self;
 
+    
+    tableContents = [[NSMutableDictionary alloc] init];
+    sortedKeys = [[NSArray alloc] initWithObjects:nil];
+    
     _tableView.dataSource = self;
     _tableView.delegate = self;
     [self.view addSubview:_tableView];
@@ -53,6 +62,9 @@
 	// e.g. self.myOutlet = nil;
     [geoAddController release];
     geoAddController = nil;
+    
+    [tableContents release];
+    [sortedKeys release];
     
     _tableView = nil;
 }
@@ -73,8 +85,9 @@
 */
 - (void)dealloc {
     [geoAddController release];
-    //[toggleSwitch release];
     [_tableView release];
+    [tableContents release];
+    [sortedKeys release];
     [super dealloc];
 }
 
@@ -114,7 +127,7 @@
         // first section only displays switch to toggle location tracking
         return 1;
     } else {
-        return 0;
+        return [sortedKeys count];
     }
 }
 
@@ -140,6 +153,7 @@
                 break;
             case 1:
                 // use data array
+                cell.textLabel.text = [sortedKeys objectAtIndex:indexPath.row];
                 break;
         }
     }
