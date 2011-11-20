@@ -16,42 +16,21 @@
     FlipsideViewController *flipsideController;
     
     NSDateFormatter *weekdayFormatter;
-	WeatherForecast *forecast;
+    WeatherForecast *forecast;
     WeatherAppDelegate *appDelegate;
     NSString *locationName;
-	IBOutlet UIActivityIndicatorView *loadingActivityIndicator;
-	
-	IBOutlet UILabel *nameLabel;
-	IBOutlet UILabel *dateLabel;
-	
-	IBOutlet UIImageView *nowImage;
-	IBOutlet UILabel *nowTempLabel;
-	IBOutlet UILabel *nowHumidityLabel;
-	IBOutlet UILabel *nowWindLabel;
-	IBOutlet UILabel *nowConditionLabel;
+    IBOutlet UIActivityIndicatorView *loadingActivityIndicator;
+    
+    IBOutlet UILabel *nameLabel;
+    IBOutlet UILabel *dateLabel;
+    
+    IBOutlet UIImageView *nowImage;
+    IBOutlet UILabel *nowTempLabel;
+    IBOutlet UILabel *nowHumidityLabel;
+    IBOutlet UILabel *nowWindLabel;
+    IBOutlet UILabel *nowConditionLabel;
 
     IBOutlet UITableView *_tableView;
-/*
-    IBOutlet UIImageView *dayOneImage;
-	IBOutlet UILabel *dayOneLabel;
-	IBOutlet UILabel *dayOneTempLabel;
-	IBOutlet UILabel *dayOneChanceLabel;
-
-    IBOutlet UIImageView *dayTwoImage;
-	IBOutlet UILabel *dayTwoLabel;
-	IBOutlet UILabel *dayTwoTempLabel;
-	IBOutlet UILabel *dayTwoChanceLabel;
-	
-    IBOutlet UIImageView *dayThreeImage;
-	IBOutlet UILabel *dayThreeLabel;
-	IBOutlet UILabel *dayThreeTempLabel;
-	IBOutlet UILabel *dayThreeChanceLabel;
-
-    IBOutlet UIImageView *dayFourImage;
-	IBOutlet UILabel *dayFourLabel;
-	IBOutlet UILabel *dayFourTempLabel;
-	IBOutlet UILabel *dayFourChanceLabel;
-*/
 }
 
 - (IBAction)refreshView:(id) sender;
