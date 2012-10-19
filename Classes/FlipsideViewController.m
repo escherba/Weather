@@ -33,7 +33,8 @@
         [_tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationTop];
         [_tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
     }
-	[self dismissModalViewControllerAnimated:YES];
+	//[self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)viewDidLoad {
@@ -112,7 +113,8 @@
 
 - (IBAction)addCityTouchDown {
     // present modal view controller
-    [self presentModalViewController:geoAddController animated:YES];
+    //[self presentModalViewController:geoAddController animated:YES];
+    [self presentViewController:geoAddController animated:YES completion:nil];
 }
 
 #pragma mark - UITableViewDelegate methods

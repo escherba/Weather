@@ -24,6 +24,7 @@
 		EF527098146B38AF00335A36 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFBD1F96146B23CD00AFCAB9 /* CoreLocation.framework */; };
 		EF68438E1476C70C009E285E /* RSAddGeo.m in Sources */ = {isa = PBXBuildFile; fileRef = EF68438D1476C70C009E285E /* RSAddGeo.m */; };
 		EF92F7E11477558600288305 /* UIImage+RSRoundCorners.m in Sources */ = {isa = PBXBuildFile; fileRef = EF92F7E01477558600288305 /* UIImage+RSRoundCorners.m */; };
+		EF9E7EBD161B86EC005CAEA8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EF9E7EBC161B86EC005CAEA8 /* Default-568h@2x.png */; };
 		EFB2FA141478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png in Resources */ = {isa = PBXBuildFile; fileRef = EFB2FA131478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png */; };
 		EFF0CA961473E6D900915C8B /* WeatherModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EFF0CA951473E6D900915C8B /* WeatherModel.m */; };
 /* End PBXBuildFile section */
@@ -56,6 +57,7 @@
 		EF68438D1476C70C009E285E /* RSAddGeo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSAddGeo.m; sourceTree = "<group>"; };
 		EF92F7DF1477558600288305 /* UIImage+RSRoundCorners.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+RSRoundCorners.h"; sourceTree = "<group>"; };
 		EF92F7E01477558600288305 /* UIImage+RSRoundCorners.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RSRoundCorners.m"; sourceTree = "<group>"; };
+		EF9E7EBC161B86EC005CAEA8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		EFB2FA131478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "powered-by-google-on-non-white_WorldWeatherOnline.png"; path = "images/powered-by-google-on-non-white_WorldWeatherOnline.png"; sourceTree = "<group>"; };
 		EFBD1F96146B23CD00AFCAB9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		EFF0CA941473E6D900915C8B /* WeatherModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeatherModel.h; sourceTree = "<group>"; };
@@ -118,7 +120,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				EFB2FA131478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png */,
+				EF9E7EBC161B86EC005CAEA8 /* Default-568h@2x.png */,
 				EFBD1F96146B23CD00AFCAB9 /* CoreLocation.framework */,
 				289233A00DB2D0730083E9F9 /* Main View */,
 				281C6CD70DB2D82200F60ACC /* Flipside View */,
@@ -153,6 +155,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				EFB2FA131478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png */,
 				280E754B0DD40C5E005A515E /* MainView.xib */,
 				EF4F77A71476C6D900543F5B /* RSAddGeo.xib */,
 				280E754A0DD40C5E005A515E /* FlipsideView.xib */,
@@ -198,7 +201,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Weather" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -230,6 +233,7 @@
 				280E754F0DD40C5E005A515E /* MainWindow.xib in Resources */,
 				EF4F77A81476C6D900543F5B /* RSAddGeo.xib in Resources */,
 				EFB2FA141478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png in Resources */,
+				EF9E7EBD161B86EC005CAEA8 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

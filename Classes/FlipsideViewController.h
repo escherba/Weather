@@ -26,15 +26,14 @@
 @property (nonatomic,retain) IBOutlet UIButton *addCity;
 @property (nonatomic,retain) NSMutableDictionary *tableContents;
 @property (nonatomic,retain) NSMutableArray *sortedKeys;
+@property (nonatomic, assign) id <FlipsideViewControllerDelegate> delegate;
 
 - (IBAction)addCityTouchDown;
-
-@property (nonatomic, assign) id <FlipsideViewControllerDelegate> delegate;
 - (IBAction)done:(id)sender;
+
 @end
 
 @protocol FlipsideViewControllerDelegate
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller;
-
 @end
 

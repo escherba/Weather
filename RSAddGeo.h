@@ -8,7 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol RSAddGeoDelegate;
+@class RSAddGeo;
+
+@protocol RSAddGeoDelegate
+-(void)geoAddControllerDidFinish:(RSAddGeo *)controller;
+@end
 
 @interface RSAddGeo : UITableViewController <UISearchDisplayDelegate, UITableViewDelegate, UISearchBarDelegate> {
 
@@ -21,11 +25,6 @@
 }
 
 @property (nonatomic, retain) NSString* selectedLocation;
-@property (strong, nonatomic) IBOutlet UISearchDisplayController *searchDisplayController;
 @property (nonatomic, assign) id <RSAddGeoDelegate> delegate;
-@end
-
-@protocol RSAddGeoDelegate
--(void)geoAddControllerDidFinish:(RSAddGeo *)controller;
 
 @end

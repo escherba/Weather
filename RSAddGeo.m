@@ -12,7 +12,6 @@
 @implementation RSAddGeo
 
 @synthesize delegate;
-@synthesize searchDisplayController;
 @synthesize selectedLocation;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -81,7 +80,7 @@
     //if (!animated) {
     //    [searchDisplayController.searchBar resignFirstResponder];
     //}
-    [searchDisplayController.searchBar becomeFirstResponder];
+    [self.searchDisplayController.searchBar becomeFirstResponder];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -150,7 +149,7 @@
     }
 
     // Configure the cell.
-    if ([tableView isEqual:searchDisplayController.searchResultsTableView]) {
+    if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]) {
         cell.textLabel.text = [apiData objectAtIndex:indexPath.row];
     }
     return cell;
@@ -172,7 +171,7 @@ shouldReloadTableForSearchString:(NSString *)searchString
     self.selectedLocation = nil;
     
     // Note: if you are using this code, please apply for your own id at Google Places API page
-    theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=false&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [searchDisplayController.searchBar text]]];
+    theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=false&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [self.searchDisplayController.searchBar text]]];
 
     apiConnection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:theURL] delegate:self startImmediately: YES];
     return NO;
@@ -193,7 +192,7 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
     self.selectedLocation = nil;
     
     // Note: if you are using this code, please apply for your own id at Google Places API page
-    theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=false&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [searchDisplayController.searchBar text]]];
+    theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=false&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [self.searchDisplayController.searchBar text]]];
     
     apiConnection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:theURL] delegate:self startImmediately: YES];
     return NO;
@@ -251,10 +250,10 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     // this is key here -- reload table view
-    if (searchDisplayController.searchResultsTableView.hidden == YES){
-        searchDisplayController.searchResultsTableView.hidden = NO;
+    if (self.searchDisplayController.searchResultsTableView.hidden == YES){
+        self.searchDisplayController.searchResultsTableView.hidden = NO;
     }
-    [searchDisplayController.searchResultsTableView reloadData];
+    [self.searchDisplayController.searchResultsTableView reloadData];
     [responseData release];
     responseData = nil;
 }
