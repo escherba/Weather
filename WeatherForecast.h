@@ -24,10 +24,10 @@
 
 //@property (nonatomic, retain) NSString *location;
 @property (nonatomic, retain) NSString *date;
-
 @property (nonatomic, retain) RSCondition *condition;
 @property (nonatomic, retain) NSMutableArray *days;
 
+// Public method: queryService
 - (void)queryService:(CLLocationCoordinate2D)coord
         withParent:(UIViewController *)controller;
 

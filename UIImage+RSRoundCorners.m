@@ -18,14 +18,18 @@ void addRoundedRectToPath(CGContextRef context, CGRect rect, CGFloat ovalWidth, 
     CGContextSaveGState(context);
     CGContextTranslateCTM (context, CGRectGetMinX(rect), CGRectGetMinY(rect));
     CGContextScaleCTM (context, ovalWidth, ovalHeight);
+    
     CGFloat fw = CGRectGetWidth (rect) / ovalWidth;
     CGFloat fh = CGRectGetHeight (rect) / ovalHeight;
-    CGContextMoveToPoint(context, fw, fh/2.0);
+    CGFloat fw_half = fw/2.0;
+    CGFloat fh_half = fh/2.0;
     
-    CGContextAddArcToPoint(context, fw, fh, fw/2.0, fh, radius);
-    CGContextAddArcToPoint(context, 0.0, fh, 0.0, fh/2.0, radius);
-    CGContextAddArcToPoint(context, 0.0, 0.0, fw/2.0, 0, radius);
-    CGContextAddArcToPoint(context, fw, 0.0, fw, fh/2.0, radius); 
+    CGContextMoveToPoint(context, fw, fh_half);
+    
+    CGContextAddArcToPoint(context, fw,  fh,  fw_half, fh,      radius);
+    CGContextAddArcToPoint(context, 0.0, fh,  0.0,     fh_half, radius);
+    CGContextAddArcToPoint(context, 0.0, 0.0, fw_half, 0,       radius);
+    CGContextAddArcToPoint(context, fw,  0.0, fw,      fh_half, radius); 
 
     CGContextClosePath(context);
     CGContextRestoreGState(context);

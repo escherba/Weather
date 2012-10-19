@@ -19,11 +19,13 @@
 
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller
 {
-	[self dismissModalViewControllerAnimated:YES];
+	//[self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)showInfo:(id)sender {    
-	[self presentModalViewController:flipsideController animated:YES];
+	//[self presentModalViewController:flipsideController animated:YES];
+    [self presentViewController:flipsideController animated:YES completion:nil];
 }
 
 

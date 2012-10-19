@@ -2,9 +2,12 @@
 //  WeatherModel.m
 //  Weather
 //
+//  This file contains implementation of two classes: RSCondition and RSDay
+//
 //  Created by Eugene Scherba on 11/16/11.
 //  Copyright (c) 2011 Boston University. All rights reserved.
 //
+
 
 #import "WeatherModel.h"
 #import "UIImage+RSRoundCorners.h"
@@ -20,6 +23,7 @@
 @synthesize iconURL = _iconURL;
 @synthesize iconData = _iconData;
 
+// Lifecycle methods: dealloc
 - (void)dealloc {
     [self.wind release];
     [self.humidity release];
@@ -31,6 +35,7 @@
     [super dealloc];
 }
 
+// Public method: formatTemperature
 -(NSString*) formatTemperature {
     // stringWithFormat returns a string that is already autoreleased
     return [NSString stringWithFormat:@"%@F (%@C)", 
@@ -38,11 +43,13 @@
             self.tempC];
 }
 
+// method: setIconURL
 -(void)setIconURL:(NSString *)iconURL {
     _iconURL = [iconURL retain];
     [self loadIcon];
 }
 
+// method: loadIcon
 -(void)loadIcon {
     [self.iconData release];
     if (self.iconURL) {
@@ -64,6 +71,7 @@
 @synthesize iconURL = _iconURL;
 @synthesize iconData = _iconData;
 
+// Lifecycle methods: initWithDate
 - (id)initWithDate:(NSDate*)date1
              highT:(NSString*) highT1
               lowT:(NSString*) lowT1
@@ -82,6 +90,7 @@
     return self;
 }
 
+// Lifecycle methods: dealloc
 - (void)dealloc {
     [self.date release];
     [self.lowT release];
@@ -92,6 +101,7 @@
     [super dealloc];
 }
 
+// Public method: getHiLo
 -(NSString*) getHiLo {
     // stringWithFormat returns a string that is already autoreleased
     return [NSString stringWithFormat:@"%@° / %@°", 
@@ -99,11 +109,13 @@
             self.lowT];
 }
 
+// method: setIconURL
 -(void)setIconURL:(NSString *)iconURL {
     _iconURL = [iconURL retain];
     [self loadIcon];
 }
 
+// method: loadIcon (TODO: note that this method's definition is repeated for different interface)
 -(void)loadIcon {
     [self.iconData release];
     if (self.iconURL) {
