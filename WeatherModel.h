@@ -19,7 +19,7 @@
 @property (nonatomic, retain) NSString* tempC;
 @property (nonatomic, retain) NSString* condition;
 @property (nonatomic, retain) NSString* iconURL;
-@property (readonly, nonatomic, retain) UIImage* iconData;
+@property (nonatomic, retain, readonly) UIImage* iconData;
 
 // Public method: formatTemperature
 -(NSString*) formatTemperature;
@@ -39,7 +39,7 @@
 @property (nonatomic, retain) NSString* lowT;
 @property (nonatomic, retain) NSString* condition;
 @property (nonatomic, retain) NSString* iconURL;
-@property (readonly, nonatomic, retain) UIImage* iconData;
+@property (nonatomic, retain, readonly) UIImage* iconData;
 
 -(id)initWithDate:(NSDate*)date1
             highT:(NSString*)highT1

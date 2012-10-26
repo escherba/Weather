@@ -37,7 +37,7 @@
 - (void)updateView;
 
 @property (nonatomic, retain) WeatherForecast *forecast;
-@property(nonatomic, retain) UIActivityIndicatorView *loadingActivityIndicator;
-@property(nonatomic,retain) NSString *locationName;
+@property (nonatomic, retain) UIActivityIndicatorView *loadingActivityIndicator;
+@property (nonatomic, retain) NSString *locationName;
 
 @end

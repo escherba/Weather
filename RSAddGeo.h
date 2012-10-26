@@ -25,6 +25,6 @@
 }
 
 @property (nonatomic, retain) NSString* selectedLocation;
-@property (nonatomic, assign) id <RSAddGeoDelegate> delegate;
+@property (nonatomic, assign) id <RSAddGeoDelegate> delegate; // don't retain delegates
 
 @end

@@ -105,6 +105,7 @@
     didUpdateToLocation:(CLLocation *)newLocation 
            fromLocation:(CLLocation *)oldLocation
 {
+    NSLog(@"didUpdateToLocation called");
     if (![self isValidLocation:newLocation withOldLocation:oldLocation]) {
         return;
     }
