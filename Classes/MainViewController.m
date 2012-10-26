@@ -17,12 +17,6 @@
 @synthesize loadingActivityIndicator;
 @synthesize locationName;
 
-- (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller
-{
-	//[self dismissModalViewControllerAnimated:YES];
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
 - (IBAction)showInfo:(id)sender {    
 	//[self presentModalViewController:flipsideController animated:YES];
     [self presentViewController:flipsideController animated:YES completion:nil];
@@ -53,6 +47,7 @@
 - (void)updateView {
 	
 	// City and Date
+    NSLog( @"Location name: %@", locationName );
 	nameLabel.text = locationName;
 	dateLabel.text = forecast.date;
    
@@ -76,7 +71,7 @@
 
     // flipside controller
     flipsideController = [[FlipsideViewController alloc] initWithNibName:@"FlipsideView" bundle:nil];
-	flipsideController.delegate = self;
+	flipsideController.delegate = self; // need FlipsideViewControllerDelegate in <> interface
 	flipsideController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
     
     weekdayFormatter = [[NSDateFormatter alloc] init];
@@ -111,7 +106,6 @@
 }
 */
 
-
 - (void)dealloc {
     [flipsideController release];
     
@@ -131,6 +125,19 @@
     [_tableView release];
 
 	[super dealloc];
+}
+
+# pragma mark - FlipsideViewControllerDelegate
+// The method below is required for this class to support
+// FlipsideViewControllerDelegate protocol. Supporting FlipsideViewControllerDelegate
+// protocol means that this class must respond to FlipsideViewControllerDelegate
+// messages which means it has to implement the method below. FlipsideViewController
+// keeps a pointer to an objet of this class and delegates to this class some of its
+// responsibilities -- those that are specified in the protocol.
+- (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller
+{
+	//[self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UITableViewDelegate methods

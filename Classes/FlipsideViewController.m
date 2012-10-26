@@ -25,6 +25,7 @@
     NSString* selectedLocation = controller.selectedLocation;
     if (selectedLocation) {
 
+        NSLog(@"Selected: %@", selectedLocation);
         // setting empty string for now
         [tableContents setObject:@"" forKey:selectedLocation];
         [sortedKeys addObject:selectedLocation];

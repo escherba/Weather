@@ -5,6 +5,19 @@
 //  Created by Eugene Scherba on 11/14/11.
 //  Copyright (c) 2011 Boston University. All rights reserved.
 //
+//  Implementation goal: a dictionary of dictionaries:
+//  {
+//     "44145598158d9d5d6bcd0b78ca77361b541fdde8" = {
+//        reference         = "CjQuAAAAi3jddRbuA6DNsXwmX761aVJenxxBBG-1Eyge6_y6CRh-raxieJTnuP6p9i9vBAB_EhAxaJvm0fndzhlaaZGFo8LdGhS1OQPrQhgBAVrCyenxh5MatKT_CA";
+//        lat               = -12.06666670;
+//        lng               = -75.21666669999999;
+//        url               = "https://maps.google.com/maps/place?q=Huancayo&ftid=0x910e964104fb82f1:0xf8e45b61c55982fa";
+//        description       = "Huancayo, Jun\U00edn, Peru";
+//        formatted_address = "Huancayo, Peru";
+//        name              = "Huancayo";
+//        vicinity          = "Huancayo";
+//     };
+//  }
 
 #import "JSONKit.h"
 #import "RSAddGeo.h"
@@ -242,11 +255,25 @@ didReceiveResponse:(NSURLResponse *)response
         return;
     }
     
-    [apiData release];
-    apiData = [[NSMutableArray alloc] init];
+    // release previous data stored and allocate new array
+    //[apiData release];
+    //apiData = [[NSMutableArray alloc] init];
+    [apiData removeAllObjects];
+    
     for (NSDictionary *item in predictions){
-        // data in the table are search results
-        [apiData addObject:[item objectForKey:@"description"]];
+        // Data in the table are search results.
+        // We only show localities, not countries or other types
+        int haveLocality = 0;
+        NSMutableArray *types = [item objectForKey:@"types"];
+        for (NSString *type in types) {
+            if ([type isEqualToString:@"locality"]) {
+                haveLocality = 1;
+                break;
+            }
+        }
+        if (haveLocality == 1) {
+            [apiData addObject:[item objectForKey:@"description"]];
+        }
     }
     
     // this is key here -- reload table view
