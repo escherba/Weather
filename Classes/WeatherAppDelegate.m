@@ -37,7 +37,12 @@
 	[forecast release];
 	
     // Add the main view controller's view to the window and display.
-    [self.window addSubview:mainViewController.view];
+    // http://stackoverflow.com/a/12398777/597371
+    // In order to prevent the error in debug area, "Applications are expected to have
+    // root view controller at the end of application launch", replacing the line below
+    // with the following:
+    //[self.window addSubview:mainViewController.view];
+    [self.window setRootViewController:mainViewController];
     [self.window makeKeyAndVisible];
     
     return YES;

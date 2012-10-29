@@ -19,9 +19,15 @@
     WeatherAppDelegate *appDelegate;
     RSAddGeo *geoAddController;
 
+    // for querying Google Places API
+    NSURL *theURL;
+    NSURLConnection *apiConnection;
+    NSMutableData *responseData;
+    NSMutableDictionary *processedData;
+    
+    NSString *_currentLocalityId;
     IBOutlet UITableView *_tableView;
     NSMutableDictionary *tableContents;
-    NSMutableArray *sortedKeys;
 }
 
 @property (nonatomic, retain) IBOutlet UIButton *addCity;
