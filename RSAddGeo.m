@@ -5,7 +5,7 @@
 //  Created by Eugene Scherba on 11/14/11.
 //  Copyright (c) 2011 Boston University. All rights reserved.
 //
-//  Implementation goal: a dictionary of dictionaries:
+//  Implementation goal: a dictionary of objects:
 //  {
 //     "44145598158d9d5d6bcd0b78ca77361b541fdde8" = {
 //        reference         = "CjQuAAAAi3jddRbuA6DNsXwmX761aVJenxxBBG-1Eyge6_y6CRh-raxieJTnuP6p9i9vBAB_EhAxaJvm0fndzhlaaZGFo8LdGhS1OQPrQhgBAVrCyenxh5MatKT_CA";
@@ -22,10 +22,36 @@
 #import "JSONKit.h"
 #import "RSAddGeo.h"
 
+@implementation RSLocality
+// Lifecycle methods
+-(id)initWithId:(NSString *)id1
+           reference: (NSString *) ref1
+           description:(NSString *)desc1;
+{
+    self = [super init];
+    if (self) {
+        apiId       = [id1 retain];
+        reference   = [ref1 retain];
+        description = [desc1 retain];
+    }
+    return self;
+}
+@synthesize apiId;
+@synthesize reference;
+@synthesize lat;
+@synthesize lng;
+@synthesize url;
+@synthesize description;
+@synthesize formatted_address;
+@synthesize name;
+@synthesize vicinity;
+@end
+
 @implementation RSAddGeo
 
 @synthesize delegate;
-@synthesize selectedLocation;
+
+#pragma mark - Controller lifecycle
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -39,15 +65,14 @@
 
 - (void)dealloc
 {
-    // properties
-    [apiData release];
-    
     // private variables
+    [theURL release];
     [apiConnection release];
     [responseData release];
+    [processedData release];
     [theURL release];
     
-    [self.selectedLocation release];
+    [_selectedLocality release];
     [super dealloc];
 }
 
@@ -63,7 +88,7 @@
 {
     [super viewDidLoad];
 
-    apiData = [[NSMutableArray alloc] initWithObjects:nil];
+    processedData = [[NSMutableArray alloc] initWithObjects:nil];
     [self.tableView reloadData];
     
 	// Do any additional setup after loading the view, typically from a nib.
@@ -76,8 +101,8 @@
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 
-    [apiData release];
-    apiData = nil;
+    [processedData release];
+    processedData = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -116,7 +141,7 @@
 
 //- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
 - (BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar {
-    if (!self.selectedLocation && !_cancelButtonClicked) {
+    if (!_selectedLocality && !_cancelButtonClicked) {
         [self.delegate geoAddControllerDidFinish:self];
     }
     return YES;
@@ -124,8 +149,8 @@
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar {
     _cancelButtonClicked = YES;
-    [self.selectedLocation release];
-    self.selectedLocation = nil;
+    [_selectedLocality release];
+    _selectedLocality = nil;
     [self.delegate geoAddControllerDidFinish:self];
 }
 
@@ -134,8 +159,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // acquire location name and dismiss modal view
-    [self.selectedLocation release];
-    self.selectedLocation = [[apiData objectAtIndex:indexPath.row] retain];
+    [_selectedLocality release];
+    _selectedLocality = [[processedData objectAtIndex:indexPath.row] retain];
     [self.delegate geoAddControllerDidFinish:self];
 }
 
@@ -147,7 +172,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [apiData count];
+    return [processedData count];
 }
 
 // Customize the appearance of table view cells.
@@ -163,7 +188,7 @@
 
     // Configure the cell.
     if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]) {
-        cell.textLabel.text = [apiData objectAtIndex:indexPath.row];
+        cell.textLabel.text = [[processedData objectAtIndex:indexPath.row] description];
     }
     return cell;
 }
@@ -180,8 +205,8 @@ shouldReloadTableForSearchString:(NSString *)searchString
 	responseData = [[NSMutableData data] retain];
     _cancelButtonClicked = NO;
     
-    [self.selectedLocation release];
-    self.selectedLocation = nil;
+    [_selectedLocality release];
+    _selectedLocality = nil;
     
     // Note: if you are using this code, please apply for your own id at Google Places API page
     theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=false&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [self.searchDisplayController.searchBar text]]];
@@ -201,8 +226,8 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
 	responseData = [[NSMutableData data] retain];
     _cancelButtonClicked = NO;
     
-    [self.selectedLocation release];
-    self.selectedLocation = nil;
+    [_selectedLocality release];
+    _selectedLocality = nil;
     
     // Note: if you are using this code, please apply for your own id at Google Places API page
     theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=false&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [self.searchDisplayController.searchBar text]]];
@@ -241,6 +266,7 @@ didReceiveResponse:(NSURLResponse *)response
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
+    // Deal with predictions returned by autocomplete API
     JSONDecoder* parser = [JSONDecoder decoder]; // autoreleased
     NSDictionary *data = [parser objectWithData:responseData];
     if (!data) {
@@ -256,9 +282,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     // release previous data stored and allocate new array
-    //[apiData release];
-    //apiData = [[NSMutableArray alloc] init];
-    [apiData removeAllObjects];
+    [processedData removeAllObjects];
     
     for (NSDictionary *item in predictions){
         // Data in the table are search results.
@@ -272,15 +296,19 @@ didReceiveResponse:(NSURLResponse *)response
             }
         }
         if (haveLocality == 1) {
-            [apiData addObject:[item objectForKey:@"description"]];
+            // at this point, store id, reference id, and description of locality
+            RSLocality *locality = [[RSLocality alloc] initWithId:[item objectForKey:@"id"] reference:[item objectForKey:@"reference"] description:[item objectForKey:@"description"]];
+            [processedData addObject:locality];
         }
     }
     
-    // this is key here -- reload table view
+    // reload table view
     if (self.searchDisplayController.searchResultsTableView.hidden == YES){
         self.searchDisplayController.searchResultsTableView.hidden = NO;
     }
     [self.searchDisplayController.searchResultsTableView reloadData];
+    
+    //cleanup
     [responseData release];
     responseData = nil;
 }

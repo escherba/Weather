@@ -10,6 +10,7 @@
 #import "WeatherAppDelegate.h"
 #import "FlipsideViewController.h"
 #import "RSAddGeo.h"
+#import "JSONKit.h"
 
 @implementation FlipsideViewController
 
@@ -22,17 +23,27 @@
 - (void)geoAddControllerDidFinish:(RSAddGeo *)controller
 {
     // capture controller.selectedLocation
-    NSString* selectedLocation = controller.selectedLocation;
-    if (selectedLocation) {
+    RSLocality* selectedLocality = controller.selectedLocality;
+    if (selectedLocality) {
 
-        NSLog(@"Selected: %@", selectedLocation);
         // setting empty string for now
-        [tableContents setObject:@"" forKey:selectedLocation];
-        [sortedKeys addObject:selectedLocation];
+        [tableContents setObject:@"" forKey:[selectedLocality description]];
+        [sortedKeys addObject:selectedLocality];
 
         NSArray *paths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:[_tableView numberOfRowsInSection:1] inSection:1]];
         [_tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationTop];
         [_tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
+
+        // Also place selectedLocality into a mutable dictionary
+        _currentLocalityId = [selectedLocality apiId];
+        [processedData setObject:selectedLocality forKey:_currentLocalityId];
+        
+        [responseData release];
+        responseData = [[NSMutableData data] retain];
+        
+        // Perform a details request to get Latitude and Longitude data
+        theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/details/json?reference=%@&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [selectedLocality reference]]];
+        apiConnection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:theURL] delegate:self startImmediately: YES];
     }
 	//[self dismissModalViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -51,6 +62,8 @@
     geoAddController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     geoAddController.delegate = self;
 
+    // TODO: may need to change the line below
+    processedData = [[NSMutableDictionary alloc] init];
     
     tableContents = [[NSMutableDictionary alloc] init];
     sortedKeys = [[NSMutableArray alloc] init];
@@ -69,6 +82,9 @@
     
     [tableContents release];
     [sortedKeys release];
+
+    [processedData release];
+    processedData = nil;
     
     _tableView = nil;
 }
@@ -87,7 +103,15 @@
 	return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 */
-- (void)dealloc {
+- (void)dealloc
+{
+    // private variables
+    [theURL release];
+    [apiConnection release];
+    [responseData release];
+    [processedData release];
+    [theURL release];
+    
     [geoAddController release];
     [_tableView release];
     [tableContents release];
@@ -120,6 +144,7 @@
 
 #pragma mark - UITableViewDelegate methods
 
+
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -139,6 +164,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
+    RSLocality *locality;
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -146,6 +172,7 @@
         cell.accessoryType = UITableViewCellAccessoryNone;
         switch(indexPath.section) {
             case 0:
+                // Current location
                 if (indexPath.row == 0) {
                     
                     // add a UISwitch control on the right
@@ -159,12 +186,16 @@
                 }
                 break;
             case 1:
-                cell.textLabel.text = [sortedKeys objectAtIndex:indexPath.row];
+                
+                // Other locations
+                locality = [sortedKeys objectAtIndex:indexPath.row];
+                cell.textLabel.text = [locality description];
                 break;
         }
     } else {
         if (indexPath.section == 1) {
-            cell.textLabel.text = [sortedKeys objectAtIndex:indexPath.row];
+            locality = [sortedKeys objectAtIndex:indexPath.row];
+            cell.textLabel.text = [locality description];
         }
     }
     return cell;
@@ -183,7 +214,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (indexPath.section == 1 && editingStyle == UITableViewCellEditingStyleDelete) {
         // remove the row
         NSInteger row = indexPath.row;
-        [tableContents removeObjectForKey:[sortedKeys objectAtIndex:row]];
+        RSLocality *locality = [sortedKeys objectAtIndex:indexPath.row];
+        [tableContents removeObjectForKey:[locality description]];
         [sortedKeys removeObjectAtIndex:row];
         [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
@@ -194,6 +226,67 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     return (indexPath.section == 1) 
     ? UITableViewCellEditingStyleDelete 
     : UITableViewCellEditingStyleNone;
+}
+
+
+#pragma mark - NSURLConnection delegate methods
+
+- (NSURLRequest *)connection:(NSURLConnection *)connection
+			 willSendRequest:(NSURLRequest *)request
+			redirectResponse:(NSURLResponse *)redirectResponse
+{
+	[theURL autorelease];
+	theURL = [[request URL] retain];
+	return request;
+}
+
+- (void)connection:(NSURLConnection *)connection
+didReceiveResponse:(NSURLResponse *)response
+{
+	[responseData setLength:0];
+}
+
+- (void)connection:(NSURLConnection *)connection
+    didReceiveData:(NSData *)data
+{
+	[responseData appendData:data];
+}
+
+- (void)connection:(NSURLConnection *)connection
+  didFailWithError:(NSError *)error
+{
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    // Deal with result returned by autocomplete API
+    JSONDecoder* parser = [JSONDecoder decoder]; // autoreleased
+    NSDictionary *data = [parser objectWithData:responseData];
+    if (!data) {
+        return;
+    }
+    NSString *status = [data objectForKey:@"status"];
+    if (!status || ![status isEqualToString:@"OK"]) {
+        return;
+    }
+    NSDictionary *result = [data objectForKey:@"result"];
+    if (!result) {
+        return;
+    }
+    
+    // id: _currentLocalityId
+    RSLocality *locality = [processedData objectForKey:_currentLocalityId];
+    locality.formatted_address = [result objectForKey:@"formatted_address"];
+    locality.name = [result objectForKey:@"name"];
+    locality.vicinity = [result objectForKey:@"vicinity"];
+    locality.url = [result objectForKey:@"url"];
+    NSDictionary *location = [[result objectForKey:@"geometry"] objectForKey:@"location"];
+    locality.lat = [location objectForKey:@"lat"];
+    locality.lng = [location objectForKey:@"lng"];
+
+    //cleanup
+    [responseData release];
+    responseData = nil;
 }
 
 @end
