@@ -54,9 +54,6 @@
 	[condition release];
     
     // release Days array
-    for (RSDay *rsDay in days) {
-        [rsDay release];
-    }
 	[days release];
     
     // call super

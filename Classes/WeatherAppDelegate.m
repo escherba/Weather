@@ -46,7 +46,6 @@
     //[self.window addSubview:mainViewController.view];
     [self.window setRootViewController:mainViewController];
     [self.window makeKeyAndVisible];
-    
     return YES;
 }
 
@@ -119,15 +118,16 @@
     NSLog(@"=> horiz: %f, vert: %f", [newLocation horizontalAccuracy],[newLocation verticalAccuracy]);
     //NSLog(@"Location: %@", [newLocation description]);
     if (newLocation != oldLocation) {
-        
+
         // start spinning loading indicator
         //[self.mainViewController.loadingActivityIndicator startAnimating];
         FindNearbyPlace *find = [[FindNearbyPlace alloc] init];
-        NSString *latitude = [NSString stringWithFormat:@"%f",
-                              newLocation.coordinate.latitude];
-        NSString *longitude = [NSString stringWithFormat:@"%f",
-                               newLocation.coordinate.longitude];
-        [find queryServiceWithLat:latitude andLong:longitude];
+        //NSString *latitude = [NSString stringWithFormat:@"%f", newLocation.coordinate.latitude];
+        //NSString *longitude = [NSString stringWithFormat:@"%f", newLocation.coordinate.longitude];
+        //[find queryServiceWithLat:latitude andLong:longitude];
+        [find queryServiceWithCoord:newLocation.coordinate];
+        
+        //TODO: check if it is needed to release FindNearbyPlace object here...
     }
 }
 

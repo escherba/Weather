@@ -33,7 +33,7 @@
 	[super viewDidLoad];
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
 
-    // restore user selections
+    // restore user selections -- important -- do this before setupPage is called
     modelArray = [[NSMutableArray alloc] init];
     NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
     NSData *dataRepresentingSavedArray = [currentDefaults objectForKey:@"localities"];
@@ -52,9 +52,12 @@
         // default locality is San Francisco, CA
         RSLocality* defaultLocality = [[RSLocality alloc] initWithId:@"1b9ea3c094d3ac23c9a3afa8cd4d8a41f05de50a" reference:@"CkQ4AAAAtQXounq6fLeQifuqKBwOqg2lBXw3e14F2tpYq6Wq4aVEg8ntTYYm7SgoaJoSuJWaKqihCKxD-q4mqEKxpSXJ7RIQMYHFzmgd1BlKqSIiRvT_FRoUFhM0AAxFRnbO8S7QlZEjVa-a7aM" description:@"San Francisco, CA, United States"];
         // reference and id are not reliable, so we also add longitude and latitude
-        defaultLocality.lat = @"37.777940030048796";
-        defaultLocality.lng = @"-122.41945266723633";
+        CLLocationCoordinate2D defaultCoord;
+        defaultCoord.latitude = 37.777940030048796;
+        defaultCoord.longitude = -122.41945266723633;
+        defaultLocality.coord = defaultCoord;
         [modelArray addObject:defaultLocality];
+        [defaultLocality release];
     }
     
     // flipside controller
@@ -90,9 +93,9 @@
     [pageControl release];
     
     // free up controller array
-    for (RSLocalPageController* controller in controllers) {
-        [controller release];
-    }
+    //for (RSLocalPageController* controller in controllers) {
+    //    [controller release];
+    //}
     [controllers release];
 	[super dealloc];
 }
@@ -112,21 +115,21 @@
     NSUInteger numberOfViews = [modelArray count];
     controllers = [[NSMutableArray alloc] initWithCapacity:0];
     NSUInteger i = 0;
+    
+    CGSize viewFrameSize = self.view.frame.size;
     for (RSLocality* locality in modelArray) {
-        CGFloat xOrigin = i * self.view.frame.size.width;
+        CGFloat xOrigin = i * viewFrameSize.width;
         
-        RSLocalPageController *controller =
-            [[RSLocalPageController alloc] initWithNibName:nil bundle:nil];
+        RSLocalPageController *controller = [[RSLocalPageController alloc] initWithNibName:nil bundle:nil];
         NSLog(@"Adding locality");
         controller.locality = locality;
-        controller.view.frame =
-            CGRectMake(xOrigin, 0, self.view.frame.size.width, self.view.frame.size.height);
+        controller.view.frame = CGRectMake(xOrigin, 0, viewFrameSize.width, viewFrameSize.height);
         [scrollView addSubview:controller.view];
         [controllers addObject:controller];
         [controller release];
         i++;
     }
-    scrollView.contentSize = CGSizeMake(self.view.frame.size.width * numberOfViews, self.view.frame.size.height);
+    scrollView.contentSize = CGSizeMake(viewFrameSize.width * numberOfViews, viewFrameSize.height);
     [self.view addSubview:scrollView];
     [scrollView release];
     
@@ -135,6 +138,22 @@
 }
 
 # pragma mark - FlipsideViewControllerDelegate
+- (void)addPageWithLocality:(RSLocality*)locality {
+    CGSize viewFrameSize = self.view.frame.size;
+    CGFloat xOrigin = scrollView.contentSize.width;
+    RSLocalPageController *controller = [[RSLocalPageController alloc] initWithNibName:nil bundle:nil];
+    NSLog(@"Adding locality");
+    controller.locality = locality;
+    controller.view.frame = CGRectMake(xOrigin, 0, viewFrameSize.width, viewFrameSize.height);
+    [scrollView addSubview:controller.view];
+    [controllers addObject:controller];
+    [controller release];
+    
+    NSUInteger numberOfViews = [modelArray count];
+    scrollView.contentSize = CGSizeMake(viewFrameSize.width * numberOfViews, viewFrameSize.height);
+    pageControl.numberOfPages = numberOfViews;
+}
+
 // The method below is required for this class to support
 // FlipsideViewControllerDelegate protocol. Supporting FlipsideViewControllerDelegate
 // protocol means that this class must respond to FlipsideViewControllerDelegate

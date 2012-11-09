@@ -47,7 +47,7 @@
     [self.view addSubview:_tableView];
     
     NSLog(@"Calling refresh view to show weather");
-    [self refreshView];
+    //[self refreshView];
 }
 
 - (void)didReceiveMemoryWarning
@@ -57,6 +57,9 @@
 }
 
 - (void)dealloc {
+    
+    NSLog(@"Releasing observer");
+    [self.locality removeObserver:self forKeyPath:@"coord" context:self];
     
     [weekdayFormatter release];
     //[locationName release];
@@ -78,14 +81,35 @@
 #pragma mark - custom methods
 
 - (IBAction)refreshView {
-    
 	[loadingActivityIndicator startAnimating];
-    CLLocationDegrees lat = [locality.lat doubleValue];
-    CLLocationDegrees lng = [locality.lng doubleValue];
-    CLLocation* defaultLocation = [[CLLocation alloc] initWithLatitude:lat longitude:lng];
-    [forecast queryService:[defaultLocation coordinate]];
-    [defaultLocation release];
-    NSLog(@"Finished querying lat:%f lng:%f", lat, lng);
+    [forecast queryService:locality.coord];
+}
+
+#pragma mark - Key-Value-Observing
+// override setter so that we register observing method whenever locality is added
+-(void)setLocality:(RSLocality *)localityValue
+{
+    if (localityValue != locality)
+    {
+        [localityValue retain];
+        [locality release];
+        
+        [localityValue addObserver:self
+            forKeyPath:@"coord"
+                options:NSKeyValueObservingOptionNew
+                    context:self];
+        
+        locality = localityValue;
+    }
+}
+
+// this method should be called when coordinates are added/updated
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"coord"]) {
+        NSLog(@">>>> Coordinates changed, observer called!");
+        [self refreshView];
+    }
 }
 
 #pragma mark - WeatherForecastDelegate method

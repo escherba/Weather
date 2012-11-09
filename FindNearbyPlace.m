@@ -21,7 +21,7 @@
 // This is the only public method in this class
 // URL is built-in for now -- consider adding ability to use different URLs
 //
--(void)queryServiceWithLat:(NSString *)latitude andLong:(NSString *)longitude
+-(void)queryServiceWithCoord:(CLLocationCoordinate2D)coord
 {
     appDelegate = (WeatherAppDelegate *)[[UIApplication sharedApplication] delegate];
     responseData = [[NSMutableData data] retain];
@@ -30,8 +30,8 @@
     // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.8015957,-122.4735831&rankby=distance&types=establishment&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc
     //
     // http://maps.googleapis.com/maps/api/geocode/json?latlng=37.8015957,-122.4735831&sensor=true&types=locality
-    NSString *url = [NSString stringWithFormat:@"http://ws.geonames.org/findNearbyPlaceNameJSON?lat=%@&lng=%@",
-                     latitude, longitude];
+    NSString *url = [NSString stringWithFormat:@"http://ws.geonames.org/findNearbyPlaceNameJSON?lat=%f&lng=%f",
+                     coord.latitude, coord.longitude];
     theURL = [[NSURL URLWithString:url] retain];
     NSURLRequest *request = [NSURLRequest requestWithURL:theURL];
     [[NSURLConnection alloc] initWithRequest:request delegate:self];
@@ -54,9 +54,8 @@
     //[[NSString alloc] initWithBytes:[responseData bytes] length:[responseData length] encoding:NSUTF8StringEncoding];
     
     // get content using JSONKit
-    JSONDecoder *parser = [JSONDecoder decoder]; // autoreleased
-    NSDictionary *firstLocation
-    = [[[parser objectWithData:responseData] objectForKey:@"geonames"] objectAtIndex:0];
+    //JSONDecoder *parser = [JSONDecoder decoder]; // autoreleased
+    //NSDictionary *firstLocation = [[[parser objectWithData:responseData] objectForKey:@"geonames"] objectAtIndex:0];
     
     // set location
     //appDelegate.mainViewController.locationName

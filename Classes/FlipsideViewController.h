@@ -42,6 +42,7 @@
 // A delegate of FlipsideViewController must implement the following protocol:
 @protocol FlipsideViewControllerDelegate
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller;
+- (void)addPageWithLocality:(RSLocality*)locality;
 @property (nonatomic, retain) NSMutableArray *modelArray;
 @end
 
