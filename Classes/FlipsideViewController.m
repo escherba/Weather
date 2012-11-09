@@ -17,38 +17,8 @@
 @synthesize addCity;
 @synthesize delegate;
 @synthesize tableContents;
-@synthesize sortedKeys;
 
-
-- (void)geoAddControllerDidFinish:(RSAddGeo *)controller
-{
-    // capture controller.selectedLocation
-    RSLocality* selectedLocality = controller.selectedLocality;
-    if (selectedLocality) {
-
-        // setting empty string for now
-        [tableContents setObject:@"" forKey:[selectedLocality description]];
-        [sortedKeys addObject:selectedLocality];
-
-        NSArray *paths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:[_tableView numberOfRowsInSection:1] inSection:1]];
-        [_tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationTop];
-        [_tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
-
-        // Also place selectedLocality into a mutable dictionary
-        _currentLocalityId = [selectedLocality apiId];
-        [processedData setObject:selectedLocality forKey:_currentLocalityId];
-        
-        [responseData release];
-        responseData = [[NSMutableData data] retain];
-        
-        // Perform a details request to get Latitude and Longitude data
-        theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/details/json?reference=%@&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [selectedLocality reference]]];
-        apiConnection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:theURL] delegate:self startImmediately: YES];
-    }
-	//[self dismissModalViewControllerAnimated:YES];
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
+#pragma mark - Lifecycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor viewFlipsideBackgroundColor];
@@ -62,31 +32,20 @@
     geoAddController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     geoAddController.delegate = self;
 
-    // TODO: may need to change the line below
-    processedData = [[NSMutableDictionary alloc] init];
-    
+    // initialize model dictionary by using model array in the delegate object
+    modelDict = [[NSMutableDictionary alloc] init];
+    NSMutableArray *modelArray = self.delegate.modelArray;
+    for (RSLocality* locality in modelArray) {
+        [modelDict setObject:locality forKey:[locality apiId]];
+    }
+
     tableContents = [[NSMutableDictionary alloc] init];
-    sortedKeys = [[NSMutableArray alloc] init];
+    //modelArray = [[NSMutableArray alloc] init];
     
     _tableView.dataSource = self;
     _tableView.delegate = self;
     //[_tableView setEditing: YES];
     [self.view addSubview:_tableView];
-}
-
-- (void)viewDidUnload {
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
-    [geoAddController release];
-    geoAddController = nil;
-    
-    [tableContents release];
-    [sortedKeys release];
-
-    [processedData release];
-    processedData = nil;
-    
-    _tableView = nil;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -109,14 +68,44 @@
     [theURL release];
     [apiConnection release];
     [responseData release];
-    [processedData release];
+    [modelDict release];
     [theURL release];
     
     [geoAddController release];
     [_tableView release];
     [tableContents release];
-    [sortedKeys release];
+    //[modelArray release];
     [super dealloc];
+}
+
+#pragma mark - Internals
+- (void)geoAddControllerDidFinish:(RSAddGeo *)controller
+{
+    // capture controller.selectedLocation
+    RSLocality* selectedLocality = controller.selectedLocality;
+    if (selectedLocality) {
+        
+        // setting empty string for now
+        [tableContents setObject:@"" forKey:[selectedLocality description]];
+        [self.delegate.modelArray addObject:selectedLocality];
+        
+        NSArray *paths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:[_tableView numberOfRowsInSection:1] inSection:1]];
+        [_tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationTop];
+        [_tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
+        
+        // Also place selectedLocality into a mutable dictionary
+        _currentLocalityId = [selectedLocality apiId];
+        [modelDict setObject:selectedLocality forKey:_currentLocalityId];
+        
+        [responseData release];
+        responseData = [[NSMutableData data] retain];
+        
+        // Perform a details request to get Latitude and Longitude data
+        theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/details/json?reference=%@&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [selectedLocality reference]]];
+        apiConnection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:theURL] delegate:self startImmediately: YES];
+    }
+	//[self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - actions
@@ -157,7 +146,7 @@
         // first section only displays switch to toggle location tracking
         return 1;
     } else {
-        return [sortedKeys count];
+        return [self.delegate.modelArray count];
     }
 }
 
@@ -188,13 +177,13 @@
             case 1:
                 
                 // Other locations
-                locality = [sortedKeys objectAtIndex:indexPath.row];
+                locality = [self.delegate.modelArray objectAtIndex:indexPath.row];
                 cell.textLabel.text = [locality description];
                 break;
         }
     } else {
         if (indexPath.section == 1) {
-            locality = [sortedKeys objectAtIndex:indexPath.row];
+            locality = [self.delegate.modelArray objectAtIndex:indexPath.row];
             cell.textLabel.text = [locality description];
         }
     }
@@ -214,9 +203,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (indexPath.section == 1 && editingStyle == UITableViewCellEditingStyleDelete) {
         // remove the row
         NSInteger row = indexPath.row;
-        RSLocality *locality = [sortedKeys objectAtIndex:indexPath.row];
+        RSLocality *locality = [self.delegate.modelArray objectAtIndex:indexPath.row];
         [tableContents removeObjectForKey:[locality description]];
-        [sortedKeys removeObjectAtIndex:row];
+        [self.delegate.modelArray removeObjectAtIndex:row];
         [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
@@ -275,7 +264,7 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     // id: _currentLocalityId
-    RSLocality *locality = [processedData objectForKey:_currentLocalityId];
+    RSLocality *locality = [modelDict objectForKey:_currentLocalityId];
     locality.formatted_address = [result objectForKey:@"formatted_address"];
     locality.name = [result objectForKey:@"name"];
     locality.vicinity = [result objectForKey:@"vicinity"];

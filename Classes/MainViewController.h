@@ -11,33 +11,35 @@
 #import "WeatherForecast.h"
 
 
-@interface MainViewController : UIViewController <FlipsideViewControllerDelegate, UITableViewDelegate, UITableViewDataSource> {
+@interface MainViewController : UIViewController <FlipsideViewControllerDelegate, UIScrollViewDelegate> {
 
-    FlipsideViewController *flipsideController;
-    
-    NSDateFormatter *weekdayFormatter;
-    WeatherForecast *forecast;
+    // app delegate
     WeatherAppDelegate *appDelegate;
-    NSString *locationName;
-    IBOutlet UIActivityIndicatorView *loadingActivityIndicator;
     
-    IBOutlet UILabel *nameLabel;
-    IBOutlet UILabel *dateLabel;
-    
-    IBOutlet UIImageView *nowImage;
-    IBOutlet UILabel *nowTempLabel;
-    IBOutlet UILabel *nowHumidityLabel;
-    IBOutlet UILabel *nowWindLabel;
-    IBOutlet UILabel *nowConditionLabel;
+    // To be used when scrolls originate from the UIPageControl
+    BOOL pageControlUsed;
 
-    IBOutlet UITableView *_tableView;
+    // objects that need to be released on dealloc
+    NSMutableArray* controllers; // holds RSLocalPageController objects
+    FlipsideViewController *flipsideController;
+    UIScrollView *scrollView;
+    UIPageControl *pageControl;
 }
 
-- (IBAction)refreshView:(id) sender;
-- (void)updateView;
+@property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, retain) IBOutlet UIPageControl *pageControl;
 
-@property (nonatomic, retain) WeatherForecast *forecast;
-@property (nonatomic, retain) UIActivityIndicatorView *loadingActivityIndicator;
-@property (nonatomic, retain) NSString *locationName;
+@property (nonatomic, retain) NSMutableArray *modelArray;
+
+/* TODO: implement shake-to-refresh */
+
+/* for Info button */
+- (IBAction)showInfo:(id)sender;
+
+/* for pageControl */
+- (IBAction)changePage:(id)sender;
+
+/* internal */
+- (void)setupPage;
 
 @end

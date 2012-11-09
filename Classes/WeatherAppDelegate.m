@@ -5,6 +5,7 @@
 //  Created by Eugene Scherba on 1/11/11.
 //  Copyright 2011 Boston University. All rights reserved.
 //
+//  Also serves as a delegate to CLLocationManager
 
 #import "WeatherAppDelegate.h"
 #import "MainViewController.h"
@@ -31,10 +32,11 @@
     self.locationManager.delegate = self;
     locationManagerStartDate = [[NSDate date] retain];
     
+    // TODO: this should be initialized on per-page basis
     // Override point for customization after application launch.  
-	WeatherForecast *forecast = [[WeatherForecast alloc] init];
-	self.mainViewController.forecast = forecast;
-	[forecast release];
+	//WeatherForecast *forecast = [[WeatherForecast alloc] init];
+	//self.mainViewController.forecast = forecast;
+	//[forecast release];
 	
     // Add the main view controller's view to the window and display.
     // http://stackoverflow.com/a/12398777/597371
@@ -119,7 +121,7 @@
     if (newLocation != oldLocation) {
         
         // start spinning loading indicator
-        [self.mainViewController.loadingActivityIndicator startAnimating];
+        //[self.mainViewController.loadingActivityIndicator startAnimating];
         FindNearbyPlace *find = [[FindNearbyPlace alloc] init];
         NSString *latitude = [NSString stringWithFormat:@"%f",
                               newLocation.coordinate.latitude];

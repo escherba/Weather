@@ -14,7 +14,12 @@
 -(void)geoAddControllerDidFinish:(RSAddGeo *)controller;
 @end
 
-@interface RSLocality : NSObject
+// have this object implement NSCoding protocol for saving with NSUserDefaults;
+// implement initWithCoder and encodeWithCoder methods.
+@interface RSLocality : NSObject <NSCoding>
+- (id) initWithCoder: (NSCoder *)coder;
+- (void) encodeWithCoder: (NSCoder *)coder;
+
 // this initialization occurs before details request is sent
 -(id)initWithId:(NSString *)id1
       reference:(NSString *)ref1

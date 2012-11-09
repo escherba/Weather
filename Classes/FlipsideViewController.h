@@ -23,7 +23,7 @@
     NSURL *theURL;
     NSURLConnection *apiConnection;
     NSMutableData *responseData;
-    NSMutableDictionary *processedData;
+    NSMutableDictionary *modelDict;
     
     NSString *_currentLocalityId;
     IBOutlet UITableView *_tableView;
@@ -32,7 +32,6 @@
 
 @property (nonatomic, retain) IBOutlet UIButton *addCity;
 @property (nonatomic, retain) NSMutableDictionary *tableContents;
-@property (nonatomic, retain) NSMutableArray *sortedKeys;
 @property (nonatomic, assign) id <FlipsideViewControllerDelegate> delegate; // don't retain delegates
 
 - (IBAction)addCityTouchDown;
@@ -43,5 +42,6 @@
 // A delegate of FlipsideViewController must implement the following protocol:
 @protocol FlipsideViewControllerDelegate
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller;
+@property (nonatomic, retain) NSMutableArray *modelArray;
 @end
 
