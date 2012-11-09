@@ -17,7 +17,6 @@
     NSURL *theURL;
 }
 
--(void)queryServiceWithLat:(NSString *)latitude
-                   andLong:(NSString*)longitude;
+-(void)queryServiceWithCoord:(CLLocationCoordinate2D)coord;
 
 @end

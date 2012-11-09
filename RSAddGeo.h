@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreLocation/CoreLocation.h>
 
 @class RSAddGeo;
 
@@ -26,13 +27,12 @@
     description:(NSString *)desc1;
 @property (nonatomic, retain) NSString* apiId;
 @property (nonatomic, retain) NSString* reference;
-@property (nonatomic, retain) NSString* lat;
-@property (nonatomic, retain) NSString* lng;
 @property (nonatomic, retain) NSString* url;
 @property (nonatomic, retain) NSString* description;
 @property (nonatomic, retain) NSString* formatted_address;
 @property (nonatomic, retain) NSString* name;
 @property (nonatomic, retain) NSString* vicinity;
+@property (nonatomic, assign) CLLocationCoordinate2D coord;
 @end
 
 @interface RSAddGeo : UITableViewController <UISearchDisplayDelegate, UITableViewDelegate, UISearchBarDelegate> {

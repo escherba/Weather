@@ -40,11 +40,10 @@
     }
 
     tableContents = [[NSMutableDictionary alloc] init];
-    //modelArray = [[NSMutableArray alloc] init];
     
     _tableView.dataSource = self;
     _tableView.delegate = self;
-    //[_tableView setEditing: YES];
+    [_tableView setEditing: YES];
     [self.view addSubview:_tableView];
 }
 
@@ -74,7 +73,7 @@
     [geoAddController release];
     [_tableView release];
     [tableContents release];
-    //[modelArray release];
+
     [super dealloc];
 }
 
@@ -87,7 +86,11 @@
         
         // setting empty string for now
         [tableContents setObject:@"" forKey:[selectedLocality description]];
+        
+        // add location to model array and also append a page to the view
+        // TODO: consider joining the two methods into one delegate call
         [self.delegate.modelArray addObject:selectedLocality];
+        [self.delegate addPageWithLocality:selectedLocality];
         
         NSArray *paths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:[_tableView numberOfRowsInSection:1] inSection:1]];
         [_tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationTop];
@@ -270,9 +273,11 @@ didReceiveResponse:(NSURLResponse *)response
     locality.vicinity = [result objectForKey:@"vicinity"];
     locality.url = [result objectForKey:@"url"];
     NSDictionary *location = [[result objectForKey:@"geometry"] objectForKey:@"location"];
-    locality.lat = [location objectForKey:@"lat"];
-    locality.lng = [location objectForKey:@"lng"];
-
+    CLLocationCoordinate2D coord2d;
+    coord2d.latitude = [[location objectForKey:@"lat"] doubleValue];
+    coord2d.longitude = [[location objectForKey:@"lng"] doubleValue];
+    locality.coord = coord2d;
+    
     //cleanup
     [responseData release];
     responseData = nil;
