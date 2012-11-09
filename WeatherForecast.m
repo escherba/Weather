@@ -7,17 +7,14 @@
 //
 
 #import <CoreLocation/CoreLocation.h>
-#import "WeatherForecast.h"
-#import "MainViewController.h"
 #import "JSONKit.h"
+#import "WeatherForecast.h"
 #import "WeatherModel.h"
-
 
 @implementation WeatherForecast
 
 //@synthesize location;
 @synthesize date;
-
 @synthesize condition;
 @synthesize days;
 
@@ -28,9 +25,8 @@
 // Note that key to the web service is hard-coded here.
 //
 - (void)queryService:(CLLocationCoordinate2D)coord
-  withParent:(UIViewController *)controller
 {
-	viewController = (MainViewController *)controller;
+	//viewController = (RSLocalPageController *)controller;
 	[responseData release];
 	responseData = [[NSMutableData data] retain];
 	
@@ -42,21 +38,28 @@
 	theURL = [NSURL URLWithString:url];
 	NSURLRequest *request = [NSURLRequest requestWithURL:theURL];
 	[[[NSURLConnection alloc] initWithRequest:request delegate:self] autorelease];
+    NSLog(@"request sent");
 }
 
 
 // Lifecycle method: dealloc
 - (void)dealloc
 {
-	[viewController release];
+	//[viewController release];
 	[responseData release];
 	[theURL release];
     // [location release];
 	[date release];
     // release RSCondition object
 	[condition release];
+    
     // release Days array
-	[self.days release];
+    for (RSDay *rsDay in days) {
+        [rsDay release];
+    }
+	[days release];
+    
+    // call super
 	[super dealloc];
 }
 
@@ -65,6 +68,7 @@
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
+    NSLog(@"Connection did finish loading");
     // get content using JSONKit
     JSONDecoder *parser = [JSONDecoder decoder]; // autoreleased
     NSDictionary *data
@@ -79,22 +83,20 @@
 	//self.location = [[[data objectForKey:@"request"] objectAtIndex:0] objectForKey:@"query"];
     
 	// Current Conditions /////////////////////////////////////////
-    RSCondition* tmpCondition = [[RSCondition alloc] init];
-    
+    RSCondition* rsCondition = [[RSCondition alloc] init];
     NSDictionary *current_condition = [[data objectForKey:@"current_condition"] objectAtIndex:0];
     if (current_condition) {
-        tmpCondition.iconURL
+        rsCondition.iconURL
         = [[[current_condition objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"];
-        tmpCondition.condition
+        rsCondition.condition
         = [[[current_condition objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"];
-        tmpCondition.tempC = [current_condition objectForKey:@"temp_C"];
-        tmpCondition.tempF = [current_condition objectForKey:@"temp_F"];
-        tmpCondition.humidity = [current_condition objectForKey:@"humidity"];
-        tmpCondition.wind = [current_condition objectForKey:@"windspeedMiles"];
+        rsCondition.tempC = [current_condition objectForKey:@"temp_C"];
+        rsCondition.tempF = [current_condition objectForKey:@"temp_F"];
+        rsCondition.humidity = [current_condition objectForKey:@"humidity"];
+        rsCondition.wind = [current_condition objectForKey:@"windspeedMiles"];
     }
-    
     [self.condition release];
-    condition = tmpCondition;
+    condition = rsCondition;
     
 	// 5-day forecast ////////////////////////////////////////
     NSMutableArray* tmpDays = [[NSMutableArray alloc] initWithObjects:nil];
@@ -105,9 +107,9 @@
     if (forecast) {
         for (NSDictionary *node in forecast) {
             NSDate *dayDate = [dateFormatter dateFromString:[node objectForKey:@"date"]];
-            RSDay *day = [[RSDay alloc] initWithDate:dayDate highT:[node objectForKey:@"tempMaxF"] lowT:[node objectForKey:@"tempMinF"] condition:[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"] iconURL:[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"]];
-            [tmpDays addObject:day];
-            [day release];
+            RSDay *rsDay = [[RSDay alloc] initWithDate:dayDate highT:[node objectForKey:@"tempMaxF"] lowT:[node objectForKey:@"tempMinF"] condition:[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"] iconURL:[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"]];
+            [tmpDays addObject:rsDay];
+            [rsDay release];
         }
 	}
     
@@ -118,7 +120,8 @@
     [responseData release];
     responseData = nil;
     
-	[viewController updateView];
+    NSLog(@"Notifying delegate that forecast had finished downloading");
+	[self.delegate weatherForecastDidFinish:self];
 }
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection

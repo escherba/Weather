@@ -7,16 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
 #import "WeatherModel.h"
 
-@class MainViewController;
+@class WeatherForecast;
 
+@protocol WeatherForecastDelegate
+-(void)weatherForecastDidFinish:(WeatherForecast *)sender;
+@end
 
 @interface WeatherForecast : NSObject {
-
-	// Parent View Controller
-	MainViewController *viewController;
-	
 	// Google Weather Service
 	NSMutableData *responseData;
 	NSURL *theURL;
@@ -27,8 +27,9 @@
 @property (nonatomic, retain) RSCondition *condition;
 @property (nonatomic, retain) NSMutableArray *days;
 
+@property (nonatomic, assign) id <WeatherForecastDelegate> delegate; // don't retain delegates
+
 // Public method: queryService
-- (void)queryService:(CLLocationCoordinate2D)coord
-        withParent:(UIViewController *)controller;
+- (void)queryService:(CLLocationCoordinate2D)coord;
 
 @end

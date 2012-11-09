@@ -10,18 +10,16 @@
 #import "MainViewController.h"
 #import "WeatherAppDelegate.h"
 #import "WeatherModel.h"
+#import "RSLocalPageController.h"
+#import "RSAddGeo.h"
 
 @implementation MainViewController
 
-@synthesize forecast;
-@synthesize loadingActivityIndicator;
-@synthesize locationName;
+@synthesize modelArray;
+@synthesize scrollView;
+@synthesize pageControl;
 
-- (IBAction)showInfo:(id)sender {    
-	//[self presentModalViewController:flipsideController animated:YES];
-    [self presentViewController:flipsideController animated:YES completion:nil];
-}
-
+#pragma mark - Lifecycle
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -30,73 +28,46 @@
 	// Release any cached data, images, etc. that aren't in use.
 }
 
-- (IBAction)refreshView:(id)sender {
-	[loadingActivityIndicator startAnimating];
-    if ( [appDelegate.defaults objectForKey:@"checkLocation"] ) {
-        //[forecast queryService:[[appDelegate.locationManager location] coordinate] withParent:self];
-        CLLocation* defaultLocation = [[CLLocation alloc] initWithLatitude:42.500453028125584 longitude:-71.0595703125];
-        [forecast queryService:[defaultLocation coordinate] withParent:self];
-        [defaultLocation release];
-    } else {
-        CLLocation* defaultLocation = [[CLLocation alloc] initWithLatitude:42.500453028125584 longitude:-71.0595703125];
-        [forecast queryService:[defaultLocation coordinate] withParent:self];
-        [defaultLocation release];
-    }
-}
-
-- (void)updateView {
-	
-	// City and Date
-    NSLog( @"Location name: %@", locationName );
-	nameLabel.text = locationName;
-	dateLabel.text = forecast.date;
-   
-	// Now
-	nowTempLabel.text = [forecast.condition formatTemperature];
-	nowHumidityLabel.text = forecast.condition.humidity;
-	nowWindLabel.text = forecast.condition.wind;
-	nowConditionLabel.text = forecast.condition.condition;
-	nowImage.image = forecast.condition.iconData;
-
-    [_tableView reloadData];
-
-	[loadingActivityIndicator stopAnimating];
-}
-
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	[super viewDidLoad];
-    locationName = [[NSString alloc] init];
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
 
+    // restore user selections
+    modelArray = [[NSMutableArray alloc] init];
+    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+    NSData *dataRepresentingSavedArray = [currentDefaults objectForKey:@"localities"];
+    if (dataRepresentingSavedArray != nil) {
+        NSArray *oldSavedArray = [NSKeyedUnarchiver unarchiveObjectWithData:dataRepresentingSavedArray];
+        if (oldSavedArray != nil) {
+            modelArray = [[NSMutableArray alloc] initWithArray:oldSavedArray];
+        } else {
+            modelArray = [[NSMutableArray alloc] init];
+        }
+    }
+    
+    // if don't have any saved objects, use default
+    NSUInteger numObjects = [modelArray count];
+    if (numObjects < 1) {
+        // default locality is San Francisco, CA
+        RSLocality* defaultLocality = [[RSLocality alloc] initWithId:@"1b9ea3c094d3ac23c9a3afa8cd4d8a41f05de50a" reference:@"CkQ4AAAAtQXounq6fLeQifuqKBwOqg2lBXw3e14F2tpYq6Wq4aVEg8ntTYYm7SgoaJoSuJWaKqihCKxD-q4mqEKxpSXJ7RIQMYHFzmgd1BlKqSIiRvT_FRoUFhM0AAxFRnbO8S7QlZEjVa-a7aM" description:@"San Francisco, CA, United States"];
+        // reference and id are not reliable, so we also add longitude and latitude
+        defaultLocality.lat = @"37.777940030048796";
+        defaultLocality.lng = @"-122.41945266723633";
+        [modelArray addObject:defaultLocality];
+    }
+    
     // flipside controller
     flipsideController = [[FlipsideViewController alloc] initWithNibName:@"FlipsideView" bundle:nil];
 	flipsideController.delegate = self; // need FlipsideViewControllerDelegate in <> interface
 	flipsideController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-    
-    weekdayFormatter = [[NSDateFormatter alloc] init];
-    [weekdayFormatter setDateFormat: @"EEEE"];
-    
-    _tableView.dataSource = self;
-    _tableView.delegate = self;
-    [self.view addSubview:_tableView];
+
+    [self setupPage];
 }
 
-- (void)viewDidUnload {
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
-    [flipsideController release];
-    flipsideController = nil;
-    
-    [super viewDidUnload];
-    [locationName release];
-    [weekdayFormatter release];
-    _tableView = nil;
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [self refreshView:self];
-}
+//- (void)viewDidAppear:(BOOL)animated {
+//    [self refreshView:self];
+//}
 
 /*
 // Override to allow orientations other than the default portrait orientation.
@@ -107,24 +78,60 @@
 */
 
 - (void)dealloc {
-    [flipsideController release];
+    // save user selections
+    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+    [currentDefaults setObject:[NSKeyedArchiver archivedDataWithRootObject:modelArray] forKey:@"localities"];
+    [currentDefaults synchronize];
     
-    [weekdayFormatter release];
-    [locationName release];
-	[loadingActivityIndicator release];
-	
-	[nameLabel release];
-	[dateLabel release];
-	
-	[nowImage release];
-	[nowTempLabel release];
-	[nowHumidityLabel release];
-	[nowWindLabel release];
-	[nowConditionLabel release];
+    // viewDidUnload deprecated in iOS6
+    [flipsideController release];
 
-    [_tableView release];
-
+    [scrollView release];
+    [pageControl release];
+    
+    // free up controller array
+    for (RSLocalPageController* controller in controllers) {
+        [controller release];
+    }
+    [controllers release];
 	[super dealloc];
+}
+
+# pragma mark - Info button
+- (IBAction)showInfo:(id)sender {
+	//[self presentModalViewController:flipsideController animated:YES];
+    [self presentViewController:flipsideController animated:YES completion:nil];
+}
+
+# pragma mark - internals
+- (void)setupPage {
+    // line below is crucial for UIScrollViewDelegate protocol to work
+    scrollView.delegate = self;
+    scrollView.pagingEnabled = YES;
+    
+    NSUInteger numberOfViews = [modelArray count];
+    controllers = [[NSMutableArray alloc] initWithCapacity:0];
+    NSUInteger i = 0;
+    for (RSLocality* locality in modelArray) {
+        CGFloat xOrigin = i * self.view.frame.size.width;
+        
+        RSLocalPageController *controller =
+            [[RSLocalPageController alloc] initWithNibName:nil bundle:nil];
+        NSLog(@"Adding locality");
+        controller.locality = locality;
+        controller.view.frame =
+            CGRectMake(xOrigin, 0, self.view.frame.size.width, self.view.frame.size.height);
+        [scrollView addSubview:controller.view];
+        [controllers addObject:controller];
+        [controller release];
+        i++;
+    }
+    scrollView.contentSize = CGSizeMake(self.view.frame.size.width * numberOfViews, self.view.frame.size.height);
+    [self.view addSubview:scrollView];
+    [scrollView release];
+    
+    pageControl.numberOfPages = numberOfViews;
+    //pageControl.currentPage = 0;
 }
 
 # pragma mark - FlipsideViewControllerDelegate
@@ -140,45 +147,38 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - UITableViewDelegate methods
-
-// Customize the number of sections in the table view.
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+#pragma mark - UIScrollViewDelegate stuff
+- (void)scrollViewDidScroll:(UIScrollView *)__scrollView
 {
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [self.forecast.days count];
-}
-
-// Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"Cell";
+    if (pageControlUsed) {
+        return;
+    }
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-    }
+    // prevent vertical bounces
+    __scrollView.contentSize = CGSizeMake(__scrollView.contentSize.width,__scrollView.frame.size.height);
+    
+    // switch page at 50% across
+    CGFloat pageWidth = __scrollView.frame.size.width;
+    int page = floor((__scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
+    //NSLog(@"page: %d", page);
+    pageControl.currentPage = page;
+}
 
-    // Configure the cell.
-    if ([tableView isEqual:_tableView]) {
-        RSDay* day = [self.forecast.days objectAtIndex:indexPath.row];
-        NSString *title = [[NSString alloc] initWithFormat:@"%@: %@", [weekdayFormatter stringFromDate:day.date], [day getHiLo]]; 
-        cell.textLabel.text = title;
-        [title release];
-        
-        cell.detailTextLabel.text = day.condition;
-        cell.imageView.image = day.iconData;
-    }
-    return cell;
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)__scrollView
+{
+    pageControlUsed = NO;
+}
+
+#pragma mark - PageControl stuff
+- (IBAction)changePage:(id)sender
+{
+    CGRect frame = scrollView.frame;
+    frame.origin.x = frame.size.width * pageControl.currentPage;
+    frame.origin.y = 0;
+    
+    [scrollView scrollRectToVisible:frame animated:YES];
+    
+    pageControlUsed = YES;
 }
 
 @end
-
-
-
-

@@ -17,6 +17,8 @@
 		44FF640F12E0CD0C00206C23 /* WeatherForecast.m in Sources */ = {isa = PBXBuildFile; fileRef = 44FF640E12E0CD0C00206C23 /* WeatherForecast.m */; };
 		EF01179E146CC111005D28C5 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = EF01179D146CC111005D28C5 /* JSONKit.m */; };
 		EF0117A2146CC191005D28C5 /* FindNearbyPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0117A1146CC191005D28C5 /* FindNearbyPlace.m */; };
+		EF06B678164A69300063E7E9 /* RSLocalPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF06B676164A69300063E7E9 /* RSLocalPageController.m */; };
+		EF06B679164A69300063E7E9 /* RSLocalPageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF06B677164A69300063E7E9 /* RSLocalPageController.xib */; };
 		EF4F77A81476C6D900543F5B /* RSAddGeo.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF4F77A71476C6D900543F5B /* RSAddGeo.xib */; };
 		EF527095146B389200335A36 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		EF527096146B38A200335A36 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -52,6 +54,9 @@
 		EF01179D146CC111005D28C5 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		EF0117A0146CC191005D28C5 /* FindNearbyPlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindNearbyPlace.h; sourceTree = "<group>"; };
 		EF0117A1146CC191005D28C5 /* FindNearbyPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindNearbyPlace.m; sourceTree = "<group>"; };
+		EF06B675164A69300063E7E9 /* RSLocalPageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSLocalPageController.h; sourceTree = "<group>"; };
+		EF06B676164A69300063E7E9 /* RSLocalPageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSLocalPageController.m; sourceTree = "<group>"; };
+		EF06B677164A69300063E7E9 /* RSLocalPageController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RSLocalPageController.xib; sourceTree = "<group>"; };
 		EF4F77A71476C6D900543F5B /* RSAddGeo.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RSAddGeo.xib; sourceTree = "<group>"; };
 		EF68438C1476C70C009E285E /* RSAddGeo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSAddGeo.h; sourceTree = "<group>"; };
 		EF68438D1476C70C009E285E /* RSAddGeo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSAddGeo.m; sourceTree = "<group>"; };
@@ -113,6 +118,10 @@
 			children = (
 				289233A80DB2D0DB0083E9F9 /* MainViewController.h */,
 				289233A90DB2D0DB0083E9F9 /* MainViewController.m */,
+				280E754B0DD40C5E005A515E /* MainView.xib */,
+				EF06B675164A69300063E7E9 /* RSLocalPageController.h */,
+				EF06B676164A69300063E7E9 /* RSLocalPageController.m */,
+				EF06B677164A69300063E7E9 /* RSLocalPageController.xib */,
 			);
 			name = "Main View";
 			sourceTree = "<group>";
@@ -156,7 +165,6 @@
 			isa = PBXGroup;
 			children = (
 				EFB2FA131478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png */,
-				280E754B0DD40C5E005A515E /* MainView.xib */,
 				EF4F77A71476C6D900543F5B /* RSAddGeo.xib */,
 				280E754A0DD40C5E005A515E /* FlipsideView.xib */,
 				280E754C0DD40C5E005A515E /* MainWindow.xib */,
@@ -234,6 +242,7 @@
 				EF4F77A81476C6D900543F5B /* RSAddGeo.xib in Resources */,
 				EFB2FA141478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png in Resources */,
 				EF9E7EBD161B86EC005CAEA8 /* Default-568h@2x.png in Resources */,
+				EF06B679164A69300063E7E9 /* RSLocalPageController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,6 +263,7 @@
 				EFF0CA961473E6D900915C8B /* WeatherModel.m in Sources */,
 				EF68438E1476C70C009E285E /* RSAddGeo.m in Sources */,
 				EF92F7E11477558600288305 /* UIImage+RSRoundCorners.m in Sources */,
+				EF06B678164A69300063E7E9 /* RSLocalPageController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

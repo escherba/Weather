@@ -22,7 +22,19 @@
 #import "JSONKit.h"
 #import "RSAddGeo.h"
 
+#pragma mark - RSLocality
 @implementation RSLocality
+
+@synthesize apiId;
+@synthesize reference;
+@synthesize lat;
+@synthesize lng;
+@synthesize url;
+@synthesize description;
+@synthesize formatted_address;
+@synthesize name;
+@synthesize vicinity;
+
 // Lifecycle methods
 -(id)initWithId:(NSString *)id1
            reference: (NSString *) ref1
@@ -36,17 +48,40 @@
     }
     return self;
 }
-@synthesize apiId;
-@synthesize reference;
-@synthesize lat;
-@synthesize lng;
-@synthesize url;
-@synthesize description;
-@synthesize formatted_address;
-@synthesize name;
-@synthesize vicinity;
+
+#pragma mark - NSCoding delegate methods
+- (id) initWithCoder: (NSCoder *)coder
+{
+    self = [[RSLocality alloc] init];
+    if (self != nil)
+    {
+        self.name =              [coder decodeObjectForKey:@"name"];
+        self.vicinity =          [coder decodeObjectForKey:@"vicinity"];
+        self.formatted_address = [coder decodeObjectForKey:@"formatted_address"];
+        self.description =       [coder decodeObjectForKey:@"description"];
+        self.url =               [coder decodeObjectForKey:@"url"];
+        self.lng =               [coder decodeObjectForKey:@"lng"];
+        self.lat =               [coder decodeObjectForKey:@"lat"];
+        self.reference =         [coder decodeObjectForKey:@"reference"];
+        self.apiId =             [coder decodeObjectForKey:@"apiId"];
+    }
+    return self;
+}
+- (void) encodeWithCoder: (NSCoder *)coder
+{
+    [coder encodeObject:name              forKey:@"name"];
+    [coder encodeObject:vicinity          forKey:@"vicinity"];
+    [coder encodeObject:formatted_address forKey:@"formatted_address"];
+    [coder encodeObject:description       forKey:@"description"];
+    [coder encodeObject:url               forKey:@"url"];
+    [coder encodeObject:lng               forKey:@"lng"];
+    [coder encodeObject:lat               forKey:@"lat"];
+    [coder encodeObject:reference         forKey:@"reference"];
+    [coder encodeObject:apiId             forKey:@"apiId"];
+}
 @end
 
+#pragma mark - RSAddGeo
 @implementation RSAddGeo
 
 @synthesize delegate;
@@ -209,7 +244,7 @@ shouldReloadTableForSearchString:(NSString *)searchString
     _selectedLocality = nil;
     
     // Note: if you are using this code, please apply for your own id at Google Places API page
-    theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=false&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [self.searchDisplayController.searchBar text]]];
+    theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [self.searchDisplayController.searchBar text]]];
 
     apiConnection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:theURL] delegate:self startImmediately: YES];
     return NO;
@@ -230,7 +265,7 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
     _selectedLocality = nil;
     
     // Note: if you are using this code, please apply for your own id at Google Places API page
-    theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=false&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [self.searchDisplayController.searchBar text]]];
+    theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [self.searchDisplayController.searchBar text]]];
     
     apiConnection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:theURL] delegate:self startImmediately: YES];
     return NO;
@@ -284,7 +319,7 @@ didReceiveResponse:(NSURLResponse *)response
     // release previous data stored and allocate new array
     [processedData removeAllObjects];
     
-    for (NSDictionary *item in predictions){
+    for (NSDictionary *item in predictions) {
         // Data in the table are search results.
         // We only show localities, not countries or other types
         int haveLocality = 0;

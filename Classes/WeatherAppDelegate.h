@@ -24,6 +24,7 @@
 @property (nonatomic, retain) IBOutlet MainViewController *mainViewController;
 @property (nonatomic, retain) NSUserDefaults* defaults;
 @property (nonatomic, retain) CLLocationManager* locationManager;
+//@property (nonatomic, retain) NSString* nearbyLocationName;
 
 - (BOOL)isValidLocation:(CLLocation *)newLocation
         withOldLocation:(CLLocation *)oldLocation;

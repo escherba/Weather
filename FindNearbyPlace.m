@@ -2,8 +2,7 @@
 //  FindNearbyPlace.m
 //  Weather
 //
-//  Use http://ws.geonames.org/ webservice to reverse-lookup geolocation
-//  Given GPS coordinates, returns the nearby place name
+//  Can also use http://ws.geonames.org/ webservice to reverse-lookup geolocation
 //
 //  TODO: place labels don't show up, verify why
 //
@@ -27,6 +26,10 @@
     appDelegate = (WeatherAppDelegate *)[[UIApplication sharedApplication] delegate];
     responseData = [[NSMutableData data] retain];
     
+    // Using Google Places API:
+    // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.8015957,-122.4735831&rankby=distance&types=establishment&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc
+    //
+    // http://maps.googleapis.com/maps/api/geocode/json?latlng=37.8015957,-122.4735831&sensor=true&types=locality
     NSString *url = [NSString stringWithFormat:@"http://ws.geonames.org/findNearbyPlaceNameJSON?lat=%@&lng=%@",
                      latitude, longitude];
     theURL = [[NSURL URLWithString:url] retain];
@@ -56,14 +59,14 @@
     = [[[parser objectWithData:responseData] objectForKey:@"geonames"] objectAtIndex:0];
     
     // set location
-    appDelegate.mainViewController.locationName
-    = [NSString stringWithFormat:@"%@,%@", [firstLocation objectForKey:@"name"], [firstLocation objectForKey:@"adminCode1"]];
+    //appDelegate.mainViewController.locationName
+    //appDelegate.nearbyLocationName = [NSString stringWithFormat:@"%@,%@", [firstLocation objectForKey:@"name"], [firstLocation objectForKey:@"adminCode1"]];
     
     // stop spinning loading indicator
-    [appDelegate.mainViewController.loadingActivityIndicator stopAnimating];
+    //[appDelegate.mainViewController.loadingActivityIndicator stopAnimating];
     
     // refresh main view
-    [appDelegate.mainViewController refreshView: self];
+    //[appDelegate.mainViewController refreshView: self];
     [responseData release];
     responseData = nil;
 }
