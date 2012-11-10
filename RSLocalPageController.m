@@ -47,7 +47,9 @@
     [self.view addSubview:_tableView];
     
     NSLog(@"Calling refresh view to show weather");
-    //[self refreshView];
+    if (locality.haveCoord) {
+        [self refreshView];
+    }
 }
 
 - (void)didReceiveMemoryWarning

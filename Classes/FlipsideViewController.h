@@ -27,11 +27,9 @@
     
     NSString *_currentLocalityId;
     IBOutlet UITableView *_tableView;
-    NSMutableDictionary *tableContents;
 }
 
 @property (nonatomic, retain) IBOutlet UIButton *addCity;
-@property (nonatomic, retain) NSMutableDictionary *tableContents;
 @property (nonatomic, assign) id <FlipsideViewControllerDelegate> delegate; // don't retain delegates
 
 - (IBAction)addCityTouchDown;

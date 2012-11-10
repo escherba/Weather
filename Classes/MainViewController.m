@@ -32,7 +32,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
-
+    
     // restore user selections -- important -- do this before setupPage is called
     modelArray = [[NSMutableArray alloc] init];
     NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
@@ -57,6 +57,7 @@
         defaultCoord.latitude = 37.777940030048796;
         defaultCoord.longitude = -122.41945266723633;
         defaultLocality.coord = defaultCoord;
+        defaultLocality.haveCoord = YES;
         [modelArray addObject:defaultLocality];
         [defaultLocality release];
     }
