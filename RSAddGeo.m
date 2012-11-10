@@ -27,12 +27,13 @@
 
 @synthesize apiId;
 @synthesize reference;
-@synthesize coord;
+//@synthesize coord;
 @synthesize url;
 @synthesize description;
 @synthesize formatted_address;
 @synthesize name;
 @synthesize vicinity;
+@synthesize haveCoord;
 
 #pragma mark - Lifecycle
 - (id) initWithId:(NSString *)id1
@@ -44,6 +45,29 @@
         apiId       = [id1 retain];
         reference   = [ref1 retain];
         description = [desc1 retain];
+        haveCoord   = NO;
+    }
+    return self;
+}
+
+-(void) setCoord:(CLLocationCoordinate2D)coordValue
+{
+    //[self willChangeValueForKey:@"coord"];
+    coord = coordValue;
+    haveCoord = YES;
+    //[self didChangeValueForKey:@"coord"];
+}
+
+-(CLLocationCoordinate2D)coord
+{
+    return coord;
+}
+
+- (id) init
+{
+    self = [super init];
+    if (self) {
+        haveCoord = NO;
     }
     return self;
 }
@@ -55,9 +79,10 @@
     if (self != nil)
     {
         CLLocationCoordinate2D coord2d;
-        coord2d.latitude =         [coder decodeDoubleForKey:@"lat"];
-        coord2d.longitude =        [coder decodeDoubleForKey:@"lng"];
+        coord2d.latitude =       [coder decodeDoubleForKey:@"lat"];
+        coord2d.longitude =      [coder decodeDoubleForKey:@"lng"];
         self.coord = coord2d;
+        self.haveCoord =         [coder decodeBoolForKey:@"haveCoord"];
         
         self.name =              [coder decodeObjectForKey:@"name"];
         self.vicinity =          [coder decodeObjectForKey:@"vicinity"];
@@ -73,13 +98,15 @@
 {
     CLLocationDegrees lat = coord.latitude;
     CLLocationDegrees lng = coord.longitude;
+    [coder encodeDouble:lng               forKey:@"lng"];
+    [coder encodeDouble:lat               forKey:@"lat"];
+    [coder encodeBool:haveCoord           forKey:@"haveCoord"];
+    
     [coder encodeObject:name              forKey:@"name"];
     [coder encodeObject:vicinity          forKey:@"vicinity"];
     [coder encodeObject:formatted_address forKey:@"formatted_address"];
     [coder encodeObject:description       forKey:@"description"];
     [coder encodeObject:url               forKey:@"url"];
-    [coder encodeDouble:lng               forKey:@"lng"];
-    [coder encodeDouble:lat               forKey:@"lat"];
     [coder encodeObject:reference         forKey:@"reference"];
     [coder encodeObject:apiId             forKey:@"apiId"];
 }

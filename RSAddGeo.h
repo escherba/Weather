@@ -17,7 +17,9 @@
 
 // have this object implement NSCoding protocol for saving with NSUserDefaults;
 // implement initWithCoder and encodeWithCoder methods.
-@interface RSLocality : NSObject <NSCoding>
+@interface RSLocality : NSObject <NSCoding> {
+    CLLocationCoordinate2D coord;
+}
 - (id) initWithCoder: (NSCoder *)coder;
 - (void) encodeWithCoder: (NSCoder *)coder;
 
@@ -33,6 +35,7 @@
 @property (nonatomic, retain) NSString* name;
 @property (nonatomic, retain) NSString* vicinity;
 @property (nonatomic, assign) CLLocationCoordinate2D coord;
+@property (nonatomic, assign) BOOL haveCoord;
 @end
 
 @interface RSAddGeo : UITableViewController <UISearchDisplayDelegate, UITableViewDelegate, UISearchBarDelegate> {

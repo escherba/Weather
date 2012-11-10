@@ -59,7 +59,7 @@
 - (void)dealloc {
     
     NSLog(@"Releasing observer");
-    [self.locality removeObserver:self forKeyPath:@"coord" context:self];
+    [locality removeObserver:self forKeyPath:@"coord" context:self];
     
     [weekdayFormatter release];
     //[locationName release];
