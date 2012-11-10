@@ -105,6 +105,8 @@
 		281C6CD70DB2D82200F60ACC /* Flipside View */ = {
 			isa = PBXGroup;
 			children = (
+				EF4F77A71476C6D900543F5B /* RSAddGeo.xib */,
+				280E754A0DD40C5E005A515E /* FlipsideView.xib */,
 				289233AC0DB2D0DB0083E9F9 /* FlipsideViewController.h */,
 				289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */,
 				EF68438C1476C70C009E285E /* RSAddGeo.h */,
@@ -116,6 +118,7 @@
 		289233A00DB2D0730083E9F9 /* Main View */ = {
 			isa = PBXGroup;
 			children = (
+				280E754C0DD40C5E005A515E /* MainWindow.xib */,
 				289233A80DB2D0DB0083E9F9 /* MainViewController.h */,
 				289233A90DB2D0DB0083E9F9 /* MainViewController.m */,
 				280E754B0DD40C5E005A515E /* MainView.xib */,
@@ -165,9 +168,6 @@
 			isa = PBXGroup;
 			children = (
 				EFB2FA131478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png */,
-				EF4F77A71476C6D900543F5B /* RSAddGeo.xib */,
-				280E754A0DD40C5E005A515E /* FlipsideView.xib */,
-				280E754C0DD40C5E005A515E /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* Weather-Info.plist */,
 			);
 			name = Resources;
