@@ -155,6 +155,7 @@
     [super viewDidLoad];
 
     processedData = [[NSMutableArray alloc] initWithObjects:nil];
+    //[self.tableView setEditing:NO animated:NO];
     [self.tableView reloadData];
     
 	// Do any additional setup after loading the view, typically from a nib.

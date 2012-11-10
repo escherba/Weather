@@ -40,7 +40,7 @@
 
     _tableView.dataSource = self;
     _tableView.delegate = self;
-    [_tableView setEditing: YES];
+    [_tableView setEditing:YES animated:NO];
     [self.view addSubview:_tableView];
 }
 
@@ -127,9 +127,8 @@
 }
 
 - (IBAction)addCityTouchDown {
-    // present modal view controller
-    //[self presentModalViewController:geoAddController animated:YES];
-    [self presentViewController:geoAddController animated:YES completion:nil];
+    // with animated:NO, the view loads a bit faster
+    [self presentViewController:geoAddController animated:NO completion:nil];
 }
 
 #pragma mark - UITableViewDelegate methods
@@ -187,6 +186,11 @@
             cell.textLabel.text = [locality description];
         }
     }
+
+    // allow reordering
+    //cell.shouldIndentWhileEditing = NO;
+    //cell.showsReorderControl = NO;
+    
     return cell;
 }
 
@@ -200,15 +204,18 @@ canEditRowAtIndexPath:(NSIndexPath *)indexPath
 commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 1 && editingStyle == UITableViewCellEditingStyleDelete) {
-        // remove the row
-        NSInteger row = indexPath.row;
-
+    if (indexPath.section == 1 && editingStyle == UITableViewCellEditingStyleDelete)
+    {
         // modify main model and view
+        NSInteger row = indexPath.row;
+        NSMutableArray* arr = self.delegate.modelArray;
+        RSLocality* locality = [arr objectAtIndex:row];
+        [modelDict removeObjectForKey:[locality apiId]];
         [self.delegate.modelArray removeObjectAtIndex:row];
         [self.delegate removePage:row];
         [self.delegate syncDefaults];
-        
+
+        // remove the row
         [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
@@ -220,6 +227,38 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     : UITableViewCellEditingStyleNone;
 }
 
+// Row reordering
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // whether a given row is eligible for reordering
+    return (indexPath.section == 1) ? YES : NO;
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
+      toIndexPath:(NSIndexPath *)toIndexPath
+{
+    if (fromIndexPath.section == 1 && toIndexPath.section == 1) {
+        NSMutableArray* arr = self.delegate.modelArray;
+        NSString *item = [[arr objectAtIndex:fromIndexPath.row] retain];
+        [arr removeObject:item];
+        [arr insertObject:item atIndex:toIndexPath.row];
+        [item release];
+    }
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
+{
+    // Limit record reordering to the source section. Also snap the record to
+    // the first or last row of the section, depending on where the drag went.
+    if (sourceIndexPath.section != proposedDestinationIndexPath.section) {
+        NSInteger row = 0;
+        if (sourceIndexPath.section < proposedDestinationIndexPath.section) {
+            row = [tableView numberOfRowsInSection:sourceIndexPath.section] - 1;
+        }
+        return [NSIndexPath indexPathForRow:row inSection:sourceIndexPath.section];
+    }
+    return proposedDestinationIndexPath;
+}
 
 #pragma mark - NSURLConnection delegate methods
 
@@ -281,6 +320,13 @@ didReceiveResponse:(NSURLResponse *)response
     //cleanup
     [responseData release];
     responseData = nil;
+}
+
+#pragma mark - Screen orientation
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // lock to portrait
+    return interfaceOrientation == UIInterfaceOrientationPortrait;
 }
 
 @end
