@@ -154,6 +154,33 @@
     pageControl.numberOfPages = numberOfViews;
 }
 
+- (void)removePage:(NSInteger)index {
+    // remove page with index... from UIScrollView
+    NSLog(@"removing page: %u", index);
+    
+    // removeObjectAtIndex will release the object,
+    // so no neeed to call [controller release] here
+    RSLocalPageController* controller = [controllers objectAtIndex:index];
+    [controller.view removeFromSuperview];
+    [controllers removeObjectAtIndex:index];
+
+    // shift all the views afterwards to the left
+    NSUInteger i;
+    NSUInteger numberOfViews = [controllers count];
+    CGSize viewFrameSize = self.view.frame.size;
+    for (i = index; i < numberOfViews; i++) {
+        controller = [controllers objectAtIndex:i];
+        CGFloat xOrigin = i * viewFrameSize.width;
+        controller.view.frame = CGRectMake(xOrigin, 0, viewFrameSize.width, viewFrameSize.height);
+    }
+    
+    //now resize the entire scrollview so that we don't get empty space on the right
+    scrollView.contentSize = CGSizeMake(viewFrameSize.width * numberOfViews, viewFrameSize.height);
+    
+    // fix up PageControl
+    pageControl.numberOfPages = numberOfViews;
+}
+
 // The method below is required for this class to support
 // FlipsideViewControllerDelegate protocol. Supporting FlipsideViewControllerDelegate
 // protocol means that this class must respond to FlipsideViewControllerDelegate
@@ -196,7 +223,6 @@
     frame.origin.y = 0;
     
     [scrollView scrollRectToVisible:frame animated:YES];
-    
     pageControlUsed = YES;
 }
 

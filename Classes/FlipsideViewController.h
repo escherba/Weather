@@ -43,6 +43,7 @@
 @protocol FlipsideViewControllerDelegate
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller;
 - (void)addPageWithLocality:(RSLocality*)locality;
+- (void)removePage:(NSInteger)index;
 @property (nonatomic, retain) NSMutableArray *modelArray;
 @end
 

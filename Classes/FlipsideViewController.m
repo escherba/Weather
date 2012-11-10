@@ -136,7 +136,6 @@
 
 #pragma mark - UITableViewDelegate methods
 
-
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -209,6 +208,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         RSLocality *locality = [self.delegate.modelArray objectAtIndex:indexPath.row];
         [tableContents removeObjectForKey:[locality description]];
         [self.delegate.modelArray removeObjectAtIndex:row];
+        [self.delegate removePage:row];
         [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
