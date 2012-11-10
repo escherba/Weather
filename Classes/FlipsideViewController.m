@@ -91,6 +91,7 @@
         // TODO: consider joining the two methods into one delegate call
         [self.delegate.modelArray addObject:selectedLocality];
         [self.delegate addPageWithLocality:selectedLocality];
+        [self.delegate syncDefaults];
         
         NSArray *paths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:[_tableView numberOfRowsInSection:1] inSection:1]];
         [_tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationTop];
@@ -207,8 +208,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         NSInteger row = indexPath.row;
         RSLocality *locality = [self.delegate.modelArray objectAtIndex:indexPath.row];
         [tableContents removeObjectForKey:[locality description]];
+        
+        // modify main model and view
         [self.delegate.modelArray removeObjectAtIndex:row];
         [self.delegate removePage:row];
+        [self.delegate syncDefaults];
+        
         [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
 }

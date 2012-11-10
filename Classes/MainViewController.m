@@ -45,6 +45,7 @@
             modelArray = [[NSMutableArray alloc] init];
         }
     }
+    NSLog(@"$$$$ Size of the restored array: %d", [modelArray count]);
     
     // if don't have any saved objects, use default
     NSUInteger numObjects = [modelArray count];
@@ -66,11 +67,15 @@
 	flipsideController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 
     [self setupPage];
+    NSLog(@"# viewDidLoad called");
 }
 
-//- (void)viewDidAppear:(BOOL)animated {
-//    [self refreshView:self];
-//}
+// TODO: see if we need the method below to load forecast
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    NSLog(@"# viewDidAppear called");
+    //[self refreshView:self];
+}
 
 /*
 // Override to allow orientations other than the default portrait orientation.
@@ -81,10 +86,6 @@
 */
 
 - (void)dealloc {
-    // save user selections
-    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
-    [currentDefaults setObject:[NSKeyedArchiver archivedDataWithRootObject:modelArray] forKey:@"localities"];
-    [currentDefaults synchronize];
     
     // viewDidUnload deprecated in iOS6
     [flipsideController release];
@@ -96,6 +97,7 @@
     //for (RSLocalPageController* controller in controllers) {
     //    [controller release];
     //}
+    [modelArray release];
     [controllers release];
 	[super dealloc];
 }
@@ -181,12 +183,15 @@
     pageControl.numberOfPages = numberOfViews;
 }
 
-// The method below is required for this class to support
-// FlipsideViewControllerDelegate protocol. Supporting FlipsideViewControllerDelegate
-// protocol means that this class must respond to FlipsideViewControllerDelegate
-// messages which means it has to implement the method below. FlipsideViewController
-// keeps a pointer to an objet of this class and delegates to this class some of its
-// responsibilities -- those that are specified in the protocol.
+-(void)syncDefaults {
+    // save user selections
+    NSLog(@"$$$ Saving user selections, with model array size: %d", [modelArray count]);
+    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+    [currentDefaults setObject:[NSKeyedArchiver archivedDataWithRootObject:modelArray] forKey:@"localities"];
+    [currentDefaults synchronize];
+    NSLog(@"$$$ Finished saving user selections");
+}
+
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller
 {
 	//[self dismissModalViewControllerAnimated:YES];

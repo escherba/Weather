@@ -25,13 +25,13 @@
 
 // Lifecycle methods: dealloc
 - (void)dealloc {
-    [self.wind release];
-    [self.humidity release];
-    [self.tempC release];
-    [self.tempF release];
-    [self.condition release];
-    [self.iconURL release];
-    [self.iconData release];
+    [wind release];
+    [humidity release];
+    [tempC release];
+    [tempF release];
+    [condition release];
+    [_iconURL release];
+    [_iconData release];
     [super dealloc];
 }
 
@@ -92,12 +92,12 @@
 
 // Lifecycle methods: dealloc
 - (void)dealloc {
-    [self.date release];
-    [self.lowT release];
-    [self.highT release];
-    [self.condition release];
-    [self.iconURL release];
-    [self.iconData release];
+    [date release];
+    [lowT release];
+    [highT release];
+    [condition release];
+    [_iconURL release];
+    [_iconData release];
     [super dealloc];
 }
 
