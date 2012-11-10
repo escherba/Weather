@@ -16,7 +16,6 @@
 
 @synthesize addCity;
 @synthesize delegate;
-@synthesize tableContents;
 
 #pragma mark - Lifecycle
 - (void)viewDidLoad {
@@ -39,8 +38,6 @@
         [modelDict setObject:locality forKey:[locality apiId]];
     }
 
-    tableContents = [[NSMutableDictionary alloc] init];
-    
     _tableView.dataSource = self;
     _tableView.delegate = self;
     [_tableView setEditing: YES];
@@ -72,7 +69,6 @@
     
     [geoAddController release];
     [_tableView release];
-    [tableContents release];
 
     [super dealloc];
 }
@@ -84,23 +80,24 @@
     RSLocality* selectedLocality = controller.selectedLocality;
     if (selectedLocality) {
         
-        // setting empty string for now
-        [tableContents setObject:@"" forKey:[selectedLocality description]];
-        
-        // add location to model array and also append a page to the view
-        // TODO: consider joining the two methods into one delegate call
-        [self.delegate.modelArray addObject:selectedLocality];
-        [self.delegate addPageWithLocality:selectedLocality];
-        [self.delegate syncDefaults];
-        
-        NSArray *paths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:[_tableView numberOfRowsInSection:1] inSection:1]];
-        [_tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationTop];
-        [_tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
-        
-        // Also place selectedLocality into a mutable dictionary
+        // Code below should only run when key is not found in modelDict
+        if (![modelDict objectForKey:[selectedLocality apiId]]) {
+            // add location to model array and also append a page to the view
+            // TODO: consider joining the two methods into one delegate call
+            [self.delegate.modelArray addObject:selectedLocality];
+            [self.delegate addPageWithLocality:selectedLocality];
+            [self.delegate syncDefaults];
+            
+            NSArray *paths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:[_tableView numberOfRowsInSection:1] inSection:1]];
+            [_tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationTop];
+            [_tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
+        }
+
+        // Also place selectedLocality into a mutable dictionary.
+        // We keep _currentLocalityId as a temporary variable to be reused when
+        // the new connection finishes
         _currentLocalityId = [selectedLocality apiId];
         [modelDict setObject:selectedLocality forKey:_currentLocalityId];
-        
         [responseData release];
         responseData = [[NSMutableData data] retain];
         
@@ -206,9 +203,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (indexPath.section == 1 && editingStyle == UITableViewCellEditingStyleDelete) {
         // remove the row
         NSInteger row = indexPath.row;
-        RSLocality *locality = [self.delegate.modelArray objectAtIndex:indexPath.row];
-        [tableContents removeObjectForKey:[locality description]];
-        
+
         // modify main model and view
         [self.delegate.modelArray removeObjectAtIndex:row];
         [self.delegate removePage:row];
@@ -271,7 +266,7 @@ didReceiveResponse:(NSURLResponse *)response
         return;
     }
     
-    // id: _currentLocalityId
+    // update locality object in modelDict
     RSLocality *locality = [modelDict objectForKey:_currentLocalityId];
     locality.formatted_address = [result objectForKey:@"formatted_address"];
     locality.name = [result objectForKey:@"name"];
