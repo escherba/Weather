@@ -232,4 +232,11 @@
     pageControlUsed = YES;
 }
 
+#pragma mark - Screen orientation
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // lock to portrait
+    return interfaceOrientation == UIInterfaceOrientationPortrait;
+}
+
 @end
