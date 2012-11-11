@@ -33,14 +33,15 @@
 	[super viewDidLoad];
 
     // Now add rounded corners:
-    [_view.layer setCornerRadius:15.0f];
-    [_view.layer setMasksToBounds:YES];
-    [_view.layer setBorderWidth:1.5f];
-    [_view.layer setBorderColor:[UIColor lightGrayColor].CGColor];
-    //[_view.layer setShadowColor:[UIColor blackColor].CGColor];
-    //[_view.layer setShadowOpacity:0.8];
-    //[_view.layer setShadowRadius:3.0];
-    //[_view.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
+    UIView* view = self.view;
+    [view.layer setCornerRadius:15.0f];
+    [view.layer setMasksToBounds:YES];
+    [view.layer setBorderWidth:1.5f];
+    [view.layer setBorderColor:[UIColor lightGrayColor].CGColor];
+    //[view.layer setShadowColor:[UIColor blackColor].CGColor];
+    //[view.layer setShadowOpacity:0.8];
+    //[view.layer setShadowRadius:3.0];
+    //[view.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
     
     // Do any additional setup after loading the view from its nib.
     forecast = [[WeatherForecast alloc] init];
@@ -55,7 +56,7 @@
     
     _tableView.dataSource = self;
     _tableView.delegate = self;
-    [_view addSubview:_tableView];
+    [view addSubview:_tableView];
     
     NSLog(@"Calling refresh view to show weather");
     if (locality.haveCoord) {
