@@ -126,8 +126,10 @@
         RSLocalPageController *controller = [[RSLocalPageController alloc] initWithNibName:nil bundle:nil];
         NSLog(@"Adding locality");
         controller.locality = locality;
-        controller.view.frame = CGRectMake(xOrigin, 0, viewFrameSize.width, viewFrameSize.height);
-        [scrollView addSubview:controller.view];
+        UIView* view = controller.view;
+        view.frame = [self viewFrameWithX0:xOrigin frameSize:viewFrameSize];
+        
+        [scrollView addSubview:view];
         [controllers addObject:controller];
         [controller release];
         i++;
@@ -147,14 +149,26 @@
     RSLocalPageController *controller = [[RSLocalPageController alloc] initWithNibName:nil bundle:nil];
     NSLog(@"Adding locality");
     controller.locality = locality;
-    controller.view.frame = CGRectMake(xOrigin, 0, viewFrameSize.width, viewFrameSize.height);
-    [scrollView addSubview:controller.view];
+    
+    UIView* view = controller.view;
+    view.frame = [self viewFrameWithX0:xOrigin frameSize:viewFrameSize];
+    [scrollView addSubview:view];
     [controllers addObject:controller];
     [controller release];
     
     NSUInteger numberOfViews = [modelArray count];
     scrollView.contentSize = CGSizeMake(viewFrameSize.width * numberOfViews, viewFrameSize.height);
     pageControl.numberOfPages = numberOfViews;
+}
+
+-(CGRect)viewFrameWithX0:(CGFloat)xOrigin frameSize:(CGSize)viewFrameSize
+{
+    CGFloat borderWidth = 15.0f;
+    CGFloat bottomOffset = 36.0f;
+    return CGRectMake(xOrigin + borderWidth, borderWidth, viewFrameSize.width - borderWidth - borderWidth, viewFrameSize.height - borderWidth - bottomOffset);
+    
+    // for no modifications:
+    //return CGRectMake(xOrigin, 0, viewFrameSize.width, viewFrameSize.height);
 }
 
 - (void)removePage:(NSInteger)index {

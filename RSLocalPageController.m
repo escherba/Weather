@@ -6,6 +6,7 @@
 //
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "RSLocalPageController.h"
 #import "RSAddGeo.h"
 
@@ -30,6 +31,16 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	[super viewDidLoad];
+
+    // Now add rounded corners:
+    [_view.layer setCornerRadius:15.0f];
+    [_view.layer setMasksToBounds:YES];
+    [_view.layer setBorderWidth:1.5f];
+    [_view.layer setBorderColor:[UIColor lightGrayColor].CGColor];
+    //[_view.layer setShadowColor:[UIColor blackColor].CGColor];
+    //[_view.layer setShadowOpacity:0.8];
+    //[_view.layer setShadowRadius:3.0];
+    //[_view.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
     
     // Do any additional setup after loading the view from its nib.
     forecast = [[WeatherForecast alloc] init];
@@ -44,7 +55,7 @@
     
     _tableView.dataSource = self;
     _tableView.delegate = self;
-    [self.view addSubview:_tableView];
+    [_view addSubview:_tableView];
     
     NSLog(@"Calling refresh view to show weather");
     if (locality.haveCoord) {
