@@ -12,6 +12,7 @@
 
 @implementation RSLocalPageController
 
+@synthesize pageNumber;
 @synthesize locality;
 @synthesize forecast;
 @synthesize loadingActivityIndicator;
@@ -58,9 +59,12 @@
     _tableView.delegate = self;
     [view addSubview:_tableView];
     
-    NSLog(@"Calling refresh view to show weather");
     if (locality.haveCoord) {
+        NSLog(@"Page %u: viewDidLoad: getting forecast", pageNumber);
         [self refreshView];
+    } else {
+        NSLog(@"Page %u: viewDidLoad: missing coordinates", pageNumber);
+        NSLog(@"lat: %f, long: %f", self.locality.coord.latitude, self.locality.coord.longitude);
     }
 }
 

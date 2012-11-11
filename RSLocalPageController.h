@@ -35,4 +35,7 @@
 @property (nonatomic, retain) WeatherForecast *forecast;
 @property (nonatomic, assign) RSLocality* locality;
 
+// debug
+@property (nonatomic, assign) NSUInteger pageNumber;
+
 @end

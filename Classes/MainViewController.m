@@ -32,20 +32,9 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
-    
-    // restore user selections -- important -- do this before setupPage is called
-    modelArray = [[NSMutableArray alloc] init];
-    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
-    NSData *dataRepresentingSavedArray = [currentDefaults objectForKey:@"localities"];
-    if (dataRepresentingSavedArray != nil) {
-        NSArray *oldSavedArray = [NSKeyedUnarchiver unarchiveObjectWithData:dataRepresentingSavedArray];
-        if (oldSavedArray != nil) {
-            modelArray = [[NSMutableArray alloc] initWithArray:oldSavedArray];
-        } else {
-            modelArray = [[NSMutableArray alloc] init];
-        }
-    }
-    NSLog(@"$$$$ Size of the restored array: %d", [modelArray count]);
+
+    // restore user selections (do this before setupPage is called)
+    [self restoreSettings];
     
     // if don't have any saved objects, use default
     NSUInteger numObjects = [modelArray count];
@@ -126,6 +115,7 @@
         RSLocalPageController *controller = [[RSLocalPageController alloc] initWithNibName:nil bundle:nil];
         NSLog(@"Adding locality");
         controller.locality = locality;
+        controller.pageNumber = i;
         UIView* view = controller.view;
         view.frame = [self viewFrameWithX0:xOrigin frameSize:viewFrameSize];
         
@@ -142,7 +132,36 @@
     //pageControl.currentPage = 0;
 }
 
+-(void)restoreSettings {
+    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+    NSData *dataRepresentingSavedArray = [currentDefaults objectForKey:@"localities"];
+    if (dataRepresentingSavedArray != nil) {
+        NSArray *oldSavedArray = [NSKeyedUnarchiver unarchiveObjectWithData:dataRepresentingSavedArray];
+        if (oldSavedArray != nil) {
+            modelArray = [[NSMutableArray alloc] initWithArray:oldSavedArray];
+        } else {
+            modelArray = [[NSMutableArray alloc] init];
+        }
+    } else {
+        modelArray = [[NSMutableArray alloc] init];
+    }
+    NSLog(@"$$$$ Size of the restored array: %d", [modelArray count]);
+}
+
 # pragma mark - FlipsideViewControllerDelegate
+-(void)saveSettings {
+    // save user selections
+    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+    [currentDefaults setObject:[NSKeyedArchiver archivedDataWithRootObject:modelArray] forKey:@"localities"];
+    BOOL savedOK = [currentDefaults synchronize];
+    
+    if (savedOK) {
+        NSLog(@"$$$ Saved user selections, with model array size: %d", [modelArray count]);
+    } else {
+        NSLog(@"$$$ FAILED saving user selections, model array size: %d", [modelArray count]);
+    }
+}
+
 - (void)addPageWithLocality:(RSLocality*)locality {
     CGSize viewFrameSize = self.view.frame.size;
     CGFloat xOrigin = scrollView.contentSize.width;
@@ -159,6 +178,9 @@
     NSUInteger numberOfViews = [modelArray count];
     scrollView.contentSize = CGSizeMake(viewFrameSize.width * numberOfViews, viewFrameSize.height);
     pageControl.numberOfPages = numberOfViews;
+    
+    // save user selection
+    [self saveSettings];
 }
 
 -(CGRect)viewFrameWithX0:(CGFloat)xOrigin frameSize:(CGSize)viewFrameSize
@@ -196,15 +218,9 @@
     
     // fix up PageControl
     pageControl.numberOfPages = numberOfViews;
-}
-
--(void)syncDefaults {
-    // save user selections
-    NSLog(@"$$$ Saving user selections, with model array size: %d", [modelArray count]);
-    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
-    [currentDefaults setObject:[NSKeyedArchiver archivedDataWithRootObject:modelArray] forKey:@"localities"];
-    [currentDefaults synchronize];
-    NSLog(@"$$$ Finished saving user selections");
+    
+    // save user selection
+    [self saveSettings];
 }
 
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller

@@ -22,6 +22,7 @@
 }
 - (id) initWithCoder: (NSCoder *)coder;
 - (void) encodeWithCoder: (NSCoder *)coder;
+- (void) updateFrom: (RSLocality *)locality;
 
 // this initialization occurs before details request is sent
 -(id)initWithId:(NSString *)id1
