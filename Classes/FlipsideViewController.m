@@ -33,8 +33,8 @@
 
     // initialize model dictionary by using model array in the delegate object
     modelDict = [[NSMutableDictionary alloc] init];
-    NSMutableArray *modelArray = self.delegate.modelArray;
-    for (RSLocality* locality in modelArray) {
+    NSMutableArray *arr = self.delegate.modelArray;
+    for (RSLocality* locality in arr) {
         [modelDict setObject:locality forKey:[locality apiId]];
     }
 
@@ -78,33 +78,45 @@
 {
     // capture controller.selectedLocation
     RSLocality* selectedLocality = controller.selectedLocality;
-    if (selectedLocality) {
-        
-        // Code below should only run when key is not found in modelDict
-        if (![modelDict objectForKey:[selectedLocality apiId]]) {
-            // add location to model array and also append a page to the view
-            // TODO: consider joining the two methods into one delegate call
-            [self.delegate.modelArray addObject:selectedLocality];
-            [self.delegate addPageWithLocality:selectedLocality];
-            [self.delegate syncDefaults];
-            
-            NSArray *paths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:[_tableView numberOfRowsInSection:1] inSection:1]];
-            [_tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationTop];
-            [_tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
-        }
-
-        // Also place selectedLocality into a mutable dictionary.
-        // We keep _currentLocalityId as a temporary variable to be reused when
-        // the new connection finishes
-        _currentLocalityId = [selectedLocality apiId];
-        [modelDict setObject:selectedLocality forKey:_currentLocalityId];
+    if (!selectedLocality) {
+        // simply dismiss view controller and exit
         [responseData release];
         responseData = [[NSMutableData data] retain];
         
+        //[self dismissModalViewControllerAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
+        return;
+    }
+
+    // We keep _currentLocalityId as a temporary variable to be reused when
+    // the new connection finishes
+    _currentLocalityId = [selectedLocality apiId];
+    RSLocality* currentLocality = [modelDict objectForKey:_currentLocalityId];
+    if (currentLocality) {
+        [currentLocality updateFrom:selectedLocality];
+    } else {
+
+        // if locality id not in the dictionary,
+        // append it there as well as to the array
+        [modelDict setObject:selectedLocality forKey:_currentLocalityId];
+        [self.delegate.modelArray addObject:selectedLocality];
+        [self.delegate addPageWithLocality:selectedLocality];
+        currentLocality = selectedLocality;
+        
+        NSArray *paths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:[_tableView numberOfRowsInSection:1] inSection:1]];
+        [_tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationTop];
+        [_tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationNone];
+    }
+
+    [responseData release];
+    responseData = [[NSMutableData data] retain];
+
+    if (!currentLocality.haveCoord) {
         // Perform a details request to get Latitude and Longitude data
-        theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/details/json?reference=%@&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [selectedLocality reference]]];
+        theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/details/json?reference=%@&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [currentLocality reference]]];
         apiConnection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:theURL] delegate:self startImmediately: YES];
     }
+    
 	//[self dismissModalViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -211,9 +223,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         NSMutableArray* arr = self.delegate.modelArray;
         RSLocality* locality = [arr objectAtIndex:row];
         [modelDict removeObjectForKey:[locality apiId]];
-        [self.delegate.modelArray removeObjectAtIndex:row];
+        [arr removeObjectAtIndex:row];
         [self.delegate removePage:row];
-        [self.delegate syncDefaults];
 
         // remove the row
         [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -316,6 +327,9 @@ didReceiveResponse:(NSURLResponse *)response
     coord2d.latitude = [[location objectForKey:@"lat"] doubleValue];
     coord2d.longitude = [[location objectForKey:@"lng"] doubleValue];
     locality.coord = coord2d;
+    
+    // save model array
+    [self.delegate saveSettings];
     
     //cleanup
     [responseData release];

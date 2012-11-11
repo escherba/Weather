@@ -50,6 +50,35 @@
     return self;
 }
 
+- (void) updateFrom: (RSLocality *)locality
+{
+    if ([locality.vicinity length] > 0) {
+        vicinity = locality.vicinity;
+    }
+    if (locality.haveCoord == YES) {
+        haveCoord = YES;
+        coord = locality.coord;
+    }
+    if ([locality.name length] > 0) {
+        name = locality.name;
+    }
+    if ([locality.formatted_address length] > 0) {
+        formatted_address = locality.formatted_address;
+    }
+    if ([locality.description length] > 0) {
+        description = locality.description;
+    }
+    if ([locality.url length] > 0) {
+        url = locality.url;
+    }
+    if ([locality.reference length] > 0) {
+        reference = locality.reference;
+    }
+    if ([locality.apiId length] > 0) {
+        apiId = locality.apiId;
+    }
+}
+
 -(void) setCoord:(CLLocationCoordinate2D)coordValue
 {
     //[self willChangeValueForKey:@"coord"];

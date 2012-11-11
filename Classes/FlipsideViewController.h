@@ -42,7 +42,7 @@
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller;
 - (void)addPageWithLocality:(RSLocality*)locality;
 - (void)removePage:(NSInteger)index;
-- (void)syncDefaults;
+- (void)saveSettings;
 @property (nonatomic, retain) NSMutableArray *modelArray;
 @end
 
