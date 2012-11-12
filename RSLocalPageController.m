@@ -33,6 +33,9 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 
+    UIColor *pattern = [UIColor colorWithPatternImage:[UIImage imageNamed: @"fancy_deboss.png"]];
+    [self.view setBackgroundColor: pattern];
+
     // Now add rounded corners:
     UIView* view = self.view;
     [view.layer setCornerRadius:15.0f];
