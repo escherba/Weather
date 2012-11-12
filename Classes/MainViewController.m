@@ -32,7 +32,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
-
+    
     // restore user selections (do this before setupPage is called)
     [self restoreSettings];
     

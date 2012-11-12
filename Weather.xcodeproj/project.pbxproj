@@ -19,6 +19,7 @@
 		EF0117A2146CC191005D28C5 /* FindNearbyPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0117A1146CC191005D28C5 /* FindNearbyPlace.m */; };
 		EF06B678164A69300063E7E9 /* RSLocalPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF06B676164A69300063E7E9 /* RSLocalPageController.m */; };
 		EF06B679164A69300063E7E9 /* RSLocalPageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF06B677164A69300063E7E9 /* RSLocalPageController.xib */; };
+		EF06B6911650CF470063E7E9 /* fancy_deboss.png in Resources */ = {isa = PBXBuildFile; fileRef = EF06B6901650CF460063E7E9 /* fancy_deboss.png */; };
 		EF4F77A81476C6D900543F5B /* RSAddGeo.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF4F77A71476C6D900543F5B /* RSAddGeo.xib */; };
 		EF527095146B389200335A36 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		EF527096146B38A200335A36 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -57,6 +58,7 @@
 		EF06B675164A69300063E7E9 /* RSLocalPageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSLocalPageController.h; sourceTree = "<group>"; };
 		EF06B676164A69300063E7E9 /* RSLocalPageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSLocalPageController.m; sourceTree = "<group>"; };
 		EF06B677164A69300063E7E9 /* RSLocalPageController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RSLocalPageController.xib; sourceTree = "<group>"; };
+		EF06B6901650CF460063E7E9 /* fancy_deboss.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fancy_deboss.png; path = backgrounds/fancy_deboss.png; sourceTree = "<group>"; };
 		EF4F77A71476C6D900543F5B /* RSAddGeo.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RSAddGeo.xib; sourceTree = "<group>"; };
 		EF68438C1476C70C009E285E /* RSAddGeo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSAddGeo.h; sourceTree = "<group>"; };
 		EF68438D1476C70C009E285E /* RSAddGeo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSAddGeo.m; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				EF06B6901650CF460063E7E9 /* fancy_deboss.png */,
 				EF9E7EBC161B86EC005CAEA8 /* Default-568h@2x.png */,
 				EFBD1F96146B23CD00AFCAB9 /* CoreLocation.framework */,
 				289233A00DB2D0730083E9F9 /* Main View */,
@@ -243,6 +246,7 @@
 				EFB2FA141478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png in Resources */,
 				EF9E7EBD161B86EC005CAEA8 /* Default-568h@2x.png in Resources */,
 				EF06B679164A69300063E7E9 /* RSLocalPageController.xib in Resources */,
+				EF06B6911650CF470063E7E9 /* fancy_deboss.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
