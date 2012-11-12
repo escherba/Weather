@@ -106,6 +106,22 @@
     [forecast queryService:locality.coord];
 }
 
+-(void)viewMayNeedUpdate {
+    // gets called whenever view will be displayed in parent viewport
+    // need to determine whether to retrieve new forecast here based on the
+    // difference between current and stored timestamps;
+    
+    NSDate *currentTime = [NSDate date];
+    
+    NSTimeInterval interval = [currentTime timeIntervalSinceDate:locality.forecastTimestamp];
+    
+    // 900 seconds is 15 minutes
+    if (interval >= 900.0f) {
+        [self refreshView];
+    }
+    NSLog(@"!!! Seconds since last update: %f", interval);
+}
+
 #pragma mark - Key-Value-Observing
 // override setter so that we register observing method whenever locality is added
 -(void)setLocality:(RSLocality *)localityValue
@@ -113,13 +129,15 @@
     if (localityValue != locality)
     {
         [localityValue retain];
+        
+        NSLog(@"Releasing observer");
+        [locality removeObserver:self forKeyPath:@"coord" context:self];
         [locality release];
         
         [localityValue addObserver:self
             forKeyPath:@"coord"
                 options:NSKeyValueObservingOptionNew
                     context:self];
-        
         locality = localityValue;
     }
 }
@@ -138,6 +156,9 @@
 {
     // do whatever needs to be done when we finish downloading forecast
     [loadingActivityIndicator stopAnimating];
+    
+    // update timestamp to current time
+    locality.forecastTimestamp = [NSDate date];
     
 	// City and Date
     //NSLog( @"Location name: %@", locationName );

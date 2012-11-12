@@ -28,6 +28,8 @@
     IBOutlet UITableView *_tableView;
 }
 
+-(void)viewMayNeedUpdate;
+
 /* TODO: implement shake-to-refresh */
 - (IBAction)refreshView;
 
