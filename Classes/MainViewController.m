@@ -32,6 +32,8 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
+
+    timer = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(400.0f) target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
     
     // restore user selections (do this before setupPage is called)
     [self restoreSettings];
@@ -105,6 +107,10 @@
 - (void)dealloc {
     
     [pageControl removeObserver:self forKeyPath:@"currentPage" context:self];
+
+    // remove timer
+    [timer invalidate];
+    timer = nil;
     
     // viewDidUnload deprecated in iOS6
     [flipsideController release];
@@ -112,10 +118,6 @@
     [scrollView release];
     [pageControl release];
     
-    // free up controller array
-    //for (RSLocalPageController* controller in controllers) {
-    //    [controller release];
-    //}
     [modelArray release];
     [controllers release];
 	[super dealloc];
@@ -175,6 +177,12 @@
         modelArray = [[NSMutableArray alloc] init];
     }
     NSLog(@"$$$$ Size of the restored array: %d", [modelArray count]);
+}
+
+// This will get called every 15 min in foreground mode
+- (void)timerFired{
+    [[controllers objectAtIndex:pageControl.currentPage] viewMayNeedUpdate];
+    NSLog(@"Timer fired");
 }
 
 // this method should be called when coordinates are added/updated

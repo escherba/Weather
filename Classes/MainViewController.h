@@ -24,6 +24,8 @@
     FlipsideViewController *flipsideController;
     UIScrollView *scrollView;
     UIPageControl *pageControl;
+    
+    NSTimer *timer;
 }
 
 @property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
