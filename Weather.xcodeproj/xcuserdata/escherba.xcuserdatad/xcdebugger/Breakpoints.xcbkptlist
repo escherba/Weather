@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/FlipsideViewController.m"
-         timestampString = "374362023.244115"
+         timestampString = "374369552.701007"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "335"
-         endingLineNumber = "335"
+         startingLineNumber = "340"
+         endingLineNumber = "340"
          landmarkName = "-connectionDidFinishLoading:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -21,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/FlipsideViewController.m"
-         timestampString = "374361402.34982"
+         timestampString = "374369552.701007"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "314"
-         endingLineNumber = "314"
+         startingLineNumber = "319"
+         endingLineNumber = "319"
          landmarkName = "-connectionDidFinishLoading:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -34,11 +34,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/FlipsideViewController.m"
-         timestampString = "374362023.244115"
+         timestampString = "374369552.701007"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "351"
-         endingLineNumber = "351">
+         startingLineNumber = "356"
+         endingLineNumber = "356">
       </FileBreakpoint>
    </FileBreakpoints>
    <SymbolicBreakpoints>
