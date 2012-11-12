@@ -36,6 +36,7 @@
 @property (nonatomic, retain) NSString* name;
 @property (nonatomic, retain) NSString* vicinity;
 @property (nonatomic, assign) CLLocationCoordinate2D coord;
+@property (nonatomic, retain) NSDate* forecastTimestamp;
 @property (nonatomic, assign) BOOL haveCoord;
 @end
 

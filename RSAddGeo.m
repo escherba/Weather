@@ -27,13 +27,14 @@
 
 @synthesize apiId;
 @synthesize reference;
-//@synthesize coord;
+//@synthesize coord; // have custom accessors written for this property
 @synthesize url;
 @synthesize description;
 @synthesize formatted_address;
 @synthesize name;
 @synthesize vicinity;
 @synthesize haveCoord;
+@synthesize forecastTimestamp;
 
 #pragma mark - Lifecycle
 - (id) initWithId:(NSString *)id1
@@ -120,6 +121,7 @@
         self.url =               [coder decodeObjectForKey:@"url"];
         self.reference =         [coder decodeObjectForKey:@"reference"];
         self.apiId =             [coder decodeObjectForKey:@"apiId"];
+        self.forecastTimestamp = [coder decodeObjectForKey:@"forecastTimestamp"];
     }
     return self;
 }
@@ -138,6 +140,7 @@
     [coder encodeObject:url               forKey:@"url"];
     [coder encodeObject:reference         forKey:@"reference"];
     [coder encodeObject:apiId             forKey:@"apiId"];
+    [coder encodeObject:forecastTimestamp forKey:@"forecastTimestamp"];
 }
 @end
 

@@ -55,27 +55,56 @@
     flipsideController = [[FlipsideViewController alloc] initWithNibName:@"FlipsideView" bundle:nil];
 	flipsideController.delegate = self; // need FlipsideViewControllerDelegate in <> interface
 	flipsideController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    
+    // provide both old and new values to current page change observer
+    [pageControl addObserver:self
+                  forKeyPath:@"currentPage"
+                     options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
+                     context:self];
+
+    // TODO: consider adding a timer here
+    //[NSTimer scheduledTimerWithTimeInterval:900.0f target:self selector:@selector(updateForecast) userInfo:nil repeats:YES];
 
     [self setupPage];
     NSLog(@"# viewDidLoad called");
 }
 
-// TODO: see if we need the method below to load forecast
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    NSLog(@"# viewDidAppear called");
-    //[self refreshView:self];
+-(void)viewWillAppear:(BOOL)animated
+{
+    NSLog(@"######## view will appear #########");
+    [super viewWillAppear:animated];
+    
+    // register applicationWillEnterForeground
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(applicationWillEnterForeground:)
+     name:UIApplicationWillEnterForegroundNotification
+     object:nil];
 }
 
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	// Return YES for supported orientations.
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
+-(void)viewWillDisappear:(BOOL)animated
+{
+    // overriding this method solely to remove applicationWillEnterForeground
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter]
+     removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
 }
-*/
+
+-(void)applicationWillEnterForeground:(UIApplication *)application
+{
+    // this gets called when the we switch from background to foreground mode
+    NSLog(@"_________Entering foreground");
+    
+    // Notify the RSLocalPageController instance for which the view is currently visible
+    // that it had become visible.
+    // Additionally, whenever a user scrolls a page, notify the RSLocalPageController
+    // instance using the same selector.
+    [[controllers objectAtIndex:pageControl.currentPage] viewMayNeedUpdate];
+}
 
 - (void)dealloc {
+    
+    [pageControl removeObserver:self forKeyPath:@"currentPage" context:self];
     
     // viewDidUnload deprecated in iOS6
     [flipsideController release];
@@ -148,6 +177,20 @@
     NSLog(@"$$$$ Size of the restored array: %d", [modelArray count]);
 }
 
+// this method should be called when coordinates are added/updated
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"currentPage"]) {
+        NSUInteger newPage = [[change objectForKey:NSKeyValueChangeNewKey] unsignedIntegerValue];
+        NSUInteger oldPage = [[change objectForKey:NSKeyValueChangeOldKey] unsignedIntegerValue];
+        if (newPage != oldPage) {
+            NSLog(@">>>> Current page changed from %u to %u", oldPage, newPage);
+            // send a message to the controller that it will be displayed
+            [[controllers objectAtIndex:newPage] viewMayNeedUpdate];
+        }
+    }
+}
+
 # pragma mark - FlipsideViewControllerDelegate
 -(void)saveSettings {
     // save data models
@@ -199,13 +242,13 @@
     // remove page with index... from UIScrollView
     NSLog(@"removing page: %u", index);
     
-    // update controller array
-    [controllers removeObjectAtIndex:index];
-    
     // removeObjectAtIndex will release the object, no need to release controller
     RSLocalPageController* controller = [controllers objectAtIndex:index];
     [controller.view removeFromSuperview];
 
+    // update controller array
+    [controllers removeObjectAtIndex:index];
+    
     // shift all the views afterwards to the left
     NSUInteger i;
     NSUInteger numberOfViews = [controllers count];
@@ -268,6 +311,7 @@
     // switch page at 50% across
     CGFloat pageWidth = __scrollView.frame.size.width;
     int page = floor((__scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
+    
     //NSLog(@"page: %d", page);
     pageControl.currentPage = page;
 }

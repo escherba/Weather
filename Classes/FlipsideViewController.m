@@ -218,7 +218,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 1 && editingStyle == UITableViewCellEditingStyleDelete)
     {
-        // modify main model and view
+        // TODO: consider updating the model array and saving it to NSUserSettings
+        // in the same block of code
         NSInteger row = indexPath.row;
         NSMutableArray* arr = self.delegate.modelArray;
         RSLocality* locality = [arr objectAtIndex:row];
