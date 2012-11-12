@@ -150,7 +150,7 @@
 
 # pragma mark - FlipsideViewControllerDelegate
 -(void)saveSettings {
-    // save user selections
+    // save data models
     NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
     [currentDefaults setObject:[NSKeyedArchiver archivedDataWithRootObject:modelArray] forKey:@"localities"];
     BOOL savedOK = [currentDefaults synchronize];
@@ -172,6 +172,8 @@
     UIView* view = controller.view;
     view.frame = [self viewFrameWithX0:xOrigin frameSize:viewFrameSize];
     [scrollView addSubview:view];
+    
+    // update controller array
     [controllers addObject:controller];
     [controller release];
     
@@ -179,7 +181,7 @@
     scrollView.contentSize = CGSizeMake(viewFrameSize.width * numberOfViews, viewFrameSize.height);
     pageControl.numberOfPages = numberOfViews;
     
-    // save user selection
+    // save data model
     [self saveSettings];
 }
 
@@ -197,11 +199,12 @@
     // remove page with index... from UIScrollView
     NSLog(@"removing page: %u", index);
     
-    // removeObjectAtIndex will release the object,
-    // so no neeed to call [controller release] here
+    // update controller array
+    [controllers removeObjectAtIndex:index];
+    
+    // removeObjectAtIndex will release the object, no need to release controller
     RSLocalPageController* controller = [controllers objectAtIndex:index];
     [controller.view removeFromSuperview];
-    [controllers removeObjectAtIndex:index];
 
     // shift all the views afterwards to the left
     NSUInteger i;
@@ -210,7 +213,7 @@
     for (i = index; i < numberOfViews; i++) {
         controller = [controllers objectAtIndex:i];
         CGFloat xOrigin = i * viewFrameSize.width;
-        controller.view.frame = CGRectMake(xOrigin, 0, viewFrameSize.width, viewFrameSize.height);
+        controller.view.frame = [self viewFrameWithX0:xOrigin frameSize:viewFrameSize];
     }
     
     //now resize the entire scrollview so that we don't get empty space on the right
@@ -219,7 +222,30 @@
     // fix up PageControl
     pageControl.numberOfPages = numberOfViews;
     
-    // save user selection
+    // save data model
+    [self saveSettings];
+}
+
+- (void)insertViewFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
+{
+    NSLog(@"___ moving view from index %d to %d", fromIndex, toIndex);
+    // update controller array
+    RSLocalPageController* controller = [[controllers objectAtIndex:fromIndex] retain];
+    [controllers removeObject:controller];
+    [controllers insertObject:controller atIndex:toIndex];
+    [controller release];
+    
+    // show all views at their proper locations
+    CGSize viewFrameSize = self.view.frame.size;
+    NSUInteger i;
+    NSUInteger numberOfViews = [controllers count];
+    for (i = 0; i < numberOfViews; i++) {
+        controller = [controllers objectAtIndex:i];
+        CGFloat xOrigin = i * viewFrameSize.width;
+        controller.view.frame = [self viewFrameWithX0:xOrigin frameSize:viewFrameSize];
+    }
+    
+    // save data model
     [self saveSettings];
 }
 

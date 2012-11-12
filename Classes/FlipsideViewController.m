@@ -249,11 +249,17 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
       toIndexPath:(NSIndexPath *)toIndexPath
 {
     if (fromIndexPath.section == 1 && toIndexPath.section == 1) {
+        
+        // TODO: consider saving model to NSUserDefaults in the same block as updating
+        // update model array
         NSMutableArray* arr = self.delegate.modelArray;
         NSString *item = [[arr objectAtIndex:fromIndexPath.row] retain];
         [arr removeObject:item];
         [arr insertObject:item atIndex:toIndexPath.row];
         [item release];
+        
+        // update controller view
+        [self.delegate insertViewFromIndex:fromIndexPath.row toIndex:toIndexPath.row];
     }
 }
 

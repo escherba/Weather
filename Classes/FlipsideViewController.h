@@ -39,6 +39,7 @@
 
 // A delegate of FlipsideViewController must implement the following protocol:
 @protocol FlipsideViewControllerDelegate
+- (void)insertViewFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller;
 - (void)addPageWithLocality:(RSLocality*)locality;
 - (void)removePage:(NSInteger)index;
