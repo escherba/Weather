@@ -9,14 +9,16 @@
 #import <UIKit/UIKit.h>
 #import "WeatherForecast.h"
 #import "RSAddGeo.h"
+#import "FindNearbyPlace.h"
 
-@interface RSLocalPageController : UIViewController <UITableViewDelegate, UITableViewDataSource, WeatherForecastDelegate> {
+@interface RSLocalPageController : UIViewController <UITableViewDelegate, UITableViewDataSource, WeatherForecastDelegate, FindNearbyPlaceDelegate> {
 
     IBOutlet UIActivityIndicatorView *loadingActivityIndicator;
     
     // different location (in different time zones) could have different dates
     NSDateFormatter *weekdayFormatter;
-
+    FindNearbyPlace *findNearby;
+    
     IBOutlet UIImageView *nowImage;
     IBOutlet UILabel *nameLabel;
     IBOutlet UILabel *dateLabel;
@@ -30,7 +32,6 @@
 
 -(void)viewMayNeedUpdate;
 
-/* TODO: implement shake-to-refresh */
 - (IBAction)refreshView;
 
 @property (nonatomic, retain) UIActivityIndicatorView *loadingActivityIndicator;

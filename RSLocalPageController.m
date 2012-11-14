@@ -33,6 +33,13 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 
+    if (locality.trackLocation) {
+        findNearby = [[FindNearbyPlace alloc] init];
+        findNearby.delegate = self;
+    } else {
+        findNearby = nil;
+    }
+    
     UIColor *pattern = [UIColor colorWithPatternImage:[UIImage imageNamed: @"fancy_deboss.png"]];
     [self.view setBackgroundColor: pattern];
 
@@ -52,7 +59,6 @@
     forecast.delegate = self;
     
     NSLog(@"RSLocalPageController viewDidLoad");
-    //locationName = [[NSString alloc] init];
     //appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
     
     weekdayFormatter = [[NSDateFormatter alloc] init];
@@ -78,13 +84,14 @@
 }
 
 - (void)dealloc {
+
+    [findNearby release];
     
     NSLog(@"Releasing observer");
     [locality removeObserver:self forKeyPath:@"coord" context:self];
     
     [weekdayFormatter release];
-    //[locationName release];
-	
+    
 	[nameLabel release];
 	[dateLabel release];
 	
@@ -148,7 +155,19 @@
     if ([keyPath isEqualToString:@"coord"]) {
         NSLog(@">>>> Coordinates changed, observer called!");
         [self refreshView];
+        if (locality.trackLocation) {
+            // find name of nearby place
+            [findNearby queryServiceWithCoord:locality.coord];
+        }
     }
+}
+
+#pragma mark - FindNearbyPlaceDelegate method
+-(void)findNearbyPlaceDidFinish:(NSDictionary*)dict
+{
+    NSString* placeName = [dict objectForKey:@"name"];
+    locality.description = placeName;
+    nameLabel.text = placeName;
 }
 
 #pragma mark - WeatherForecastDelegate method
@@ -161,7 +180,6 @@
     locality.forecastTimestamp = [NSDate date];
     
 	// City and Date
-    //NSLog( @"Location name: %@", locationName );
 	//nameLabel.text = locationName;
     nameLabel.text = locality.description;
 	dateLabel.text = forecast.date;

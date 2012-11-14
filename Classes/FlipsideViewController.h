@@ -25,12 +25,14 @@
     NSMutableData *responseData;
     NSMutableDictionary *modelDict;
     
+    UISwitch *switchView;
     NSString *_currentLocalityId;
     IBOutlet UITableView *_tableView;
 }
 
-@property (nonatomic, retain) IBOutlet UIButton *addCity;
-@property (nonatomic, assign) id <FlipsideViewControllerDelegate> delegate; // don't retain delegates
+// don't retain delegates
+@property (nonatomic, assign) id <FlipsideViewControllerDelegate> delegate;
+@property (nonatomic, retain) NSMutableDictionary *modelDict;
 
 - (IBAction)addCityTouchDown;
 - (IBAction)done:(id)sender;
@@ -44,6 +46,11 @@
 - (void)addPageWithLocality:(RSLocality*)locality;
 - (void)removePage:(NSInteger)index;
 - (void)saveSettings;
+- (void)locationSwitchSetTo:(BOOL)newState;
+- (NSUInteger)permanentLocalityCount;
+- (RSLocality*)getPermanentLocalityByRow:(NSUInteger)row;
+
+@property (nonatomic, assign) BOOL trackLocation;
 @property (nonatomic, retain) NSMutableArray *modelArray;
 @end
 

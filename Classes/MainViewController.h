@@ -15,10 +15,11 @@
 
     // app delegate
     WeatherAppDelegate *appDelegate;
+    NSUserDefaults *defaults;
     
     // To be used when scrolls originate from the UIPageControl
     BOOL pageControlUsed;
-
+    
     // objects that need to be released on dealloc
     NSMutableArray* controllers; // holds RSLocalPageController objects
     FlipsideViewController *flipsideController;
@@ -31,8 +32,9 @@
 @property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
 @property (nonatomic, retain) IBOutlet UIPageControl *pageControl;
 @property (nonatomic, retain) NSMutableArray *modelArray;
+@property (nonatomic, assign) BOOL trackLocation;
 
-/* TODO: implement shake-to-refresh */
+/* TODO: implement shake-to-refresh? */
 
 /* for Info button */
 - (IBAction)showInfo:(id)sender;

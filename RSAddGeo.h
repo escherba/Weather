@@ -38,6 +38,7 @@
 @property (nonatomic, assign) CLLocationCoordinate2D coord;
 @property (nonatomic, retain) NSDate* forecastTimestamp;
 @property (nonatomic, assign) BOOL haveCoord;
+@property (nonatomic, assign) BOOL trackLocation;
 @end
 
 @interface RSAddGeo : UITableViewController <UISearchDisplayDelegate, UITableViewDelegate, UISearchBarDelegate> {

@@ -20,6 +20,7 @@
 		EF06B678164A69300063E7E9 /* RSLocalPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF06B676164A69300063E7E9 /* RSLocalPageController.m */; };
 		EF06B679164A69300063E7E9 /* RSLocalPageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF06B677164A69300063E7E9 /* RSLocalPageController.xib */; };
 		EF06B6911650CF470063E7E9 /* fancy_deboss.png in Resources */ = {isa = PBXBuildFile; fileRef = EF06B6901650CF460063E7E9 /* fancy_deboss.png */; };
+		EF06B69E16524E020063E7E9 /* CDLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF06B69D16524E020063E7E9 /* CDLocationManager.m */; };
 		EF4F77A81476C6D900543F5B /* RSAddGeo.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF4F77A71476C6D900543F5B /* RSAddGeo.xib */; };
 		EF527095146B389200335A36 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		EF527096146B38A200335A36 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -59,6 +60,8 @@
 		EF06B676164A69300063E7E9 /* RSLocalPageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSLocalPageController.m; sourceTree = "<group>"; };
 		EF06B677164A69300063E7E9 /* RSLocalPageController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RSLocalPageController.xib; sourceTree = "<group>"; };
 		EF06B6901650CF460063E7E9 /* fancy_deboss.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fancy_deboss.png; path = backgrounds/fancy_deboss.png; sourceTree = "<group>"; };
+		EF06B69C16524E020063E7E9 /* CDLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLocationManager.h; sourceTree = "<group>"; };
+		EF06B69D16524E020063E7E9 /* CDLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLocationManager.m; sourceTree = "<group>"; };
 		EF4F77A71476C6D900543F5B /* RSAddGeo.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RSAddGeo.xib; sourceTree = "<group>"; };
 		EF68438C1476C70C009E285E /* RSAddGeo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSAddGeo.h; sourceTree = "<group>"; };
 		EF68438D1476C70C009E285E /* RSAddGeo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSAddGeo.m; sourceTree = "<group>"; };
@@ -107,10 +110,10 @@
 		281C6CD70DB2D82200F60ACC /* Flipside View */ = {
 			isa = PBXGroup;
 			children = (
-				EF4F77A71476C6D900543F5B /* RSAddGeo.xib */,
 				280E754A0DD40C5E005A515E /* FlipsideView.xib */,
 				289233AC0DB2D0DB0083E9F9 /* FlipsideViewController.h */,
 				289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */,
+				EF4F77A71476C6D900543F5B /* RSAddGeo.xib */,
 				EF68438C1476C70C009E285E /* RSAddGeo.h */,
 				EF68438D1476C70C009E285E /* RSAddGeo.m */,
 			);
@@ -121,12 +124,12 @@
 			isa = PBXGroup;
 			children = (
 				280E754C0DD40C5E005A515E /* MainWindow.xib */,
+				280E754B0DD40C5E005A515E /* MainView.xib */,
 				289233A80DB2D0DB0083E9F9 /* MainViewController.h */,
 				289233A90DB2D0DB0083E9F9 /* MainViewController.m */,
-				280E754B0DD40C5E005A515E /* MainView.xib */,
+				EF06B677164A69300063E7E9 /* RSLocalPageController.xib */,
 				EF06B675164A69300063E7E9 /* RSLocalPageController.h */,
 				EF06B676164A69300063E7E9 /* RSLocalPageController.m */,
-				EF06B677164A69300063E7E9 /* RSLocalPageController.xib */,
 			);
 			name = "Main View";
 			sourceTree = "<group>";
@@ -136,7 +139,8 @@
 			children = (
 				EF06B6901650CF460063E7E9 /* fancy_deboss.png */,
 				EF9E7EBC161B86EC005CAEA8 /* Default-568h@2x.png */,
-				EFBD1F96146B23CD00AFCAB9 /* CoreLocation.framework */,
+				EF06B69F16524E0C0063E7E9 /* CDLocationManager */,
+				EF06B69B16524DA70063E7E9 /* JSONKit */,
 				289233A00DB2D0730083E9F9 /* Main View */,
 				281C6CD70DB2D82200F60ACC /* Flipside View */,
 				080E96DDFE201D6D7F000001 /* Application Delegate */,
@@ -151,8 +155,6 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				EF01179C146CC111005D28C5 /* JSONKit.h */,
-				EF01179D146CC111005D28C5 /* JSONKit.m */,
 				32CA4F630368D1EE00C91783 /* Weather_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				EF92F7DF1477558600288305 /* UIImage+RSRoundCorners.h */,
@@ -179,11 +181,30 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EFBD1F96146B23CD00AFCAB9 /* CoreLocation.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				288765580DF743DE002DB57D /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EF06B69B16524DA70063E7E9 /* JSONKit */ = {
+			isa = PBXGroup;
+			children = (
+				EF01179C146CC111005D28C5 /* JSONKit.h */,
+				EF01179D146CC111005D28C5 /* JSONKit.m */,
+			);
+			name = JSONKit;
+			sourceTree = "<group>";
+		};
+		EF06B69F16524E0C0063E7E9 /* CDLocationManager */ = {
+			isa = PBXGroup;
+			children = (
+				EF06B69C16524E020063E7E9 /* CDLocationManager.h */,
+				EF06B69D16524E020063E7E9 /* CDLocationManager.m */,
+			);
+			name = CDLocationManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -268,6 +289,7 @@
 				EF68438E1476C70C009E285E /* RSAddGeo.m in Sources */,
 				EF92F7E11477558600288305 /* UIImage+RSRoundCorners.m in Sources */,
 				EF06B678164A69300063E7E9 /* RSLocalPageController.m in Sources */,
+				EF06B69E16524E020063E7E9 /* CDLocationManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

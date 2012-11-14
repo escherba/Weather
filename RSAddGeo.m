@@ -35,18 +35,31 @@
 @synthesize vicinity;
 @synthesize haveCoord;
 @synthesize forecastTimestamp;
+@synthesize trackLocation;
 
 #pragma mark - Lifecycle
+
+- (id) init
+{
+    self = [super init];
+    if (self) {
+        haveCoord     = NO;
+        trackLocation = NO;
+    }
+    return self;
+}
+
 - (id) initWithId:(NSString *)id1
            reference: (NSString *) ref1
            description:(NSString *)desc1;
 {
     self = [super init];
     if (self) {
-        apiId       = [id1 retain];
-        reference   = [ref1 retain];
-        description = [desc1 retain];
-        haveCoord   = NO;
+        apiId         = [id1 retain];
+        reference     = [ref1 retain];
+        description   = [desc1 retain];
+        haveCoord     = NO;
+        trackLocation = NO;
     }
     return self;
 }
@@ -82,24 +95,13 @@
 
 -(void) setCoord:(CLLocationCoordinate2D)coordValue
 {
-    //[self willChangeValueForKey:@"coord"];
     coord = coordValue;
     haveCoord = YES;
-    //[self didChangeValueForKey:@"coord"];
 }
 
 -(CLLocationCoordinate2D)coord
 {
     return coord;
-}
-
-- (id) init
-{
-    self = [super init];
-    if (self) {
-        haveCoord = NO;
-    }
-    return self;
 }
 
 #pragma mark - NSCoding delegate methods
@@ -113,6 +115,7 @@
         coord2d.longitude =      [coder decodeDoubleForKey:@"lng"];
         self.coord = coord2d;
         self.haveCoord =         [coder decodeBoolForKey:@"haveCoord"];
+        self.trackLocation =     [coder decodeBoolForKey:@"trackLocation"];
         
         self.name =              [coder decodeObjectForKey:@"name"];
         self.vicinity =          [coder decodeObjectForKey:@"vicinity"];
@@ -132,6 +135,7 @@
     [coder encodeDouble:lng               forKey:@"lng"];
     [coder encodeDouble:lat               forKey:@"lat"];
     [coder encodeBool:haveCoord           forKey:@"haveCoord"];
+    [coder encodeBool:trackLocation       forKey:@"trackLocation"];
     
     [coder encodeObject:name              forKey:@"name"];
     [coder encodeObject:vicinity          forKey:@"vicinity"];

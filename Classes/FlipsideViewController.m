@@ -14,12 +14,22 @@
 
 @implementation FlipsideViewController
 
-@synthesize addCity;
 @synthesize delegate;
+@synthesize modelDict;
 
 #pragma mark - Lifecycle
+- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle {
+    if (self = [super initWithNibName:nibName bundle:nibBundle]) {
+        // we need to initialize modelDict early so that we can operate on it
+        // from the parent controller before this class' viewDidLoad is called.
+        modelDict = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.view.backgroundColor = [UIColor viewFlipsideBackgroundColor];
     if (!appDelegate) {
         appDelegate = (WeatherAppDelegate *) [[UIApplication sharedApplication] delegate];
@@ -31,12 +41,9 @@
     geoAddController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     geoAddController.delegate = self;
 
-    // initialize model dictionary by using model array in the delegate object
-    modelDict = [[NSMutableDictionary alloc] init];
-    NSMutableArray *arr = self.delegate.modelArray;
-    for (RSLocality* locality in arr) {
-        [modelDict setObject:locality forKey:[locality apiId]];
-    }
+    switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+    [switchView setOn:self.delegate.trackLocation animated:NO];
+    [switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 
     _tableView.dataSource = self;
     _tableView.delegate = self;
@@ -51,13 +58,6 @@
 	// Release any cached data, images, etc that aren't in use.
 }
 
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	// Return YES for supported orientations
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
 - (void)dealloc
 {
     // private variables
@@ -68,6 +68,7 @@
     [theURL release];
     
     [geoAddController release];
+    [switchView release];
     [_tableView release];
 
     [super dealloc];
@@ -99,7 +100,6 @@
         // if locality id not in the dictionary,
         // append it there as well as to the array
         [modelDict setObject:selectedLocality forKey:_currentLocalityId];
-        [self.delegate.modelArray addObject:selectedLocality];
         [self.delegate addPageWithLocality:selectedLocality];
         currentLocality = selectedLocality;
         
@@ -124,23 +124,17 @@
 #pragma mark - actions
 
 - (void) switchChanged:(id)sender {
-    UISwitch* switchControl = sender;
-    NSLog( @"The switch is %@", switchControl.on ? @"ON" : @"OFF" );
-    //    if (toggleSwitch.on) {
-    //        [appDelegate.locationManager startUpdatingLocation];
-    //    } else {
-    //        [appDelegate.locationManager stopUpdatingLocation];
-    //    }
+    //self.delegate.trackLocation = switchView.on;
+    [self.delegate locationSwitchSetTo:switchView.on];
 }
 
 - (IBAction)done:(id)sender {
-    //[appDelegate.defaults setObject:[NSNumber numberWithBool:toggleSwitch.on] forKey:@"checkLocation"];
 	[self.delegate flipsideViewControllerDidFinish:self];	
 }
 
 - (IBAction)addCityTouchDown {
     // with animated:NO, the view loads a bit faster
-    [self presentViewController:geoAddController animated:NO completion:nil];
+    [self presentViewController:geoAddController animated:YES completion:nil];
 }
 
 #pragma mark - UITableViewDelegate methods
@@ -157,7 +151,7 @@
         // first section only displays switch to toggle location tracking
         return 1;
     } else {
-        return [self.delegate.modelArray count];
+        return [delegate permanentLocalityCount];
     }
 }
 
@@ -177,24 +171,20 @@
                     
                     // add a UISwitch control on the right
                     cell.textLabel.text = @"Use Current Location:";
-                    UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
-                    [switchView setOn:NO animated:NO];
-                    [switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = switchView;
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                    [switchView release];
                 }
                 break;
             case 1:
                 
                 // Other locations
-                locality = [self.delegate.modelArray objectAtIndex:indexPath.row];
+                locality = [self.delegate getPermanentLocalityByRow:indexPath.row];
                 cell.textLabel.text = [locality description];
                 break;
         }
     } else {
         if (indexPath.section == 1) {
-            locality = [self.delegate.modelArray objectAtIndex:indexPath.row];
+            locality = [self.delegate getPermanentLocalityByRow:indexPath.row];
             cell.textLabel.text = [locality description];
         }
     }
@@ -218,14 +208,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 1 && editingStyle == UITableViewCellEditingStyleDelete)
     {
-        // TODO: consider updating the model array and saving it to NSUserSettings
-        // in the same block of code
-        NSInteger row = indexPath.row;
-        NSMutableArray* arr = self.delegate.modelArray;
-        RSLocality* locality = [arr objectAtIndex:row];
-        [modelDict removeObjectForKey:[locality apiId]];
-        [arr removeObjectAtIndex:row];
-        [self.delegate removePage:row];
+        NSLog(@"Asking MVC delegate to remove page at index %u", indexPath.row);
+        [self.delegate removePage:indexPath.row];
 
         // remove the row
         [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -250,15 +234,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
       toIndexPath:(NSIndexPath *)toIndexPath
 {
     if (fromIndexPath.section == 1 && toIndexPath.section == 1) {
-        
-        // TODO: consider saving model to NSUserDefaults in the same block as updating
-        // update model array
-        NSMutableArray* arr = self.delegate.modelArray;
-        NSString *item = [[arr objectAtIndex:fromIndexPath.row] retain];
-        [arr removeObject:item];
-        [arr insertObject:item atIndex:toIndexPath.row];
-        [item release];
-        
         // update controller view
         [self.delegate insertViewFromIndex:fromIndexPath.row toIndex:toIndexPath.row];
     }
@@ -344,6 +319,7 @@ didReceiveResponse:(NSURLResponse *)response
 }
 
 #pragma mark - Screen orientation
+
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // lock to portrait
