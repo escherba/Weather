@@ -6,6 +6,137 @@
 //  Copyright 2011 Boston University. All rights reserved.
 //
 
+/*********** Example ***************
+ Query: http://free.worldweatheronline.com/feed/weather.ashx?q=37.777940030048796,-122.41945266723633&format=json&num_of_days=5&key=d90609c900092229111111
+ 
+ Result:
+ {
+ "data": {
+ "current_condition": [{
+ "cloudcover": "0",
+ "humidity": "76",
+ "observation_time": "04:28 PM",
+ "precipMM": "0.0",
+ "pressure": "1028",
+ "temp_C": "8",
+ "temp_F": "46",
+ "visibility": "16",
+ "weatherCode": "113",
+ "weatherDesc": [{
+ "value": "Sunny"
+ }],
+ "weatherIconUrl": [{
+ "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+ }],
+ "winddir16Point": "N",
+ "winddirDegree": "0",
+ "windspeedKmph": "0",
+ "windspeedMiles": "0"
+ }],
+ "request": [{
+ "query": "Lat 37.78 and Lon -122.42",
+ "type": "LatLon"
+ }],
+ "weather": [{
+ "date": "2012-11-11",
+ "precipMM": "0.0",
+ "tempMaxC": "13",
+ "tempMaxF": "56",
+ "tempMinC": "10",
+ "tempMinF": "50",
+ "weatherCode": "113",
+ "weatherDesc": [{
+ "value": "Sunny"
+ }],
+ "weatherIconUrl": [{
+ "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+ }],
+ "winddir16Point": "ENE",
+ "winddirDegree": "74",
+ "winddirection": "ENE",
+ "windspeedKmph": "8",
+ "windspeedMiles": "5"
+ }, {
+ "date": "2012-11-12",
+ "precipMM": "0.0",
+ "tempMaxC": "16",
+ "tempMaxF": "60",
+ "tempMinC": "12",
+ "tempMinF": "53",
+ "weatherCode": "113",
+ "weatherDesc": [{
+ "value": "Sunny"
+ }],
+ "weatherIconUrl": [{
+ "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+ }],
+ "winddir16Point": "NE",
+ "winddirDegree": "50",
+ "winddirection": "NE",
+ "windspeedKmph": "9",
+ "windspeedMiles": "6"
+ }, {
+ "date": "2012-11-13",
+ "precipMM": "0.0",
+ "tempMaxC": "16",
+ "tempMaxF": "62",
+ "tempMinC": "10",
+ "tempMinF": "50",
+ "weatherCode": "113",
+ "weatherDesc": [{
+ "value": "Sunny"
+ }],
+ "weatherIconUrl": [{
+ "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+ }],
+ "winddir16Point": "E",
+ "winddirDegree": "81",
+ "winddirection": "E",
+ "windspeedKmph": "11",
+ "windspeedMiles": "7"
+ }, {
+ "date": "2012-11-14",
+ "precipMM": "0.0",
+ "tempMaxC": "17",
+ "tempMaxF": "62",
+ "tempMinC": "13",
+ "tempMinF": "55",
+ "weatherCode": "113",
+ "weatherDesc": [{
+ "value": "Sunny"
+ }],
+ "weatherIconUrl": [{
+ "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+ }],
+ "winddir16Point": "NE",
+ "winddirDegree": "51",
+ "winddirection": "NE",
+ "windspeedKmph": "12",
+ "windspeedMiles": "7"
+ }, {
+ "date": "2012-11-15",
+ "precipMM": "0.0",
+ "tempMaxC": "16",
+ "tempMaxF": "62",
+ "tempMinC": "12",
+ "tempMinF": "53",
+ "weatherCode": "113",
+ "weatherDesc": [{
+ "value": "Sunny"
+ }],
+ "weatherIconUrl": [{
+ "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+ }],
+ "winddir16Point": "E",
+ "winddirDegree": "99",
+ "winddirection": "E",
+ "windspeedKmph": "15",
+ "windspeedMiles": "10"
+ }]
+ }
+ }
+**************/
+
 #import <CoreLocation/CoreLocation.h>
 #import "JSONKit.h"
 #import "WeatherForecast.h"
@@ -34,7 +165,7 @@
     // Note: if you are using this code, please apply for your own id at worldweatheronline.com
 	NSString *url = [NSString stringWithFormat:@"http://free.worldweatheronline.com/feed/weather.ashx?q=%f,%f&format=json&num_of_days=5&key=d90609c900092229111111", coord.latitude, coord.longitude];
     NSLog(@"Fetching forecast from: %@", url);
-    
+ 
 	theURL = [NSURL URLWithString:url];
 	NSURLRequest *request = [NSURLRequest requestWithURL:theURL];
 	[[[NSURLConnection alloc] initWithRequest:request delegate:self] autorelease];
@@ -66,10 +197,10 @@
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     NSLog(@"Connection did finish loading");
+    
     // get content using JSONKit
     JSONDecoder *parser = [JSONDecoder decoder]; // autoreleased
-    NSDictionary *data
-    = [[parser objectWithData:responseData] objectForKey:@"data"];
+    NSDictionary *data = [[parser objectWithData:responseData] objectForKey:@"data"];
     
     if (!data) {
         return;

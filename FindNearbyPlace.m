@@ -4,11 +4,34 @@
 //
 //  Can also use http://ws.geonames.org/ webservice to reverse-lookup geolocation
 //
-//  TODO: place labels don't show up, verify why
-//
 //  Created by Eugene Scherba on 11/10/11.
 //  Copyright (c) 2011 Boston University. All rights reserved.
 //
+
+/********** Example ***************
+ Query: http://ws.geonames.org/findNearbyPlaceNameJSON?lat=37.8015957&lng=-122.4735831
+ 
+ Result:
+ {
+ "geonames": [{
+ "countryName": "United States",
+ "adminCode1": "CA",
+ "fclName": "city, village,...",
+ "countryCode": "US",
+ "lng": -122.4735831,
+ "fcodeName": "populated place",
+ "distance": "0",
+ "toponymName": "Fort Winfield Scott",
+ "fcl": "P",
+ "name": "Fort Winfield Scott",
+ "fcode": "PPL",
+ "geonameId": 5350113,
+ "lat": 37.8015957,
+ "adminName1": "California",
+ "population": 0
+ }]
+ }
+**********************/
 
 #import "WeatherAppDelegate.h"
 #import "MainViewController.h"
@@ -16,6 +39,8 @@
 #import "JSONKit.h"
 
 @implementation FindNearbyPlace
+
+@synthesize  delegate;
 
 //
 // This is the only public method in this class
@@ -50,12 +75,13 @@
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
-    //NSString *content =
-    //[[NSString alloc] initWithBytes:[responseData bytes] length:[responseData length] encoding:NSUTF8StringEncoding];
+    //NSString *content = [[NSString alloc] initWithBytes:[responseData bytes] length:[responseData length] encoding:NSUTF8StringEncoding];
     
     // get content using JSONKit
-    //JSONDecoder *parser = [JSONDecoder decoder]; // autoreleased
-    //NSDictionary *firstLocation = [[[parser objectWithData:responseData] objectForKey:@"geonames"] objectAtIndex:0];
+    JSONDecoder *parser = [JSONDecoder decoder]; // autoreleased
+    NSDictionary *firstLocation = [[[parser objectWithData:responseData] objectForKey:@"geonames"] objectAtIndex:0];
+    
+    [self.delegate findNearbyPlaceDidFinish:firstLocation];
     
     // set location
     //appDelegate.mainViewController.locationName

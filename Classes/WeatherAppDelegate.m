@@ -5,39 +5,26 @@
 //  Created by Eugene Scherba on 1/11/11.
 //  Copyright 2011 Boston University. All rights reserved.
 //
-//  Also serves as a delegate to CLLocationManager
+//  Also serves as a delegate to CDLocationManager
 
 #import "WeatherAppDelegate.h"
 #import "MainViewController.h"
 #import "WeatherForecast.h"
-#import "FindNearbyPlace.h"
 
 @implementation WeatherAppDelegate
 
-
 @synthesize window;
 @synthesize mainViewController;
-@synthesize locationManager;
-@synthesize defaults;
 
 #pragma mark - Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
-    self.defaults = [NSUserDefaults standardUserDefaults];
-    //BOOL checkLocation = (BOOL)[self.defaults stringForKey:@"checkLocation"];
-    
     // Create instance of LocationManager object
-    self.locationManager = [[[CLLocationManager alloc] init] autorelease];
-    self.locationManager.delegate = self;
+    locationManager = [[CDLocationManager alloc] init];
+    locationManager.delegate = self;
     locationManagerStartDate = [[NSDate date] retain];
     
-    // TODO: this should be initialized on per-page basis
-    // Override point for customization after application launch.  
-	//WeatherForecast *forecast = [[WeatherForecast alloc] init];
-	//self.mainViewController.forecast = forecast;
-	//[forecast release];
-	
     // Add the main view controller's view to the window and display.
     // http://stackoverflow.com/a/12398777/597371
     // In order to prevent the error in debug area, "Applications are expected to have
@@ -98,76 +85,44 @@
 
 - (void)dealloc {
     [locationManager release];
+    locationManager = nil;
     [locationManagerStartDate release];
+    locationManagerStartDate = nil;
     [mainViewController release];
+    mainViewController = nil;
     [window release];
+    window = nil;
     [super dealloc];
 }
 
+#pragma mark - wrappers for CDLocationManagerDelegate methods
 
-#pragma mark - CLLocationManager methods
-
-- (void)locationManager:(CLLocationManager *) manager 
-    didUpdateToLocation:(CLLocation *)newLocation 
-           fromLocation:(CLLocation *)oldLocation
+// wrapper with callback
+-(void)startUpdatingLocation:(id)obj withCallback:(SEL)selector
 {
-    NSLog(@"didUpdateToLocation called");
-    if (![self isValidLocation:newLocation withOldLocation:oldLocation]) {
-        return;
-    }
-    NSLog(@"=> horiz: %f, vert: %f", [newLocation horizontalAccuracy],[newLocation verticalAccuracy]);
-    //NSLog(@"Location: %@", [newLocation description]);
-    if (newLocation != oldLocation) {
-
-        // start spinning loading indicator
-        //[self.mainViewController.loadingActivityIndicator startAnimating];
-        FindNearbyPlace *find = [[FindNearbyPlace alloc] init];
-        //NSString *latitude = [NSString stringWithFormat:@"%f", newLocation.coordinate.latitude];
-        //NSString *longitude = [NSString stringWithFormat:@"%f", newLocation.coordinate.longitude];
-        //[find queryServiceWithLat:latitude andLong:longitude];
-        [find queryServiceWithCoord:newLocation.coordinate];
-        
-        //TODO: check if it is needed to release FindNearbyPlace object here...
-    }
+    callbackObject = obj;
+    callBackselector = selector;
+    [locationManager startUpdatingLocation];
 }
 
-
-/*
- * validating location data according to:
- * http://troybrant.net/blog/2010/02/detecting-bad-corelocation-data/
- */
-- (BOOL)isValidLocation:(CLLocation *)newLocation
-        withOldLocation:(CLLocation *)oldLocation
+// this is a simple wrapper...
+-(void)stopUpdatingLocation
 {
-    // Filter out nil locations
-    if (!newLocation) {
-        return NO;
-    }
-    
-    // Filter out points by invalid accuracy
-    if (newLocation.horizontalAccuracy < 0) {
-        return NO;
-    }
-    
-    // Filter out points that are out of order
-    NSTimeInterval secondsSinceLastPoint =
-    [newLocation.timestamp timeIntervalSinceDate:oldLocation.timestamp];
-    if (secondsSinceLastPoint < 0) {
-        return NO;
-    }
-    
-    // Filter out points created before the manager was initialized
-    NSTimeInterval secondsSinceManagerStarted =
-    [newLocation.timestamp timeIntervalSinceDate:locationManagerStartDate];
-    if (secondsSinceManagerStarted < 0) {
-        return NO;
-    }
-    
-    // The newLocation is good to use
-    return YES;
+    [locationManager stopUpdatingLocation];
 }
 
--(void)locationManager:(CLLocationManager *) manager
+#pragma mark - CDLocationManager methods
+
+- (void)locationManager:(CDLocationManager *) manager
+    didUpdateToLocation:(CLLocation *)location
+{
+    //if (![self isValidLocation:newLocation withOldLocation:oldLocation]) {
+    //    return;
+    //}
+    [callbackObject performSelector:callBackselector withObject:location];
+}
+
+-(void)locationManager:(CDLocationManager *) manager
       didFailWithError:(NSError *)error
 {
     NSLog(@"Error: %@", [error description]);

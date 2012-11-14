@@ -8,15 +8,23 @@
 
 #import <Foundation/Foundation.h>
 
-// type
+@protocol FindNearbyPlaceDelegate;
+
 @class WeatherAppDelegate;
 
 @interface FindNearbyPlace : NSObject {
     WeatherAppDelegate *appDelegate;
     NSMutableData *responseData;
     NSURL *theURL;
+    
+    id<FindNearbyPlaceDelegate> delegate;
 }
 
 -(void)queryServiceWithCoord:(CLLocationCoordinate2D)coord;
 
+@property (nonatomic, assign) id<FindNearbyPlaceDelegate> delegate;
+@end
+
+@protocol FindNearbyPlaceDelegate
+-(void)findNearbyPlaceDidFinish:(NSDictionary*)dict;
 @end

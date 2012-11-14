@@ -7,27 +7,26 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <CoreLocation/CoreLocation.h>
+#import "CDLocationManager.h"
 
 @class MainViewController;
 
-@interface WeatherAppDelegate : NSObject <UIApplicationDelegate, CLLocationManagerDelegate> {
+@interface WeatherAppDelegate : NSObject <UIApplicationDelegate, CDLocationManagerDelegate> {
     UIWindow *window;
     MainViewController *mainViewController;
     
-    NSUserDefaults *defaults;
-    CLLocationManager *locationManager;
+    CDLocationManager *locationManager;
     NSDate *locationManagerStartDate;
+    
+    id callbackObject;
+    SEL callBackselector;
 }
+
+-(void)startUpdatingLocation:(id)obj withCallback:(SEL)selector;
+-(void)stopUpdatingLocation;
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet MainViewController *mainViewController;
-@property (nonatomic, retain) NSUserDefaults* defaults;
-@property (nonatomic, retain) CLLocationManager* locationManager;
-//@property (nonatomic, retain) NSString* nearbyLocationName;
-
-- (BOOL)isValidLocation:(CLLocation *)newLocation
-        withOldLocation:(CLLocation *)oldLocation;
 
 @end
 

@@ -18,6 +18,7 @@
 @synthesize modelArray;
 @synthesize scrollView;
 @synthesize pageControl;
+@synthesize trackLocation;
 
 #pragma mark - Lifecycle
 
@@ -31,43 +32,81 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	[super viewDidLoad];
+
+    defaults = [NSUserDefaults standardUserDefaults];
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
 
-    timer = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(400.0f) target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
-    
     // restore user selections (do this before setupPage is called)
     [self restoreSettings];
     
     // if don't have any saved objects, use default
     NSUInteger numObjects = [modelArray count];
-    if (numObjects < 1) {
-        // default locality is San Francisco, CA
-        RSLocality* defaultLocality = [[RSLocality alloc] initWithId:@"1b9ea3c094d3ac23c9a3afa8cd4d8a41f05de50a" reference:@"CkQ4AAAAtQXounq6fLeQifuqKBwOqg2lBXw3e14F2tpYq6Wq4aVEg8ntTYYm7SgoaJoSuJWaKqihCKxD-q4mqEKxpSXJ7RIQMYHFzmgd1BlKqSIiRvT_FRoUFhM0AAxFRnbO8S7QlZEjVa-a7aM" description:@"San Francisco, CA, United States"];
-        // reference and id are not reliable, so we also add longitude and latitude
-        CLLocationCoordinate2D defaultCoord;
-        defaultCoord.latitude = 37.777940030048796;
-        defaultCoord.longitude = -122.41945266723633;
-        defaultLocality.coord = defaultCoord;
-        defaultLocality.haveCoord = YES;
-        [modelArray addObject:defaultLocality];
-        [defaultLocality release];
+    if (trackLocation) {
+        if (numObjects > 0) {
+            RSLocality *locality = [modelArray objectAtIndex:0];
+            if (!locality.trackLocation) {
+                // set up a page at position zero representing current location
+                RSLocality* defaultLocality = [[RSLocality alloc] initWithId:@"" reference:@"" description:@"Current Location"];
+                defaultLocality.trackLocation = YES;
+                [modelArray insertObject:defaultLocality atIndex:0];
+                [defaultLocality release];
+            }
+        } else {
+            // empty array
+            // set up a page at position zero representing current location
+            RSLocality* defaultLocality = [[RSLocality alloc] initWithId:@"" reference:@"" description:@"Current Location"];
+            defaultLocality.trackLocation = YES;
+            [modelArray addObject:defaultLocality];
+            [defaultLocality release];
+        }
+    } else {
+        if (numObjects < 1) {
+            // default locality is San Francisco, CA
+            RSLocality* defaultLocality = [[RSLocality alloc] initWithId:@"1b9ea3c094d3ac23c9a3afa8cd4d8a41f05de50a" reference:@"CkQ4AAAAtQXounq6fLeQifuqKBwOqg2lBXw3e14F2tpYq6Wq4aVEg8ntTYYm7SgoaJoSuJWaKqihCKxD-q4mqEKxpSXJ7RIQMYHFzmgd1BlKqSIiRvT_FRoUFhM0AAxFRnbO8S7QlZEjVa-a7aM" description:@"San Francisco, CA, United States"];
+            // reference and id are not reliable, so we also add longitude and latitude
+            CLLocationCoordinate2D defaultCoord;
+            defaultCoord.latitude = 37.777940030048796;
+            defaultCoord.longitude = -122.41945266723633;
+            defaultLocality.coord = defaultCoord;
+            defaultLocality.haveCoord = YES;
+            [modelArray addObject:defaultLocality];
+            [defaultLocality release];
+        }
     }
     
     // flipside controller
     flipsideController = [[FlipsideViewController alloc] initWithNibName:@"FlipsideView" bundle:nil];
 	flipsideController.delegate = self; // need FlipsideViewControllerDelegate in <> interface
 	flipsideController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-    
-    // provide both old and new values to current page change observer
-    [pageControl addObserver:self
-                  forKeyPath:@"currentPage"
-                     options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld
-                     context:self];
-
-    // TODO: consider adding a timer here
-    //[NSTimer scheduledTimerWithTimeInterval:900.0f target:self selector:@selector(updateForecast) userInfo:nil repeats:YES];
+    // initialize model dictionary by using model array in the delegate object
+    NSUInteger i;
+    NSUInteger i_begin = (trackLocation) ? 1 : 0;
+    NSUInteger i_end = [modelArray count];
+    for (i = i_begin; i < i_end; i++) {
+        RSLocality *locality = [modelArray objectAtIndex:i];
+        [flipsideController.modelDict setObject:locality forKey:[locality apiId]];
+    }
 
     [self setupPage];
+
+    // The following calls allow us to update views with current forecasts.
+    // Monitor "currentPage" property of pageControl:
+    [pageControl addObserver:self
+                  forKeyPath:@"currentPage"
+                     options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+                     context:self];
+
+    // Monitor "trackLocation" property
+    /*
+    [self addObserver:self
+                  forKeyPath:@"trackLocation"
+                     options:NSKeyValueObservingOptionNew
+                     context:self];
+     */
+    
+    // Ideally timer should be called after setupPage
+    timer = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(400.0f) target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
+    
     NSLog(@"# viewDidLoad called");
 }
 
@@ -105,7 +144,8 @@
 }
 
 - (void)dealloc {
-    
+
+    [self removeObserver:self forKeyPath:@"trackLocation" context:self];
     [pageControl removeObserver:self forKeyPath:@"currentPage" context:self];
 
     // remove timer
@@ -130,6 +170,44 @@
 }
 
 # pragma mark - internals
+-(void)insertTrackedLocality
+{
+    // take care of the model first
+    RSLocality* defaultLocality = [[RSLocality alloc] initWithId:@"" reference:@"" description:@"Current Location"];
+    defaultLocality.trackLocation = YES;
+    [modelArray insertObject:defaultLocality atIndex:0];
+    [defaultLocality release];
+
+    // now the controllers
+    CGSize viewFrameSize = self.view.frame.size;
+    RSLocality* locality = [modelArray objectAtIndex:0];
+    RSLocalPageController *controller = [[RSLocalPageController alloc] initWithNibName:nil bundle:nil];
+    NSLog(@"Adding tracking page");
+    controller.locality = locality;
+    controller.pageNumber = 0;
+    UIView* view = controller.view;
+    view.frame = [self viewFrameWithX0:0 frameSize:viewFrameSize];
+    [scrollView addSubview:view];
+    [controllers insertObject:controller atIndex:0];
+    [controller release];
+    
+    NSUInteger controllerCount = [controllers count];
+    NSLog(@"Setting ScrollView width to %f * %u = %f", viewFrameSize.width, controllerCount, viewFrameSize.width * (CGFloat)controllerCount);
+    scrollView.contentSize = CGSizeMake(viewFrameSize.width * (CGFloat)controllerCount, viewFrameSize.height);
+    pageControl.numberOfPages = controllerCount;
+    
+    // rearrange following views
+    NSUInteger i;
+    for (i = 1; i < controllerCount; i++) {
+        controller = [controllers objectAtIndex:i];
+        controller.pageNumber = i;
+        CGFloat xOrigin = i * viewFrameSize.width;
+        controller.view.frame = [self viewFrameWithX0:xOrigin frameSize:viewFrameSize];
+    }
+    
+    [self saveSettings];
+}
+
 - (void)setupPage {
     // line below is crucial for UIScrollViewDelegate protocol to work
     scrollView.delegate = self;
@@ -164,8 +242,11 @@
 }
 
 -(void)restoreSettings {
-    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
-    NSData *dataRepresentingSavedArray = [currentDefaults objectForKey:@"localities"];
+
+    trackLocation = (BOOL)[defaults stringForKey:@"trackLocation"];
+    
+    // Localities array
+    NSData *dataRepresentingSavedArray = [defaults objectForKey:@"localities"];
     if (dataRepresentingSavedArray != nil) {
         NSArray *oldSavedArray = [NSKeyedUnarchiver unarchiveObjectWithData:dataRepresentingSavedArray];
         if (oldSavedArray != nil) {
@@ -176,6 +257,7 @@
     } else {
         modelArray = [[NSMutableArray alloc] init];
     }
+
     NSLog(@"$$$$ Size of the restored array: %d", [modelArray count]);
 }
 
@@ -185,7 +267,7 @@
     NSLog(@"Timer fired");
 }
 
-// this method should be called when coordinates are added/updated
+// this method should be called when scrollview is moved
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"currentPage"]) {
@@ -199,13 +281,43 @@
     }
 }
 
-# pragma mark - FlipsideViewControllerDelegate
--(void)saveSettings {
-    // save data models
-    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
-    [currentDefaults setObject:[NSKeyedArchiver archivedDataWithRootObject:modelArray] forKey:@"localities"];
-    BOOL savedOK = [currentDefaults synchronize];
+-(void) didUpdateToLocation:(CLLocation *)location
+{
+    NSLog(@"didUpdateToLocation called: %f, %f", location.coordinate.latitude,
+          location.coordinate.longitude);
+    NSLog(@"=> horiz: %f, vert: %f", [location horizontalAccuracy], [location verticalAccuracy]);
     
+    // pass the coordinate to the locality object
+    RSLocality *locality = [modelArray objectAtIndex:0];
+    if (locality.trackLocation) {
+        locality.coord = location.coordinate;
+    }
+}
+
+# pragma mark - FlipsideViewControllerDelegate
+-(NSUInteger)permanentLocalityCount
+{
+    NSUInteger lcount = [modelArray count];
+    if (lcount == 0) {
+        return lcount;
+    } else if (trackLocation) {
+        return lcount - 1;
+    } else {
+        return lcount;
+    }
+}
+
+-(RSLocality*)getPermanentLocalityByRow:(NSUInteger)row
+{
+    NSUInteger pageIndex = (trackLocation) ? row + 1 : row;
+    return [modelArray objectAtIndex:pageIndex];
+}
+
+-(void)saveSettings
+{
+    // save data models
+    [defaults setObject:[NSKeyedArchiver archivedDataWithRootObject:modelArray] forKey:@"localities"];
+    BOOL savedOK = [defaults synchronize];
     if (savedOK) {
         NSLog(@"$$$ Saved user selections, with model array size: %d", [modelArray count]);
     } else {
@@ -214,6 +326,8 @@
 }
 
 - (void)addPageWithLocality:(RSLocality*)locality {
+    [modelArray addObject:locality];
+    
     CGSize viewFrameSize = self.view.frame.size;
     CGFloat xOrigin = scrollView.contentSize.width;
     RSLocalPageController *controller = [[RSLocalPageController alloc] initWithNibName:nil bundle:nil];
@@ -246,27 +360,52 @@
     //return CGRectMake(xOrigin, 0, viewFrameSize.width, viewFrameSize.height);
 }
 
+-(BOOL)firstPageIsTrackingLocation {
+    if ([modelArray count] < 1) {
+        return NO;
+    } else {
+        RSLocality* locality = [modelArray objectAtIndex:0];
+        return locality.trackLocation;
+    }
+}
+
 - (void)removePage:(NSInteger)index {
+    
+    if ([controllers count] < 1) {
+        pageControl.numberOfPages = 0;
+        [self saveSettings];
+        return;
+    }
+
+    // Now the thing to do is to figure out if we have a controller tracking location.
+    // If so, increment index by one.
+    NSUInteger pageIndex = trackLocation ? index + 1 : index;
+    
     // remove page with index... from UIScrollView
-    NSLog(@"removing page: %u", index);
+    NSLog(@"removing page: %u", pageIndex);
+    
+    RSLocality* locality = [modelArray objectAtIndex:pageIndex];
+    [flipsideController.modelDict removeObjectForKey:[locality apiId]];
+    [modelArray removeObjectAtIndex:pageIndex];
     
     // removeObjectAtIndex will release the object, no need to release controller
-    RSLocalPageController* controller = [controllers objectAtIndex:index];
+    RSLocalPageController* controller = [controllers objectAtIndex:pageIndex];
     [controller.view removeFromSuperview];
 
     // update controller array
-    [controllers removeObjectAtIndex:index];
-    
+    [controllers removeObjectAtIndex:pageIndex];
+
     // shift all the views afterwards to the left
     NSUInteger i;
     NSUInteger numberOfViews = [controllers count];
     CGSize viewFrameSize = self.view.frame.size;
-    for (i = index; i < numberOfViews; i++) {
+    for (i = pageIndex; i < numberOfViews; i++) {
         controller = [controllers objectAtIndex:i];
+        controller.pageNumber = i;
         CGFloat xOrigin = i * viewFrameSize.width;
         controller.view.frame = [self viewFrameWithX0:xOrigin frameSize:viewFrameSize];
     }
-    
+
     //now resize the entire scrollview so that we don't get empty space on the right
     scrollView.contentSize = CGSizeMake(viewFrameSize.width * numberOfViews, viewFrameSize.height);
     
@@ -279,19 +418,30 @@
 
 - (void)insertViewFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
 {
-    NSLog(@"___ moving view from index %d to %d", fromIndex, toIndex);
-    // update controller array
-    RSLocalPageController* controller = [[controllers objectAtIndex:fromIndex] retain];
-    [controllers removeObject:controller];
-    [controllers insertObject:controller atIndex:toIndex];
-    [controller release];
+    // Now the thing to do is to figure out if we have a controller tracking location.
+    // If so, increment index by one.
+    NSUInteger fromPageIndex = trackLocation ? fromIndex + 1 : fromIndex;
+    NSUInteger toPageIndex = trackLocation ? toIndex + 1 : toIndex;
+    NSLog(@"___ moving view from index %d to %d", fromPageIndex, toPageIndex);
     
+    RSLocality *item = [[modelArray objectAtIndex:fromPageIndex] retain];
+    [modelArray removeObject:item];
+    [modelArray insertObject:item atIndex:toPageIndex];
+    [item release];
+    
+    // update controller array
+    RSLocalPageController* controller = [[controllers objectAtIndex:fromPageIndex] retain];
+    [controllers removeObject:controller];
+    [controllers insertObject:controller atIndex:toPageIndex];
+    [controller release];
+
     // show all views at their proper locations
     CGSize viewFrameSize = self.view.frame.size;
     NSUInteger i;
     NSUInteger numberOfViews = [controllers count];
     for (i = 0; i < numberOfViews; i++) {
         controller = [controllers objectAtIndex:i];
+        controller.pageNumber = i;
         CGFloat xOrigin = i * viewFrameSize.width;
         controller.view.frame = [self viewFrameWithX0:xOrigin frameSize:viewFrameSize];
     }
@@ -304,6 +454,25 @@
 {
 	//[self dismissModalViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)locationSwitchSetTo:(BOOL)newState
+{
+    // Save the class member variable
+    trackLocation = newState;
+    NSLog( @"The switch is %@", trackLocation ? @"ON" : @"OFF" );
+    [defaults setObject:[NSNumber numberWithBool:trackLocation] forKey:@"trackLocation"];
+    if (trackLocation) {
+        if ([modelArray count] == 0 || ![[modelArray objectAtIndex:0] trackLocation]) {
+            [self insertTrackedLocality];
+        }
+        [appDelegate startUpdatingLocation:self withCallback:@selector(didUpdateToLocation:)];
+    } else {
+        [appDelegate stopUpdatingLocation];
+        if ([modelArray count] > 0 && [self firstPageIsTrackingLocation]) {
+            [self removePage:0];
+        }
+    }
 }
 
 #pragma mark - UIScrollViewDelegate stuff
@@ -321,7 +490,13 @@
     int page = floor((__scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
     
     //NSLog(@"page: %d", page);
-    pageControl.currentPage = page;
+    
+    // Because we use observer on pageControl, it is important that we do not call
+    // the setter every time the page is moved slightly, otherwise observer will be
+    // called too many times.
+    if (pageControl.currentPage != page) {
+        pageControl.currentPage = page;
+    }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)__scrollView
