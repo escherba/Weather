@@ -200,10 +200,13 @@
     
     // get content using JSONKit
     JSONDecoder *parser = [JSONDecoder decoder]; // autoreleased
-    NSDictionary *data = [[parser objectWithData:responseData] objectForKey:@"data"];
-    
-    if (!data) {
-        return;
+    NSDictionary *data;
+    @try {
+        data = [[parser objectWithData:responseData] objectForKey:@"data"];
+    }
+    @catch (NSException *e) {
+        data = nil;
+        NSLog(@"Exception trying to parse JSON response");
     }
     
 	// Forecast Information ///////////////////////////////////////
@@ -223,14 +226,16 @@
         rsCondition.humidity = [current_condition objectForKey:@"humidity"];
         rsCondition.wind = [current_condition objectForKey:@"windspeedMiles"];
     }
-    [self.condition release];
+    if (condition) {
+        [condition release];
+    }
     condition = rsCondition;
-    
+
 	// 5-day forecast ////////////////////////////////////////
     NSMutableArray* tmpDays = [[NSMutableArray alloc] initWithObjects:nil];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-    
+
     NSArray *forecast = [data objectForKey:@"weather"];
     if (forecast) {
         for (NSDictionary *node in forecast) {
@@ -239,17 +244,20 @@
             [tmpDays addObject:rsDay];
             [rsDay release];
         }
-	}
-    
-    [self.days release];
+    }
+    if (days) {
+        [days release];
+    }
     days = tmpDays;
-    
+
     [dateFormatter release];
     [responseData release];
     responseData = nil;
-    
+
     NSLog(@"Notifying delegate that forecast had finished downloading");
-	[self.delegate weatherForecastDidFinish:self];
+    if (self.delegate) {
+        [self.delegate weatherForecastDidFinish:self];
+    }
 }
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection

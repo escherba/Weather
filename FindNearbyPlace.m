@@ -9,7 +9,7 @@
 //
 
 /********** Example ***************
- Query: http://ws.geonames.org/findNearbyPlaceNameJSON?lat=37.8015957&lng=-122.4735831
+ Query: http://ws.geonames.org/findNearbyPlaceNameJSON?lat=37.8015957&lng=-122.4735831&username=rescribble
  
  Result:
  {
@@ -33,14 +33,12 @@
  }
 **********************/
 
-#import "WeatherAppDelegate.h"
 #import "MainViewController.h"
 #import "FindNearbyPlace.h"
 #import "JSONKit.h"
 
 @implementation FindNearbyPlace
-
-@synthesize  delegate;
+@synthesize delegate;
 
 //
 // This is the only public method in this class
@@ -48,23 +46,50 @@
 //
 -(void)queryServiceWithCoord:(CLLocationCoordinate2D)coord
 {
-    appDelegate = (WeatherAppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSLog(@"FindNearbyPlace queryServiceWithCoord:");
     responseData = [[NSMutableData data] retain];
+    
+    /* With geonames API, can also return weather like this:
+     http://api.geonames.org/findNearByWeatherJSON?lat=37.791752&lng=-122.480210&username=rescribble
+     {
+     "weatherObservation": {
+     "weatherCondition": "n/a",
+     "clouds": "scattered clouds",
+     "observation": "KSFO 140356Z 16004KT 10SM SCT180 14/05 A3010 RMK AO2 SLP193 T01440050",
+     "windDirection": 160,
+     "ICAO": "KSFO",
+     "seaLevelPressure": 1019.3,
+     "elevation": 3,
+     "countryCode": "US",
+     "cloudsCode": "SCT",
+     "lng": -122.36666666666666,
+     "temperature": "14.4",
+     "dewPoint": "5",
+     "windSpeed": "04",
+     "humidity": 53,
+     "stationName": "San Francisco, San Francisco International Airport",
+     "datetime": "2012-11-14 03:56:00",
+     "lat": 37.61666666666667
+     }
+     } */
     
     // Using Google Places API:
     // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.8015957,-122.4735831&rankby=distance&types=establishment&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc
     //
     // http://maps.googleapis.com/maps/api/geocode/json?latlng=37.8015957,-122.4735831&sensor=true&types=locality
-    NSString *url = [NSString stringWithFormat:@"http://ws.geonames.org/findNearbyPlaceNameJSON?lat=%f&lng=%f",
+    NSString *url = [NSString stringWithFormat:@"http://ws.geonames.org/findNearbyPlaceNameJSON?lat=%f&lng=%f&username=rescribble",
                      coord.latitude, coord.longitude];
     theURL = [[NSURL URLWithString:url] retain];
     NSURLRequest *request = [NSURLRequest requestWithURL:theURL];
-    [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    if (apiConnection) {
+        [apiConnection release];
+    }
+    apiConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
 // Lifecycle method: dealloc
 -(void)dealloc {
-    [appDelegate release];
+    [apiConnection release];
     [responseData release];
     [theURL release];
     [super dealloc];
@@ -73,25 +98,22 @@
 #pragma mark -
 #pragma mark NSURLConnection delegate methods
 
--(void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    
-    //NSString *content = [[NSString alloc] initWithBytes:[responseData bytes] length:[responseData length] encoding:NSUTF8StringEncoding];
+-(void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    NSLog(@"@FindNearbyplace connectionDidFinishLoading");
     
     // get content using JSONKit
     JSONDecoder *parser = [JSONDecoder decoder]; // autoreleased
-    NSDictionary *firstLocation = [[[parser objectWithData:responseData] objectForKey:@"geonames"] objectAtIndex:0];
+    NSDictionary *firstLocation;
+    @try {
+        firstLocation = [[[parser objectWithData:responseData] objectForKey:@"geonames"] objectAtIndex:0];
+    }
+    @catch (NSException *e) {
+        firstLocation = nil;
+        NSLog(@"Exception caught while parsing JSON");
+    }
     
     [self.delegate findNearbyPlaceDidFinish:firstLocation];
-    
-    // set location
-    //appDelegate.mainViewController.locationName
-    //appDelegate.nearbyLocationName = [NSString stringWithFormat:@"%@,%@", [firstLocation objectForKey:@"name"], [firstLocation objectForKey:@"adminCode1"]];
-    
-    // stop spinning loading indicator
-    //[appDelegate.mainViewController.loadingActivityIndicator stopAnimating];
-    
-    // refresh main view
-    //[appDelegate.mainViewController refreshView: self];
     [responseData release];
     responseData = nil;
 }

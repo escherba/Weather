@@ -10,12 +10,10 @@
 
 @protocol FindNearbyPlaceDelegate;
 
-@class WeatherAppDelegate;
-
 @interface FindNearbyPlace : NSObject {
-    WeatherAppDelegate *appDelegate;
     NSMutableData *responseData;
     NSURL *theURL;
+    NSURLConnection *apiConnection;
     
     id<FindNearbyPlaceDelegate> delegate;
 }

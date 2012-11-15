@@ -7,6 +7,7 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
+#import "WeatherAppDelegate.h"
 #import "RSLocalPageController.h"
 #import "RSAddGeo.h"
 
@@ -19,26 +20,11 @@
 
 #pragma mark - Lifecycle
 
-// will call this instead of init
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	[super viewDidLoad];
-
-    if (locality.trackLocation) {
-        findNearby = [[FindNearbyPlace alloc] init];
-        findNearby.delegate = self;
-    } else {
-        findNearby = nil;
-    }
+    
+    appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
     
     UIColor *pattern = [UIColor colorWithPatternImage:[UIImage imageNamed: @"fancy_deboss.png"]];
     [self.view setBackgroundColor: pattern];
@@ -70,10 +56,14 @@
     
     if (locality.haveCoord) {
         NSLog(@"Page %u: viewDidLoad: getting forecast", pageNumber);
-        [self refreshView];
+        [loadingActivityIndicator startAnimating];
+        [forecast queryService:locality.coord];
     } else {
         NSLog(@"Page %u: viewDidLoad: missing coordinates", pageNumber);
         NSLog(@"lat: %f, long: %f", self.locality.coord.latitude, self.locality.coord.longitude);
+    }
+    if (locality.trackLocation) {
+        [loadingActivityIndicator startAnimating];
     }
 }
 
@@ -84,11 +74,11 @@
 }
 
 - (void)dealloc {
-
-    [findNearby release];
     
+    // release current locality object
     NSLog(@"Releasing observer");
     [locality removeObserver:self forKeyPath:@"coord" context:self];
+    [locality release];
     
     [weekdayFormatter release];
     
@@ -102,15 +92,24 @@
 	[nowConditionLabel release];
     
     [_tableView release];
-    
+
 	[super dealloc];
 }
 
-#pragma mark - custom methods
+#pragma mark - internals
 
-- (IBAction)refreshView {
-	[loadingActivityIndicator startAnimating];
-    [forecast queryService:locality.coord];
+-(void)currentLocationDidUpdate:(CLLocation *)location
+{
+    CLLocationCoordinate2D coord = location.coordinate;
+    [appDelegate.findNearby queryServiceWithCoord:coord];
+    //[forecast queryService:coord];
+}
+
+-(void)findNearbyPlaceDidFinish:(NSDictionary*)dict
+{
+    NSLog(@"RSLocalPageController findNearbyPlaceDidFinish:");
+    NSString* placeName = [dict objectForKey:@"name"];
+    nameLabel.text = placeName;
 }
 
 -(void)viewMayNeedUpdate {
@@ -119,12 +118,12 @@
     // difference between current and stored timestamps;
     
     NSDate *currentTime = [NSDate date];
-    
     NSTimeInterval interval = [currentTime timeIntervalSinceDate:locality.forecastTimestamp];
     
     // 900 seconds is 15 minutes
     if (interval >= 900.0f) {
-        [self refreshView];
+        [loadingActivityIndicator startAnimating];
+        [forecast queryService:locality.coord];
     }
     NSLog(@"!!! Seconds since last update: %f", interval);
 }
@@ -137,6 +136,7 @@
     {
         [localityValue retain];
         
+        // release current locality object
         NSLog(@"Releasing observer");
         [locality removeObserver:self forKeyPath:@"coord" context:self];
         [locality release];
@@ -145,6 +145,7 @@
             forKeyPath:@"coord"
                 options:NSKeyValueObservingOptionNew
                     context:self];
+        
         locality = localityValue;
     }
 }
@@ -153,21 +154,13 @@
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"coord"]) {
-        NSLog(@">>>> Coordinates changed, observer called!");
-        [self refreshView];
+        NSLog(@"RSLocalPageController observeValueForKeyPath:coord called");
+        [loadingActivityIndicator startAnimating];
+        [forecast queryService:locality.coord];
         if (locality.trackLocation) {
-            // find name of nearby place
-            [findNearby queryServiceWithCoord:locality.coord];
+            [appDelegate.findNearby queryServiceWithCoord:locality.coord];
         }
     }
-}
-
-#pragma mark - FindNearbyPlaceDelegate method
--(void)findNearbyPlaceDidFinish:(NSDictionary*)dict
-{
-    NSString* placeName = [dict objectForKey:@"name"];
-    locality.description = placeName;
-    nameLabel.text = placeName;
 }
 
 #pragma mark - WeatherForecastDelegate method
@@ -227,6 +220,9 @@
         
         cell.detailTextLabel.text = day.condition;
         cell.imageView.image = day.iconData;
+        
+        // check if row is odd or even and set color accordingly
+        //cell.backgroundColor = (indexPath.row % 2) ? [UIColor whiteColor] : [UIColor lightGrayColor];
     }
     return cell;
 }
