@@ -26,7 +26,7 @@
     NSMutableDictionary *modelDict;
     
     UISwitch *switchView;
-    NSString *_currentLocalityId;
+    NSString *_requestedLocalityId;
     IBOutlet UITableView *_tableView;
 }
 

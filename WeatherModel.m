@@ -51,7 +51,9 @@
 
 // method: loadIcon
 -(void)loadIcon {
-    [self.iconData release];
+    if (_iconData) {
+        [_iconData release];
+    }
     if (self.iconURL) {
         UIImage *img = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.iconURL]]];
         _iconData = [[img roundCornersWithRadius:3.0] retain];
@@ -117,7 +119,9 @@
 
 // method: loadIcon (TODO: note that this method's definition is repeated for different interface)
 -(void)loadIcon {
-    [self.iconData release];
+    if (_iconData) {
+        [_iconData release];
+    }
     if (self.iconURL) {
         UIImage *img = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.iconURL]]];
         _iconData = [[[img roundCornersWithRadius:3.0] imageScaledToSize:CGSizeMake(40, 40)] retain];

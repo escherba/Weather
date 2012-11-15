@@ -371,7 +371,14 @@ didReceiveResponse:(NSURLResponse *)response
 {
     // Deal with predictions returned by autocomplete API
     JSONDecoder* parser = [JSONDecoder decoder]; // autoreleased
-    NSDictionary *data = [parser objectWithData:responseData];
+    NSDictionary *data;
+    @try {
+        data = [parser objectWithData:responseData];
+    }
+    @catch (NSException *e) {
+        data = nil;
+        NSLog(@"Exception caught parsing JSON");
+    }
     if (!data) {
         return;
     }
@@ -402,6 +409,7 @@ didReceiveResponse:(NSURLResponse *)response
             // at this point, store id, reference id, and description of locality
             RSLocality *locality = [[RSLocality alloc] initWithId:[item objectForKey:@"id"] reference:[item objectForKey:@"reference"] description:[item objectForKey:@"description"]];
             [processedData addObject:locality];
+            [locality release];
         }
     }
     

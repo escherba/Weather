@@ -138,44 +138,9 @@
   }
 }
 
-/*
- * validating location data according to:
- * http://troybrant.net/blog/2010/02/detecting-bad-corelocation-data/
- *
- - (BOOL)isValidLocation:(CLLocation *)newLocation
- withOldLocation:(CLLocation *)oldLocation
- {
- // Filter out nil locations
- if (!newLocation) {
- return NO;
- }
- 
- // Filter out points by invalid accuracy
- if (newLocation.horizontalAccuracy < 0) {
- return NO;
- }
- 
- // Filter out points that are out of order
- NSTimeInterval secondsSinceLastPoint =
- [newLocation.timestamp timeIntervalSinceDate:oldLocation.timestamp];
- if (secondsSinceLastPoint < 0) {
- return NO;
- }
- 
- // Filter out points created before the manager was initialized
- NSTimeInterval secondsSinceManagerStarted =
- [newLocation.timestamp timeIntervalSinceDate:locationManagerStartDate];
- if (secondsSinceManagerStarted < 0) {
- return NO;
- }
- 
- // The newLocation is good to use
- return YES;
- } */
-
 - (void)dealloc {
-  self.accurateUpdateStarted = nil;
-  self.locationManager = nil;
+  accurateUpdateStarted = nil;
+  locationManager = nil;
   [super dealloc];
 }
 

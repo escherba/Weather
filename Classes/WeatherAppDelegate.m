@@ -15,11 +15,16 @@
 
 @synthesize window;
 @synthesize mainViewController;
+@synthesize findNearby;
+@synthesize currentLocation;
 
-#pragma mark - Application lifecycle
+#pragma mark - Lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-
+    
+    findNearby = [[FindNearbyPlace alloc] init];
+    findNearby.delegate = mainViewController;
+    
     // Create instance of LocationManager object
     locationManager = [[CDLocationManager alloc] init];
     locationManager.delegate = self;
@@ -74,9 +79,6 @@
      */
 }
 
-
-#pragma mark - Memory management
-
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
     /*
      Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
@@ -84,6 +86,8 @@
 }
 
 - (void)dealloc {
+    [currentLocation release];
+    [findNearby release];
     [locationManager release];
     locationManager = nil;
     [locationManagerStartDate release];
@@ -100,15 +104,10 @@
 // wrapper with callback
 -(void)startUpdatingLocation:(id)obj withCallback:(SEL)selector
 {
+    NSLog(@"....Starting location tracking");
     callbackObject = obj;
     callBackselector = selector;
     [locationManager startUpdatingLocation];
-}
-
-// this is a simple wrapper...
--(void)stopUpdatingLocation
-{
-    [locationManager stopUpdatingLocation];
 }
 
 #pragma mark - CDLocationManager methods
@@ -116,16 +115,58 @@
 - (void)locationManager:(CDLocationManager *) manager
     didUpdateToLocation:(CLLocation *)location
 {
-    //if (![self isValidLocation:newLocation withOldLocation:oldLocation]) {
-    //    return;
-    //}
-    [callbackObject performSelector:callBackselector withObject:location];
+    if ([self isValidLocation:location withOldLocation:currentLocation]) {
+        if (currentLocation) {
+            [currentLocation release];
+        }
+        currentLocation = [location retain];
+        NSLog(@"Got coord: lat=%f, long=%f", location.coordinate.latitude, location.coordinate.longitude);
+        [callbackObject performSelector:callBackselector withObject:location];
+    } else {
+        NSLog(@"Bad location: lat=%f, long=%f", location.coordinate.latitude, location.coordinate.longitude);
+    }
 }
 
 -(void)locationManager:(CDLocationManager *) manager
       didFailWithError:(NSError *)error
 {
     NSLog(@"Error: %@", [error description]);
+}
+
+#pragma mark - internals
+/*
+ * validating location data according to:
+ * http://troybrant.net/blog/2010/02/detecting-bad-corelocation-data/
+ */
+- (BOOL)isValidLocation:(CLLocation *)newLocation
+        withOldLocation:(CLLocation *)oldLocation
+{
+    // Filter out nil locations
+    if (!newLocation) {
+        return NO;
+    }
+    
+    // Filter out points by invalid accuracy
+    if (newLocation.horizontalAccuracy < 0) {
+        return NO;
+    }
+    
+    // Filter out points that are out of order
+    NSTimeInterval secondsSinceLastPoint =
+    [newLocation.timestamp timeIntervalSinceDate:oldLocation.timestamp];
+    if (secondsSinceLastPoint < 0) {
+        return NO;
+    }
+    
+    // Filter out points created before the manager was initialized
+    NSTimeInterval secondsSinceManagerStarted =
+    [newLocation.timestamp timeIntervalSinceDate:locationManagerStartDate];
+    if (secondsSinceManagerStarted < 0) {
+        return NO;
+    }
+    
+    // The newLocation is good to use
+    return YES;
 }
 
 @end

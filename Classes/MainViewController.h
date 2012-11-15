@@ -9,13 +9,12 @@
 
 #import "FlipsideViewController.h"
 #import "WeatherForecast.h"
+#import "FindNearbyPlace.h"
 
-
-@interface MainViewController : UIViewController <FlipsideViewControllerDelegate, UIScrollViewDelegate> {
-
-    // app delegate
-    WeatherAppDelegate *appDelegate;
+@interface MainViewController : UIViewController <FlipsideViewControllerDelegate, UIScrollViewDelegate, FindNearbyPlaceDelegate>
+{
     NSUserDefaults *defaults;
+    WeatherAppDelegate *appDelegate;
     
     // To be used when scrolls originate from the UIPageControl
     BOOL pageControlUsed;
@@ -28,6 +27,8 @@
     
     NSTimer *timer;
 }
+
+-(void)currentLocationDidUpdate:(CLLocation *)location;
 
 @property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
 @property (nonatomic, retain) IBOutlet UIPageControl *pageControl;

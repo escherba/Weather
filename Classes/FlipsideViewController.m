@@ -70,7 +70,8 @@
     [geoAddController release];
     [switchView release];
     [_tableView release];
-
+    [_requestedLocalityId release];
+    
     [super dealloc];
 }
 
@@ -89,17 +90,17 @@
         return;
     }
 
-    // We keep _currentLocalityId as a temporary variable to be reused when
+    // We keep _requestedLocalityId as a temporary variable to be reused when
     // the new connection finishes
-    _currentLocalityId = [selectedLocality apiId];
-    RSLocality* currentLocality = [modelDict objectForKey:_currentLocalityId];
+    _requestedLocalityId = [[selectedLocality apiId] retain];
+    RSLocality* currentLocality = [modelDict objectForKey:_requestedLocalityId];
     if (currentLocality) {
         [currentLocality updateFrom:selectedLocality];
     } else {
 
         // if locality id not in the dictionary,
         // append it there as well as to the array
-        [modelDict setObject:selectedLocality forKey:_currentLocalityId];
+        [modelDict setObject:selectedLocality forKey:_requestedLocalityId];
         [self.delegate addPageWithLocality:selectedLocality];
         currentLocality = selectedLocality;
         
@@ -170,7 +171,7 @@
                 if (indexPath.row == 0) {
                     
                     // add a UISwitch control on the right
-                    cell.textLabel.text = @"Use Current Location:";
+                    cell.textLabel.text = @"Current Location:";
                     cell.accessoryView = switchView;
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 }
@@ -285,11 +286,15 @@ didReceiveResponse:(NSURLResponse *)response
 {
     // Deal with result returned by autocomplete API
     JSONDecoder* parser = [JSONDecoder decoder]; // autoreleased
-    NSDictionary *data = [parser objectWithData:responseData];
-    if (!data) {
-        return;
+    NSDictionary *data = nil;
+    @try {
+        data = [parser objectWithData:responseData];
     }
-    NSString *status = [data objectForKey:@"status"];
+    @catch (NSException *e) {
+        data = nil;
+        NSLog(@"Exception caught while parsing JSON");
+    }
+    NSString *status  = [data objectForKey:@"status"];
     if (!status || ![status isEqualToString:@"OK"]) {
         return;
     }
@@ -299,19 +304,22 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     // update locality object in modelDict
-    RSLocality *locality = [modelDict objectForKey:_currentLocalityId];
-    locality.formatted_address = [result objectForKey:@"formatted_address"];
-    locality.name = [result objectForKey:@"name"];
-    locality.vicinity = [result objectForKey:@"vicinity"];
-    locality.url = [result objectForKey:@"url"];
-    NSDictionary *location = [[result objectForKey:@"geometry"] objectForKey:@"location"];
-    CLLocationCoordinate2D coord2d;
-    coord2d.latitude = [[location objectForKey:@"lat"] doubleValue];
-    coord2d.longitude = [[location objectForKey:@"lng"] doubleValue];
-    locality.coord = coord2d;
-    
-    // save model array
-    [self.delegate saveSettings];
+    RSLocality *locality = [modelDict objectForKey:_requestedLocalityId];
+    [_requestedLocalityId release];
+    if (locality) {
+        locality.formatted_address = [result objectForKey:@"formatted_address"];
+        locality.name = [result objectForKey:@"name"];
+        locality.vicinity = [result objectForKey:@"vicinity"];
+        locality.url = [result objectForKey:@"url"];
+        NSDictionary *location = [[result objectForKey:@"geometry"] objectForKey:@"location"];
+        CLLocationCoordinate2D coord2d;
+        coord2d.latitude = [[location objectForKey:@"lat"] doubleValue];
+        coord2d.longitude = [[location objectForKey:@"lng"] doubleValue];
+        locality.coord = coord2d;
+        
+        // save model array
+        [self.delegate saveSettings];
+    }
     
     //cleanup
     [responseData release];
