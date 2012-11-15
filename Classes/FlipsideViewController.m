@@ -41,10 +41,22 @@
     geoAddController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     geoAddController.delegate = self;
 
+    // switch to toggle whether current location page is showed
     switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
     [switchView setOn:self.delegate.trackLocation animated:NO];
     [switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 
+    // temperature units control
+	NSArray *itemArray = [NSArray arrayWithObjects: @"F", @"C", nil];
+	segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
+	segmentedControl.frame = CGRectMake(0, 0, 100, 20); //CGRectZero;
+	segmentedControl.segmentedControlStyle = UISegmentedControlStylePlain;
+	segmentedControl.selectedSegmentIndex = 0;
+	[segmentedControl addTarget:self
+	                     action:@selector(unitsChanged:)
+	           forControlEvents:UIControlEventValueChanged];
+    
+    // table listing cities/locations selected by user
     _tableView.dataSource = self;
     _tableView.delegate = self;
     [_tableView setEditing:YES animated:NO];
@@ -69,6 +81,8 @@
     
     [geoAddController release];
     [switchView release];
+    [segmentedControl release];
+    
     [_tableView release];
     [_requestedLocalityId release];
     
@@ -126,7 +140,15 @@
 
 - (void) switchChanged:(id)sender {
     //self.delegate.trackLocation = switchView.on;
-    [self.delegate locationSwitchSetTo:switchView.on];
+    UISwitch *switchFromSender = (UISwitch*)sender;
+    [self.delegate locationSwitchSetTo:switchFromSender.on];
+}
+
+//Action method executes when user touches the button
+- (void) unitsChanged:(id)sender{
+	UISegmentedControl *segmentedControlFromSender = (UISegmentedControl *)sender;
+    NSInteger selectedIndex = [segmentedControlFromSender selectedSegmentIndex];
+	NSLog(@"Selected units:%@", [segmentedControlFromSender titleForSegmentAtIndex:selectedIndex]);
 }
 
 - (IBAction)done:(id)sender {
@@ -143,17 +165,27 @@
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
 {
-    if (section == 0) {
-        // first section only displays switch to toggle location tracking
-        return 1;
-    } else {
-        return [delegate permanentLocalityCount];
+    switch (section) {
+        case 0:
+            // first section only displays switch to toggle location tracking
+            return 1;
+            break;
+        case 1:
+            return [delegate permanentLocalityCount];
+            break;
+        case 2:
+            return 1; // temperature control
+            break;
+        default:
+            break;
     }
+    [NSException raise:@"Invalid section value" format:@"section of %d is invalid", section];
+    return -1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -181,6 +213,17 @@
                 // Other locations
                 locality = [self.delegate getPermanentLocalityByRow:indexPath.row];
                 cell.textLabel.text = [locality description];
+                break;
+            case 2:
+                if (indexPath.row == 0) {
+                    cell.textLabel.text = @"Temperature Units:";
+                    segmentedControl.frame = CGRectMake(0, 0, 110, cell.frame.size.height - 8);
+                    cell.accessoryView = segmentedControl;
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                }
+                break;
+            default:
+                [NSException raise:@"Invalid section value" format:@"section of %d is invalid", indexPath.section];
                 break;
         }
     } else {

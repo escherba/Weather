@@ -26,6 +26,8 @@
     NSMutableDictionary *modelDict;
     
     UISwitch *switchView;
+    UISegmentedControl *segmentedControl;
+    
     NSString *_requestedLocalityId;
     IBOutlet UITableView *_tableView;
 }
