@@ -58,6 +58,9 @@
         NSLog(@"Page %u: viewDidLoad: getting forecast", pageNumber);
         [loadingActivityIndicator startAnimating];
         [forecast queryService:locality.coord];
+        if (locality.trackLocation) {
+            [appDelegate.findNearby queryServiceWithCoord:locality.coord];
+        }
     } else {
         NSLog(@"Page %u: viewDidLoad: missing coordinates", pageNumber);
         NSLog(@"lat: %f, long: %f", self.locality.coord.latitude, self.locality.coord.longitude);

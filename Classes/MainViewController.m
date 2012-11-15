@@ -171,13 +171,13 @@
     // take care of the model first
     RSLocality* locality = [[RSLocality alloc] initWithId:@"" reference:@"" description:@"Current Location"];
     locality.trackLocation = YES;
+    locality.coord = appDelegate.currentLocation.coordinate;
     [modelArray insertObject:locality atIndex:0];
 
     // now the controllers
     CGSize viewFrameSize = self.view.frame.size;
     RSLocalPageController *controller = [[RSLocalPageController alloc] initWithNibName:nil bundle:nil];
     controller.locality = locality;
-    locality.coord = appDelegate.currentLocation.coordinate;
     controller.pageNumber = 0;
     UIView* view = controller.view;
     view.frame = [self viewFrameWithX0:0 frameSize:viewFrameSize];
@@ -300,7 +300,6 @@
     if (distance >= 1000.0f) {
         if (locality) {
             locality.coord = location.coordinate;
-            [self saveSettings];
         } else {
             return;
         }
