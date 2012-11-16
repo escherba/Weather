@@ -15,32 +15,40 @@
 //========================================================================
 @implementation RSCondition
 
-@synthesize wind;
+@synthesize windspeedMiles;
+@synthesize windspeedKmph;
 @synthesize humidity;
-@synthesize tempC;
-@synthesize tempF;
+@synthesize temp_C;
+@synthesize temp_F;
 @synthesize condition;
 @synthesize iconURL = _iconURL;
 @synthesize iconData = _iconData;
 
 // Lifecycle methods: dealloc
 - (void)dealloc {
-    [wind release];
-    [humidity release];
-    [tempC release];
-    [tempF release];
     [condition release];
     [_iconURL release];
     [_iconData release];
     [super dealloc];
 }
 
+// Public method:
+-(NSString*)formatWindSpeedImperial:(BOOL)useImperial {
+    if (useImperial) {
+        return [NSString stringWithFormat:@"%u mph", windspeedMiles];
+    } else {
+        return [NSString stringWithFormat:@"%u kmph", windspeedKmph];
+    }
+}
+
 // Public method: formatTemperature
--(NSString*) formatTemperature {
+-(NSString*) formatTemperatureImperial:(BOOL)useImperial {
     // stringWithFormat returns a string that is already autoreleased
-    return [NSString stringWithFormat:@"%@F (%@C)", 
-            self.tempF, 
-            self.tempC];
+    if (useImperial) {
+        return [NSString stringWithFormat:@"%d°", temp_F];
+    } else {
+        return [NSString stringWithFormat:@"%d°", temp_C];
+    }
 }
 
 // method: setIconURL
@@ -67,24 +75,30 @@
 @implementation RSDay
 
 @synthesize date;
-@synthesize highT;
-@synthesize lowT;
+@synthesize tempMaxF;
+@synthesize tempMinF;
+@synthesize tempMaxC;
+@synthesize tempMinC;
 @synthesize condition;
 @synthesize iconURL = _iconURL;
 @synthesize iconData = _iconData;
 
 // Lifecycle methods: initWithDate
 - (id)initWithDate:(NSDate*)date1
-             highT:(NSString*) highT1
-              lowT:(NSString*) lowT1
+          tempMaxF:(NSString*) highT1
+              tempMinF:(NSString*) lowT1
+             tempMaxC:(NSString*) highT2
+              tempMinC:(NSString*) lowT2
          condition:(NSString*)condition1
            iconURL:(NSString*)iconURL1
 {
     self = [super init];
     if (self) {
         date = [date1 retain];
-        lowT = [lowT1 retain];
-        highT = [highT1 retain];
+        tempMaxF = [highT1 integerValue];
+        tempMinF = [lowT1 integerValue];
+        tempMaxC = [highT2 integerValue];
+        tempMinC = [lowT2 integerValue];
         condition = [condition1 retain];
         _iconURL = [iconURL1 retain];
         [self loadIcon];
@@ -95,8 +109,6 @@
 // Lifecycle methods: dealloc
 - (void)dealloc {
     [date release];
-    [lowT release];
-    [highT release];
     [condition release];
     [_iconURL release];
     [_iconData release];
@@ -104,11 +116,22 @@
 }
 
 // Public method: getHiLo
--(NSString*) getHiLo {
+-(NSString*) getHiLoImperial:(BOOL)useImperial
+{
     // stringWithFormat returns a string that is already autoreleased
-    return [NSString stringWithFormat:@"%@° / %@°", 
-            self.highT, 
-            self.lowT];
+    if (useImperial) {
+        NSString *result = [NSString stringWithFormat:@"%d° / %d°",
+                            self.tempMaxF,
+                            self.tempMinF];
+        NSLog(@"getHiLo called: using Fahrenheit: %@", result);
+        return result;
+    } else {
+        NSString *result = [NSString stringWithFormat:@"%d° / %d°",
+                            self.tempMaxC,
+                            self.tempMinC];
+        NSLog(@"getHiLo called: using Celsius: %@", result);
+        return result;
+    }
 }
 
 // method: setIconURL

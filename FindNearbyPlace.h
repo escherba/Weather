@@ -16,6 +16,7 @@
     NSURLConnection *apiConnection;
     
     id<FindNearbyPlaceDelegate> delegate;
+    BOOL pendingRequest;
 }
 
 -(void)queryServiceWithCoord:(CLLocationCoordinate2D)coord;

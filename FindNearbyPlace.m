@@ -46,6 +46,17 @@
 //
 -(void)queryServiceWithCoord:(CLLocationCoordinate2D)coord
 {
+    // Ignore request if one is pending.
+    //
+    // TODO: consider implementing some way of canceling requests and overriding
+    // them with new ones, ot at least some sort of a stack/queue.
+    //
+    if (pendingRequest) {
+        NSLog(@"Canceling request because one is already pending");
+        return;
+    }
+    pendingRequest = YES;
+    
     NSLog(@"FindNearbyPlace queryServiceWithCoord:");
     responseData = [[NSMutableData data] retain];
     
@@ -87,7 +98,15 @@
     apiConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
-// Lifecycle method: dealloc
+#pragma mark - Lifecycle
+- (id)init {
+    self = [super init];
+    if (self) {
+        pendingRequest = NO;
+    }
+    return self;
+}
+
 -(void)dealloc {
     [apiConnection release];
     [responseData release];
@@ -95,11 +114,11 @@
     [super dealloc];
 }
 
-#pragma mark -
-#pragma mark NSURLConnection delegate methods
+#pragma mark - NSURLConnection delegate methods
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
+    pendingRequest = NO;
     NSLog(@"@FindNearbyplace connectionDidFinishLoading");
     
     // get content using JSONKit
@@ -145,6 +164,7 @@ didReceiveData:(NSData *)data
 didFailWithError:(NSError *)error
 {
     // handle error
+    pendingRequest = NO;
 }
 
 @end

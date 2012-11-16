@@ -20,6 +20,8 @@
 	// Google Weather Service
 	NSMutableData *responseData;
 	NSURL *theURL;
+    
+    BOOL pendingRequest;
 }
 
 //@property (nonatomic, retain) NSString *location;

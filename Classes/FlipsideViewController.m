@@ -8,6 +8,7 @@
 
 #import <CoreLocation/CoreLocation.h>
 #import "WeatherAppDelegate.h"
+#import "MainViewController.h"
 #import "FlipsideViewController.h"
 #import "RSAddGeo.h"
 #import "JSONKit.h"
@@ -43,11 +44,11 @@
 
     // switch to toggle whether current location page is showed
     switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
-    [switchView setOn:self.delegate.trackLocation animated:NO];
+    [switchView setOn:self.delegate.showCurrentLocation animated:NO];
     [switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 
     // temperature units control
-	NSArray *itemArray = [NSArray arrayWithObjects: @"F", @"C", nil];
+	NSArray *itemArray = [NSArray arrayWithObjects: @"F/miles", @"C/km", nil];
 	segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
 	segmentedControl.frame = CGRectMake(0, 0, 100, 20); //CGRectZero;
 	segmentedControl.segmentedControlStyle = UISegmentedControlStylePlain;
@@ -138,17 +139,20 @@
 
 #pragma mark - actions
 
-- (void) switchChanged:(id)sender {
-    //self.delegate.trackLocation = switchView.on;
+- (void) switchChanged:(id)sender
+{
+    //self.delegate.showCurrentLocation = switchView.on;
     UISwitch *switchFromSender = (UISwitch*)sender;
     [self.delegate locationSwitchSetTo:switchFromSender.on];
 }
 
 //Action method executes when user touches the button
-- (void) unitsChanged:(id)sender{
+- (void) unitsChanged:(id)sender
+{
 	UISegmentedControl *segmentedControlFromSender = (UISegmentedControl *)sender;
     NSInteger selectedIndex = [segmentedControlFromSender selectedSegmentIndex];
-	NSLog(@"Selected units:%@", [segmentedControlFromSender titleForSegmentAtIndex:selectedIndex]);
+	//NSLog(@"Selected units:%@", [segmentedControlFromSender titleForSegmentAtIndex:selectedIndex]);
+    self.delegate.useImperial = (selectedIndex == 0);
 }
 
 - (IBAction)done:(id)sender {
@@ -216,8 +220,8 @@
                 break;
             case 2:
                 if (indexPath.row == 0) {
-                    cell.textLabel.text = @"Temperature Units:";
-                    segmentedControl.frame = CGRectMake(0, 0, 110, cell.frame.size.height - 8);
+                    cell.textLabel.text = @"Units:";
+                    segmentedControl.frame = CGRectMake(0, 0, 200, cell.frame.size.height - 8);
                     cell.accessoryView = segmentedControl;
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 }
@@ -345,6 +349,8 @@ didReceiveResponse:(NSURLResponse *)response
     if (!result) {
         return;
     }
+    
+    // At this point we simply add extra fields to existing locality object
     
     // update locality object in modelDict
     RSLocality *locality = [modelDict objectForKey:_requestedLocalityId];
