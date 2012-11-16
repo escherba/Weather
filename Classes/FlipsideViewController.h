@@ -49,6 +49,7 @@
 - (void)removePage:(NSInteger)index;
 - (void)saveSettings;
 - (void)locationSwitchSetTo:(BOOL)newState;
+- (void)unitsChangedSetToImperial:(BOOL)imperialNotMetric;
 - (NSUInteger)permanentLocalityCount;
 - (RSLocality*)getPermanentLocalityByRow:(NSUInteger)row;
 

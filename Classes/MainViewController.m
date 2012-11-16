@@ -355,7 +355,6 @@
             [controller findNearbyPlaceDidFinish:dict];
         }
     }
-    [self saveSettings];
 }
 
 # pragma mark - FlipsideViewControllerDelegate
@@ -552,6 +551,12 @@
             NSLog(@"Page removed");
         }
     }
+}
+
+-(void)unitsChangedSetToImperial:(BOOL)imperialNotMetric
+{
+    useImperial = imperialNotMetric;
+    [self saveSettings];
 }
 
 #pragma mark - UIScrollViewDelegate stuff
