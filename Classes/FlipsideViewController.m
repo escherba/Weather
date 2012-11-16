@@ -235,10 +235,6 @@
             cell.textLabel.text = [locality description];
         }
     }
-
-    // allow reordering
-    //cell.shouldIndentWhileEditing = NO;
-    //cell.showsReorderControl = NO;
     
     return cell;
 }
