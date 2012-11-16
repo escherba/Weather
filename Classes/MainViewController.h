@@ -24,7 +24,7 @@
     FlipsideViewController *flipsideController;
     UIScrollView *scrollView;
     UIPageControl *pageControl;
-    
+
     NSTimer *timer;
 }
 

@@ -151,8 +151,7 @@
 {
 	UISegmentedControl *segmentedControlFromSender = (UISegmentedControl *)sender;
     NSInteger selectedIndex = [segmentedControlFromSender selectedSegmentIndex];
-	//NSLog(@"Selected units:%@", [segmentedControlFromSender titleForSegmentAtIndex:selectedIndex]);
-    self.delegate.useImperial = (selectedIndex == 0);
+    [self.delegate unitsChangedSetToImperial:(selectedIndex == 0)];
 }
 
 - (IBAction)done:(id)sender {

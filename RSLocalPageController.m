@@ -123,7 +123,6 @@
     // need to determine whether to retrieve new forecast here based on the
     // difference between current and stored timestamps;
     
-    NSLog(@"777777777777");
     BOOL doUseImperial = appDelegate.mainViewController.useImperial;
     if (doUseImperial != showingImperial) {
         showingImperial = doUseImperial;
