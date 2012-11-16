@@ -8,11 +8,13 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "WeatherAppDelegate.h"
+#import "MainViewController.h"
 #import "RSLocalPageController.h"
 #import "RSAddGeo.h"
 
 @implementation RSLocalPageController
 
+@synthesize showingImperial;
 @synthesize pageNumber;
 @synthesize locality;
 @synthesize forecast;
@@ -25,6 +27,7 @@
 	[super viewDidLoad];
     
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
+    showingImperial = appDelegate.mainViewController.useImperial;
     
     UIColor *pattern = [UIColor colorWithPatternImage:[UIImage imageNamed: @"fancy_deboss.png"]];
     [self.view setBackgroundColor: pattern];
@@ -120,6 +123,13 @@
     // need to determine whether to retrieve new forecast here based on the
     // difference between current and stored timestamps;
     
+    NSLog(@"777777777777");
+    BOOL doUseImperial = appDelegate.mainViewController.useImperial;
+    if (doUseImperial != showingImperial) {
+        showingImperial = doUseImperial;
+        [self reloadDataViews];
+    }
+    
     NSDate *currentTime = [NSDate date];
     NSTimeInterval interval = [currentTime timeIntervalSinceDate:locality.forecastTimestamp];
     
@@ -129,6 +139,19 @@
         [forecast queryService:locality.coord];
     }
     NSLog(@"!!! Seconds since last update: %f", interval);
+}
+
+
+-(void)reloadDataViews {
+    // Current condition
+	nowTempLabel.text = [forecast.condition formatTemperatureImperial:showingImperial];
+	nowHumidityLabel.text = [NSString stringWithFormat:@"%u%%", forecast.condition.humidity];
+    nowWindLabel.text = [forecast.condition formatWindSpeedImperial:showingImperial];
+	nowConditionLabel.text = forecast.condition.condition;
+	nowImage.image = forecast.condition.iconData;
+    
+    // Forecast
+    [_tableView reloadData];
 }
 
 #pragma mark - Key-Value-Observing
@@ -180,14 +203,7 @@
     nameLabel.text = locality.description;
 	dateLabel.text = forecast.date;
     
-	// Now
-	nowTempLabel.text = [forecast.condition formatTemperature];
-	nowHumidityLabel.text = forecast.condition.humidity;
-	nowWindLabel.text = forecast.condition.wind;
-	nowConditionLabel.text = forecast.condition.condition;
-	nowImage.image = forecast.condition.iconData;
-    
-    [_tableView reloadData];
+	[self reloadDataViews];
 }
 
 #pragma mark - UITableViewDelegate methods
@@ -217,7 +233,7 @@
     // Configure the cell.
     if ([tableView isEqual:_tableView]) {
         RSDay* day = [self.forecast.days objectAtIndex:indexPath.row];
-        NSString *title = [[NSString alloc] initWithFormat:@"%@: %@", [weekdayFormatter stringFromDate:day.date], [day getHiLo]];
+        NSString *title = [[NSString alloc] initWithFormat:@"%@: %@", [weekdayFormatter stringFromDate:day.date], [day getHiLoImperial:showingImperial]];
         cell.textLabel.text = title;
         [title release];
         

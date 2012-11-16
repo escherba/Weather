@@ -52,7 +52,9 @@
 - (NSUInteger)permanentLocalityCount;
 - (RSLocality*)getPermanentLocalityByRow:(NSUInteger)row;
 
-@property (nonatomic, assign) BOOL trackLocation;
+@property (nonatomic, assign) BOOL useImperial;
+@property (nonatomic, assign) BOOL showCurrentLocation;
 @property (nonatomic, retain) NSMutableArray *modelArray;
+
 @end
 

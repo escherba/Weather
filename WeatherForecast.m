@@ -8,133 +8,132 @@
 
 /*********** Example ***************
  Query: http://free.worldweatheronline.com/feed/weather.ashx?q=37.777940030048796,-122.41945266723633&format=json&num_of_days=5&key=d90609c900092229111111
- 
  Result:
- {
- "data": {
- "current_condition": [{
- "cloudcover": "0",
- "humidity": "76",
- "observation_time": "04:28 PM",
- "precipMM": "0.0",
- "pressure": "1028",
- "temp_C": "8",
- "temp_F": "46",
- "visibility": "16",
- "weatherCode": "113",
- "weatherDesc": [{
- "value": "Sunny"
- }],
- "weatherIconUrl": [{
- "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
- }],
- "winddir16Point": "N",
- "winddirDegree": "0",
- "windspeedKmph": "0",
- "windspeedMiles": "0"
- }],
- "request": [{
- "query": "Lat 37.78 and Lon -122.42",
- "type": "LatLon"
- }],
- "weather": [{
- "date": "2012-11-11",
- "precipMM": "0.0",
- "tempMaxC": "13",
- "tempMaxF": "56",
- "tempMinC": "10",
- "tempMinF": "50",
- "weatherCode": "113",
- "weatherDesc": [{
- "value": "Sunny"
- }],
- "weatherIconUrl": [{
- "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
- }],
- "winddir16Point": "ENE",
- "winddirDegree": "74",
- "winddirection": "ENE",
- "windspeedKmph": "8",
- "windspeedMiles": "5"
- }, {
- "date": "2012-11-12",
- "precipMM": "0.0",
- "tempMaxC": "16",
- "tempMaxF": "60",
- "tempMinC": "12",
- "tempMinF": "53",
- "weatherCode": "113",
- "weatherDesc": [{
- "value": "Sunny"
- }],
- "weatherIconUrl": [{
- "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
- }],
- "winddir16Point": "NE",
- "winddirDegree": "50",
- "winddirection": "NE",
- "windspeedKmph": "9",
- "windspeedMiles": "6"
- }, {
- "date": "2012-11-13",
- "precipMM": "0.0",
- "tempMaxC": "16",
- "tempMaxF": "62",
- "tempMinC": "10",
- "tempMinF": "50",
- "weatherCode": "113",
- "weatherDesc": [{
- "value": "Sunny"
- }],
- "weatherIconUrl": [{
- "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
- }],
- "winddir16Point": "E",
- "winddirDegree": "81",
- "winddirection": "E",
- "windspeedKmph": "11",
- "windspeedMiles": "7"
- }, {
- "date": "2012-11-14",
- "precipMM": "0.0",
- "tempMaxC": "17",
- "tempMaxF": "62",
- "tempMinC": "13",
- "tempMinF": "55",
- "weatherCode": "113",
- "weatherDesc": [{
- "value": "Sunny"
- }],
- "weatherIconUrl": [{
- "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
- }],
- "winddir16Point": "NE",
- "winddirDegree": "51",
- "winddirection": "NE",
- "windspeedKmph": "12",
- "windspeedMiles": "7"
- }, {
- "date": "2012-11-15",
- "precipMM": "0.0",
- "tempMaxC": "16",
- "tempMaxF": "62",
- "tempMinC": "12",
- "tempMinF": "53",
- "weatherCode": "113",
- "weatherDesc": [{
- "value": "Sunny"
- }],
- "weatherIconUrl": [{
- "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
- }],
- "winddir16Point": "E",
- "winddirDegree": "99",
- "winddirection": "E",
- "windspeedKmph": "15",
- "windspeedMiles": "10"
- }]
- }
- }
+{
+    "data": {
+        "current_condition": [{
+            "cloudcover": "0",
+            "humidity": "76",
+            "observation_time": "04:28 PM",
+            "precipMM": "0.0",
+            "pressure": "1028",
+            "temp_C": "8",
+            "temp_F": "46",
+            "visibility": "16",
+            "weatherCode": "113",
+            "weatherDesc": [{
+                "value": "Sunny"
+            }],
+            "weatherIconUrl": [{
+                "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+            }],
+            "winddir16Point": "N",
+            "winddirDegree": "0",
+            "windspeedKmph": "0",
+            "windspeedMiles": "0"
+        }],
+        "request": [{
+            "query": "Lat 37.78 and Lon -122.42",
+            "type": "LatLon"
+        }],
+        "weather": [{
+            "date": "2012-11-11",
+            "precipMM": "0.0",
+            "tempMaxC": "13",
+            "tempMaxF": "56",
+            "tempMinC": "10",
+            "tempMinF": "50",
+            "weatherCode": "113",
+            "weatherDesc": [{
+                "value": "Sunny"
+            }],
+            "weatherIconUrl": [{
+                "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+            }],
+            "winddir16Point": "ENE",
+            "winddirDegree": "74",
+            "winddirection": "ENE",
+            "windspeedKmph": "8",
+            "windspeedMiles": "5"
+        }, {
+            "date": "2012-11-12",
+            "precipMM": "0.0",
+            "tempMaxC": "16",
+            "tempMaxF": "60",
+            "tempMinC": "12",
+            "tempMinF": "53",
+            "weatherCode": "113",
+            "weatherDesc": [{
+                "value": "Sunny"
+            }],
+            "weatherIconUrl": [{
+                "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+            }],
+            "winddir16Point": "NE",
+            "winddirDegree": "50",
+            "winddirection": "NE",
+            "windspeedKmph": "9",
+            "windspeedMiles": "6"
+        }, {
+            "date": "2012-11-13",
+            "precipMM": "0.0",
+            "tempMaxC": "16",
+            "tempMaxF": "62",
+            "tempMinC": "10",
+            "tempMinF": "50",
+            "weatherCode": "113",
+            "weatherDesc": [{
+                "value": "Sunny"
+            }],
+            "weatherIconUrl": [{
+                "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+            }],
+            "winddir16Point": "E",
+            "winddirDegree": "81",
+            "winddirection": "E",
+            "windspeedKmph": "11",
+            "windspeedMiles": "7"
+        }, {
+            "date": "2012-11-14",
+            "precipMM": "0.0",
+            "tempMaxC": "17",
+            "tempMaxF": "62",
+            "tempMinC": "13",
+            "tempMinF": "55",
+            "weatherCode": "113",
+            "weatherDesc": [{
+                "value": "Sunny"
+            }],
+            "weatherIconUrl": [{
+                "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+            }],
+            "winddir16Point": "NE",
+            "winddirDegree": "51",
+            "winddirection": "NE",
+            "windspeedKmph": "12",
+            "windspeedMiles": "7"
+        }, {
+            "date": "2012-11-15",
+            "precipMM": "0.0",
+            "tempMaxC": "16",
+            "tempMaxF": "62",
+            "tempMinC": "12",
+            "tempMinF": "53",
+            "weatherCode": "113",
+            "weatherDesc": [{
+                "value": "Sunny"
+            }],
+            "weatherIconUrl": [{
+                "value": "http://www.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+            }],
+            "winddir16Point": "E",
+            "winddirDegree": "99",
+            "winddirection": "E",
+            "windspeedKmph": "15",
+            "windspeedMiles": "10"
+        }]
+    }
+}
 **************/
 
 #import <CoreLocation/CoreLocation.h>
@@ -157,6 +156,17 @@
 //
 - (void)queryService:(CLLocationCoordinate2D)coord
 {
+    // Ignore request if one is pending.
+    //
+    // TODO: consider implementing some way of canceling requests and overriding
+    // them with new ones, ot at least some sort of a stack/queue.
+    //
+    if (pendingRequest) {
+        NSLog(@"Canceling request because one is already pending");
+        return;
+    }
+    pendingRequest = YES;
+    
 	//viewController = (RSLocalPageController *)controller;
 	[responseData release];
 	responseData = [[NSMutableData data] retain];
@@ -173,7 +183,16 @@
 }
 
 
-// Lifecycle method: dealloc
+#pragma mark - Lifecycle
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        pendingRequest = NO;
+    }
+    return self;
+}
+
 - (void)dealloc
 {
 	//[viewController release];
@@ -191,11 +210,11 @@
 	[super dealloc];
 }
 
-#pragma mark -
-#pragma mark NSURLConnection delegate methods
+#pragma mark - NSURLConnection delegate methods
 
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
+    pendingRequest = NO;
     NSLog(@"Connection did finish loading");
     
     // get content using JSONKit
@@ -221,10 +240,11 @@
         = [[[current_condition objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"];
         rsCondition.condition
         = [[[current_condition objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"];
-        rsCondition.tempC = [current_condition objectForKey:@"temp_C"];
-        rsCondition.tempF = [current_condition objectForKey:@"temp_F"];
-        rsCondition.humidity = [current_condition objectForKey:@"humidity"];
-        rsCondition.wind = [current_condition objectForKey:@"windspeedMiles"];
+        rsCondition.temp_C = [[current_condition objectForKey:@"temp_C"] integerValue];
+        rsCondition.temp_F = [[current_condition objectForKey:@"temp_F"] integerValue];
+        rsCondition.humidity = [[current_condition objectForKey:@"humidity"] integerValue];
+        rsCondition.windspeedMiles = [[current_condition objectForKey:@"windspeedMiles"] integerValue];
+        rsCondition.windspeedKmph = [[current_condition objectForKey:@"windspeedKmph"] integerValue];
     }
     if (condition) {
         [condition release];
@@ -240,7 +260,13 @@
     if (forecast) {
         for (NSDictionary *node in forecast) {
             NSDate *dayDate = [dateFormatter dateFromString:[node objectForKey:@"date"]];
-            RSDay *rsDay = [[RSDay alloc] initWithDate:dayDate highT:[node objectForKey:@"tempMaxF"] lowT:[node objectForKey:@"tempMinF"] condition:[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"] iconURL:[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"]];
+            RSDay *rsDay = [[RSDay alloc]
+                            initWithDate:dayDate
+                            tempMaxF:[node objectForKey:@"tempMaxF"]
+                            tempMinF:[node objectForKey:@"tempMinF"]
+                            tempMaxC:[node objectForKey:@"tempMaxC"]
+                            tempMinC:[node objectForKey:@"tempMinC"]
+                            condition:[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"] iconURL:[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"]];
             [tmpDays addObject:rsDay];
             [rsDay release];
         }
@@ -287,6 +313,7 @@ didReceiveData:(NSData *)data
   didFailWithError:(NSError *)error
 {
     // handle error
+    pendingRequest = NO;
 }
 
 @end

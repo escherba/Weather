@@ -33,7 +33,8 @@
 @property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
 @property (nonatomic, retain) IBOutlet UIPageControl *pageControl;
 @property (nonatomic, retain) NSMutableArray *modelArray;
-@property (nonatomic, assign) BOOL trackLocation;
+@property (nonatomic, assign) BOOL useImperial;
+@property (nonatomic, assign) BOOL showCurrentLocation;
 
 /* TODO: implement shake-to-refresh? */
 

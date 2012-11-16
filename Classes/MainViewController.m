@@ -18,7 +18,10 @@
 @synthesize modelArray;
 @synthesize scrollView;
 @synthesize pageControl;
-@synthesize trackLocation;
+
+// Booleans we store in NSDefaults
+@synthesize useImperial;
+@synthesize showCurrentLocation;
 
 #pragma mark - Lifecycle
 
@@ -36,13 +39,13 @@
     defaults = [NSUserDefaults standardUserDefaults];
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
     [appDelegate startUpdatingLocation:self withCallback:@selector(currentLocationDidUpdate:)];
-
+    
     // restore user selections (do this before setupPage is called)
     [self restoreSettings];
     
     // if don't have any saved objects, use default
     NSUInteger numObjects = [modelArray count];
-    if (trackLocation) {
+    if (showCurrentLocation) {
         if (numObjects > 0) {
             RSLocality *locality = [modelArray objectAtIndex:0];
             if (!locality.trackLocation) {
@@ -81,7 +84,7 @@
 	flipsideController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
     // initialize model dictionary by using model array in the delegate object
     NSUInteger i;
-    NSUInteger i_begin = trackLocation ? 1 : 0;
+    NSUInteger i_begin = showCurrentLocation ? 1 : 0;
     NSUInteger i_end = [modelArray count];
     for (i = i_begin; i < i_end; i++) {
         RSLocality *locality = [modelArray objectAtIndex:i];
@@ -133,9 +136,11 @@
     // that it had become visible.
     // Additionally, whenever a user scrolls a page, notify the RSLocalPageController
     // instance using the same selector.
-    RSLocalPageController *controller = [controllers objectAtIndex:pageControl.currentPage];
-    if (controller) {
-        [controller viewMayNeedUpdate];
+    if ([controllers count] > 0) {
+        RSLocalPageController *controller = [controllers objectAtIndex:pageControl.currentPage];
+        if (controller) {
+            [controller viewMayNeedUpdate];
+        }
     }
 }
 
@@ -236,9 +241,13 @@
     //pageControl.currentPage = 0;
 }
 
--(void)restoreSettings {
-
-    trackLocation = (BOOL)[defaults stringForKey:@"trackLocation"];
+-(void)restoreSettings
+{
+    // note that we also set defaults here for the two booleans below
+    NSString *showCurLoc = [defaults stringForKey:@"showCurLoc"];
+    showCurrentLocation = showCurLoc ? [showCurLoc boolValue] : YES;
+    NSString *useImpUnits = [defaults stringForKey:@"useImpUnits"];
+    useImperial = useImpUnits ? [useImpUnits boolValue] : YES;
     
     // Localities array
     NSData *dataRepresentingSavedArray = [defaults objectForKey:@"localities"];
@@ -258,9 +267,11 @@
 
 // This will get called every 15 min in foreground mode
 - (void)timerFired{
-    RSLocalPageController* controller = [controllers objectAtIndex:pageControl.currentPage];
-    if (controller) {
-        [controller viewMayNeedUpdate];
+    if ([controllers count] > 0) {
+        RSLocalPageController* controller = [controllers objectAtIndex:pageControl.currentPage];
+        if (controller) {
+            [controller viewMayNeedUpdate];
+        }
     }
     NSLog(@"Timer fired");
 }
@@ -269,18 +280,24 @@
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"currentPage"]) {
-        NSUInteger newPage = [[change objectForKey:NSKeyValueChangeNewKey] unsignedIntegerValue];
-        NSUInteger oldPage = [[change objectForKey:NSKeyValueChangeOldKey] unsignedIntegerValue];
+        NSUInteger newPage = [[change objectForKey:NSKeyValueChangeNewKey] integerValue];
+        NSUInteger oldPage = [[change objectForKey:NSKeyValueChangeOldKey] integerValue];
         if (newPage != oldPage) {
             NSLog(@">>>> Current page changed from %u to %u", oldPage, newPage);
             // send a message to the controller that it will be displayed
-            [[controllers objectAtIndex:newPage] viewMayNeedUpdate];
+            if ([controllers count] > 0) {
+                [[controllers objectAtIndex:newPage] viewMayNeedUpdate];
+            }
         }
     }
 }
 
 -(void)currentLocationDidUpdate:(CLLocation *)location
 {
+    if (!showCurrentLocation) {
+        NSLog(@"MVC currentLocationDidUpdate called but ignoring it");
+        return;
+    }
     NSLog(@"MVC currentLocationDidUpdate called, place: %f, %f", location.coordinate.latitude, location.coordinate.longitude);
     //
     // TODO: add altitude support, initializing previous CLLocation one of the following:
@@ -289,6 +306,10 @@
     //
 
     // this method only gets called when we are tracking location
+    
+    if ([modelArray count] < 1) {
+        return;
+    }
     RSLocality *locality = [modelArray objectAtIndex:0];
     CLLocationCoordinate2D coord = locality.coord;
     CLLocation *previousLocation = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
@@ -297,15 +318,18 @@
     
     // CLLocationDistance is a double measured in meters...
     // TODO: move the hardcoded value of 1000 meters somewhere outside.
+    NSLog(@"The new place is %f meters from the old one", distance);
     if (distance >= 1000.0f) {
         if (locality) {
             locality.coord = location.coordinate;
         } else {
             return;
         }
-        RSLocalPageController *controller = [controllers objectAtIndex:0];
-        if (controller) {
-            [controller currentLocationDidUpdate:location];
+        if ([controllers count] > 0) {
+            RSLocalPageController *controller = [controllers objectAtIndex:0];
+            if (controller) {
+                [controller currentLocationDidUpdate:location];
+            }
         }
         [self saveSettings];
     }
@@ -317,15 +341,19 @@
     NSString* placeName = [dict objectForKey:@"name"];
     NSLog(@"MVC findNearbyPlaceDidFinish called, place name: %@", placeName);
     
-    RSLocality *locality = [modelArray objectAtIndex:0];
-    if (locality) {
-        locality.description = placeName;
-    } else {
-        return;
+    if ([modelArray count] > 0) {
+        RSLocality *locality = [modelArray objectAtIndex:0];
+        if (locality) {
+            locality.description = placeName;
+        } else {
+            return;
+        }
     }
-    RSLocalPageController *controller = [controllers objectAtIndex:0];
-    if (controller) {
-        [controller findNearbyPlaceDidFinish:dict];
+    if ([controllers count] > 0) {
+        RSLocalPageController *controller = [controllers objectAtIndex:0];
+        if (controller) {
+            [controller findNearbyPlaceDidFinish:dict];
+        }
     }
     [self saveSettings];
 }
@@ -336,7 +364,7 @@
     NSUInteger lcount = [modelArray count];
     if (lcount == 0) {
         return lcount;
-    } else if (trackLocation) {
+    } else if (showCurrentLocation) {
         return lcount - 1;
     } else {
         return lcount;
@@ -345,13 +373,20 @@
 
 -(RSLocality*)getPermanentLocalityByRow:(NSUInteger)row
 {
-    NSUInteger pageIndex = (trackLocation) ? row + 1 : row;
-    return [modelArray objectAtIndex:pageIndex];
+    NSUInteger pageIndex = showCurrentLocation ? row + 1 : row;
+    // if (pageIndex > 0 && pageIndex < [modelArray count]) {
+    if (pageIndex < [modelArray count]) {
+        return [modelArray objectAtIndex:pageIndex];
+    } else {
+        return nil;
+    }
 }
 
 -(void)saveSettings
 {
-    // save data models
+    [defaults setBool:useImperial forKey:@"useImpUnits"];
+    [defaults setBool:showCurrentLocation forKey:@"showCurLoc"];
+    
     [defaults setObject:[NSKeyedArchiver archivedDataWithRootObject:modelArray] forKey:@"localities"];
     BOOL savedOK = [defaults synchronize];
     if (savedOK) {
@@ -406,19 +441,25 @@
 
     // Now the thing to do is to figure out if we have a controller tracking location.
     // If so, increment index by one.
-    NSUInteger pageIndex = trackLocation ? index + 1 : index;
+    NSUInteger pageIndex = showCurrentLocation ? index + 1 : index;
     
     // remove page with index... from UIScrollView
     NSLog(@"removing page: %u", pageIndex);
     
-    RSLocality* locality = [modelArray objectAtIndex:pageIndex];
-    [flipsideController.modelDict removeObjectForKey:[locality apiId]];
-    [modelArray removeObjectAtIndex:pageIndex];
+    RSLocality* locality;
+    if ([modelArray count] > 0) {
+        locality = [modelArray objectAtIndex:pageIndex];
+        [flipsideController.modelDict removeObjectForKey:[locality apiId]];
+        [modelArray removeObjectAtIndex:pageIndex];
+    }
     
-    // removeObjectAtIndex will release the object, no need to release controller
-    RSLocalPageController* controller = [controllers objectAtIndex:pageIndex];
-    [controller.view removeFromSuperview];
-    [controllers removeObjectAtIndex:pageIndex];
+    RSLocalPageController* controller;
+    if ([controllers count] > 0) {
+        // removeObjectAtIndex will release the object, no need to release controller
+        controller = [controllers objectAtIndex:pageIndex];
+        [controller.view removeFromSuperview];
+        [controllers removeObjectAtIndex:pageIndex];
+    }
     
     // shift all the views afterwards to the left
     NSUInteger i;
@@ -434,7 +475,6 @@
     //now resize the entire scrollview so that we don't get empty space on the right
     scrollView.contentSize = CGSizeMake(viewFrameSize.width * numberOfViews, viewFrameSize.height);
     
-    
     // fix up PageControl
     pageControl.numberOfPages = numberOfViews; //> 0 ? numberOfViews : 1;
     
@@ -446,20 +486,26 @@
 {
     // Now the thing to do is to figure out if we have a controller tracking location.
     // If so, increment index by one.
-    NSUInteger fromPageIndex = trackLocation ? (fromIndex + 1) : fromIndex;
-    NSUInteger toPageIndex = trackLocation ? (toIndex + 1) : toIndex;
+    NSUInteger fromPageIndex = showCurrentLocation ? (fromIndex + 1) : fromIndex;
+    NSUInteger toPageIndex = showCurrentLocation ? (toIndex + 1) : toIndex;
     NSLog(@"___ moving view from index %d to %d", fromPageIndex, toPageIndex);
     
-    RSLocality *item = [[modelArray objectAtIndex:fromPageIndex] retain];
-    [modelArray removeObject:item];
-    [modelArray insertObject:item atIndex:toPageIndex];
-    [item release];
+    RSLocality *item;
+    if ([modelArray count] > 0) {
+        item = [[modelArray objectAtIndex:fromPageIndex] retain];
+        [modelArray removeObject:item];
+        [modelArray insertObject:item atIndex:toPageIndex];
+        [item release];
+    }
     
-    // update controller array
-    RSLocalPageController* controller = [[controllers objectAtIndex:fromPageIndex] retain];
-    [controllers removeObject:controller];
-    [controllers insertObject:controller atIndex:toPageIndex];
-    [controller release];
+    RSLocalPageController* controller;
+    if ([controllers count] > 0) {
+        // update controller array
+        controller = [[controllers objectAtIndex:fromPageIndex] retain];
+        [controllers removeObject:controller];
+        [controllers insertObject:controller atIndex:toPageIndex];
+        [controller release];
+    }
 
     // show all views at their proper locations
     CGSize viewFrameSize = self.view.frame.size;
@@ -480,15 +526,22 @@
 {
 	//[self dismissModalViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
+    if ([controllers count] > 0) {
+        RSLocalPageController *ctrl = [controllers objectAtIndex:pageControl.currentPage];
+        if (ctrl) {
+            [ctrl viewMayNeedUpdate];
+        }
+    }
+    [self saveSettings]; // this will save Farenheit/Celsius switch setting
 }
 
 - (void)locationSwitchSetTo:(BOOL)newState
 {
     // Save the class member variable
-    trackLocation = newState;
-    NSLog( @"The switch is %@", trackLocation ? @"ON" : @"OFF" );
-    [defaults setObject:[NSNumber numberWithBool:trackLocation] forKey:@"trackLocation"];
-    if (trackLocation) {
+    showCurrentLocation = newState;
+    NSLog( @"The switch is %@", showCurrentLocation ? @"ON" : @"OFF" );
+    [defaults setObject:[NSNumber numberWithBool:showCurrentLocation] forKey:@"trackLocation"];
+    if (showCurrentLocation) {
         if ([modelArray count] == 0 || ![[modelArray objectAtIndex:0] trackLocation]) {
             [self insertTrackedLocality];
         }
