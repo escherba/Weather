@@ -52,7 +52,7 @@
 	segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
 	segmentedControl.frame = CGRectMake(0, 0, 100, 20); //CGRectZero;
 	segmentedControl.segmentedControlStyle = UISegmentedControlStylePlain;
-	segmentedControl.selectedSegmentIndex = 0;
+	segmentedControl.selectedSegmentIndex = (self.delegate.useImperial == YES) ? 0 : 1;
 	[segmentedControl addTarget:self
 	                     action:@selector(unitsChanged:)
 	           forControlEvents:UIControlEventValueChanged];
