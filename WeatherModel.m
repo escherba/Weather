@@ -140,7 +140,7 @@
     [self loadIcon];
 }
 
-// method: loadIcon (TODO: note that this method's definition is repeated for different interface)
+// method: loadIcon
 -(void)loadIcon {
     if (_iconData) {
         [_iconData release];

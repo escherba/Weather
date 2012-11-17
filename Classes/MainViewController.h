@@ -36,8 +36,6 @@
 @property (nonatomic, assign) BOOL useImperial;
 @property (nonatomic, assign) BOOL showCurrentLocation;
 
-/* TODO: implement shake-to-refresh? */
-
 /* for Info button */
 - (IBAction)showInfo:(id)sender;
 
