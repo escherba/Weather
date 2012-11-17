@@ -30,9 +30,7 @@
 
 @end
 //========================================================================
-// TODO: why is getHiLo in RSDay instead of RSCondition?
-// Why is loadIcon method both in RSDay and in RSCondition?
-//
+
 @interface RSDay : NSObject
 
 @property (nonatomic, retain) NSDate* date;
