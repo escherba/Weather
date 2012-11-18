@@ -58,6 +58,7 @@
     pendingRequest = YES;
     
     NSLog(@"FindNearbyPlace queryServiceWithCoord:");
+    [responseData release];
     responseData = [[NSMutableData data] retain];
     
     /* With geonames API, can also return weather like this:
@@ -90,6 +91,8 @@
     // http://maps.googleapis.com/maps/api/geocode/json?latlng=37.8015957,-122.4735831&sensor=true&types=locality
     NSString *url = [NSString stringWithFormat:@"http://ws.geonames.org/findNearbyPlaceNameJSON?lat=%f&lng=%f&username=rescribble",
                      coord.latitude, coord.longitude];
+    
+    [theURL release];
     theURL = [[NSURL URLWithString:url] retain];
     NSURLRequest *request = [NSURLRequest requestWithURL:theURL];
     
@@ -101,6 +104,9 @@
 - (id)init {
     self = [super init];
     if (self) {
+        theURL = nil;
+        responseData = nil;
+        apiConnection = nil;
         pendingRequest = NO;
     }
     return self;
@@ -140,7 +146,7 @@
              willSendRequest:(NSURLRequest*) request
             redirectResponse:(NSURLResponse *) redirectResponse
 {
-    [theURL autorelease];
+    [theURL release]; //[theURL autorelease];
     theURL = [[request URL] retain];
     return request;
 }

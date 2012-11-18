@@ -24,15 +24,17 @@
         // we need to initialize modelDict early so that we can operate on it
         // from the parent controller before this class' viewDidLoad is called.
         modelDict = [[NSMutableDictionary alloc] init];
+        
+        theURL = nil;
+        responseData = nil;
+        apiConnection = nil;
+        _requestedLocalityId = nil;
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    apiConnection = nil;
-    _requestedLocalityId = nil;
     
     self.view.backgroundColor = [UIColor viewFlipsideBackgroundColor];
     if (!appDelegate) {
@@ -130,7 +132,9 @@
 
     if (!currentLocality.haveCoord) {
         // Perform a details request to get Latitude and Longitude data
-        theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/details/json?reference=%@&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [currentLocality reference]]];
+        [theURL release];
+        theURL = [[NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/details/json?reference=%@&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [currentLocality reference]]] retain];
+        
         [apiConnection release];
         apiConnection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:theURL] delegate:self startImmediately: YES];
     }
@@ -351,7 +355,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 			 willSendRequest:(NSURLRequest *)request
 			redirectResponse:(NSURLResponse *)redirectResponse
 {
-	[theURL autorelease];
+	[theURL release]; //[theURL autorelease];
 	theURL = [[request URL] retain];
 	return request;
 }

@@ -196,6 +196,8 @@
         static NSString *titleString = @"Type City, State or Zip code:";
         self.title = titleString;
         apiConnection = nil;
+        theURL = nil;
+        responseData = nil;
     }
     return self;
 }
@@ -336,8 +338,10 @@ shouldReloadTableForSearchString:(NSString *)searchString
     _selectedLocality = nil;
     
     // Note: if you are using this code, please apply for your own id at Google Places API page
-    theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [self.searchDisplayController.searchBar text]]];
-
+    [theURL release];
+    theURL = [[NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [self.searchDisplayController.searchBar text]]] retain];
+    
+    [apiConnection release];
     apiConnection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:theURL] delegate:self startImmediately: YES];
     return NO;
 }
@@ -358,8 +362,10 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
     _selectedLocality = nil;
     
     // Note: if you are using this code, please apply for your own id at Google Places API page
-    theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [self.searchDisplayController.searchBar text]]];
+    [theURL release];
+    theURL = [[NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=geocode&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [self.searchDisplayController.searchBar text]]] retain];
     
+    [apiConnection release];
     apiConnection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:theURL] delegate:self startImmediately: YES];
     return NO;
 }
@@ -428,7 +434,7 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
 			 willSendRequest:(NSURLRequest *)request
 			redirectResponse:(NSURLResponse *)redirectResponse
 {
-	[theURL autorelease];
+	[theURL release]; //[theURL autorelease];
 	theURL = [[request URL] retain];
 	return request;
 }

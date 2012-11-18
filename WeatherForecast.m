@@ -176,9 +176,12 @@
 	NSString *url = [NSString stringWithFormat:@"http://free.worldweatheronline.com/feed/weather.ashx?q=%f,%f&format=json&num_of_days=5&key=d90609c900092229111111", coord.latitude, coord.longitude];
     NSLog(@"Fetching forecast from: %@", url);
  
-	theURL = [NSURL URLWithString:url];
+    [theURL release];
+	theURL = [[NSURL URLWithString:url] retain];
 	NSURLRequest *request = [NSURLRequest requestWithURL:theURL];
-	[[[NSURLConnection alloc] initWithRequest:request delegate:self] autorelease];
+    
+    [apiConnection release];
+    apiConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     NSLog(@"request sent");
 }
 
@@ -188,6 +191,9 @@
 - (id)init {
     self = [super init];
     if (self) {
+        apiConnection = nil;
+        responseData = nil;
+        theURL = nil;
         pendingRequest = NO;
     }
     return self;
@@ -279,7 +285,7 @@
 			 willSendRequest:(NSURLRequest *)request
 			redirectResponse:(NSURLResponse *)redirectResponse
 {
-	[theURL autorelease];
+	[theURL release]; //[theURL autorelease];
 	theURL = [[request URL] retain];
 	return request;
 }
