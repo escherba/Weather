@@ -203,11 +203,12 @@
 {
 	//[viewController release];
     // [location release];
-	[responseData release], responseData = nil;
-	[theURL release],       theURL = nil;
-	[date release],         date = nil;
-	[condition release],    condition = nil;
-	[days release],         days = nil;
+	[responseData release],  responseData = nil;
+	[theURL release],        theURL = nil;
+    [apiConnection release], apiConnection = nil;
+	[date release],          date = nil;
+	[condition release],     condition = nil;
+	[days release],          days = nil;
 	[super dealloc];
 }
 
