@@ -54,6 +54,7 @@
                 defaultLocality.trackLocation = YES;
                 [modelArray insertObject:defaultLocality atIndex:0];
                 [defaultLocality release];
+                defaultLocality = nil;
             }
         } else {
             // empty array
@@ -62,6 +63,7 @@
             defaultLocality.trackLocation = YES;
             [modelArray addObject:defaultLocality];
             [defaultLocality release];
+            defaultLocality = nil;
         }
     } else {
         if (numObjects < 1) {
@@ -75,6 +77,7 @@
             defaultLocality.haveCoord = YES;
             [modelArray addObject:defaultLocality];
             [defaultLocality release];
+            defaultLocality = nil;
         }
     }
     
@@ -144,23 +147,26 @@
     }
 }
 
+-(void) viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    // because timer retains its target (in this case self),
+    // the dealloc method will not be called unless we make the invalidate call here.
+    [timer invalidate];
+}
 - (void)dealloc {
     // viewDidUnload deprecated in iOS6
     
     [pageControl removeObserver:self forKeyPath:@"currentPage" context:self];
     
     // remove timer
-    [timer invalidate];
-    timer = nil;
-    
-    [flipsideController release];
-
-    [scrollView release];
-    [pageControl release];
-    
-    [modelArray release];
-    [controllers release];
-    
+    [timer release],              timer = nil;
+    [flipsideController release], flipsideController = nil;
+    [scrollView release],         scrollView = nil;
+    [pageControl release],        pageControl = nil;
+    [modelArray release],         modelArray = nil;
+    [controllers release],        controllers = nil;
 	[super dealloc];
 }
 
@@ -183,13 +189,16 @@
     CGSize viewFrameSize = self.view.frame.size;
     RSLocalPageController *controller = [[RSLocalPageController alloc] initWithNibName:nil bundle:nil];
     controller.locality = locality;
+    [locality release];
+    locality = nil;
+    
     controller.pageNumber = 0;
     UIView* view = controller.view;
     view.frame = [self viewFrameWithX0:0 frameSize:viewFrameSize];
     [scrollView addSubview:view];
     [controllers insertObject:controller atIndex:0];
     [controller release];
-    [locality release];
+    controller = nil;
     
     NSUInteger controllerCount = [controllers count];
     NSLog(@"Setting ScrollView width to %f * %u = %f", viewFrameSize.width, controllerCount, viewFrameSize.width * (CGFloat)controllerCount);
@@ -231,6 +240,8 @@
         [scrollView addSubview:view];
         [controllers addObject:controller];
         [controller release];
+        controller = nil;
+        
         i++;
     }
     scrollView.contentSize = CGSizeMake(viewFrameSize.width * numberOfViews, viewFrameSize.height);
@@ -315,6 +326,7 @@
     CLLocation *previousLocation = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
     CLLocationDistance distance = [location distanceFromLocation:previousLocation];
     [previousLocation release];
+    previousLocation = nil;
     
     // CLLocationDistance is a double measured in meters...
     // TODO: move the hardcoded value of 1000 meters somewhere outside.
@@ -411,6 +423,7 @@
     // update controller array
     [controllers addObject:controller];
     [controller release];
+    controller = nil;
     
     NSUInteger numberOfViews = [modelArray count];
     scrollView.contentSize = CGSizeMake(viewFrameSize.width * numberOfViews, viewFrameSize.height);
@@ -489,18 +502,17 @@
     NSUInteger toPageIndex = showCurrentLocation ? (toIndex + 1) : toIndex;
     NSLog(@"___ moving view from index %d to %d", fromPageIndex, toPageIndex);
     
-    RSLocality *item;
     if ([modelArray count] > 0) {
-        item = [[modelArray objectAtIndex:fromPageIndex] retain];
+        RSLocality *item = [[modelArray objectAtIndex:fromPageIndex] retain];
         [modelArray removeObject:item];
         [modelArray insertObject:item atIndex:toPageIndex];
         [item release];
+        item = nil;
     }
     
-    RSLocalPageController* controller;
     if ([controllers count] > 0) {
         // update controller array
-        controller = [[controllers objectAtIndex:fromPageIndex] retain];
+        RSLocalPageController* controller = [[controllers objectAtIndex:fromPageIndex] retain];
         [controllers removeObject:controller];
         [controllers insertObject:controller atIndex:toPageIndex];
         [controller release];
@@ -511,10 +523,10 @@
     NSUInteger i;
     NSUInteger numberOfViews = [controllers count];
     for (i = 0; i < numberOfViews; i++) {
-        controller = [controllers objectAtIndex:i];
-        controller.pageNumber = i;
+        RSLocalPageController *controller_i = [controllers objectAtIndex:i];
+        controller_i.pageNumber = i;
         CGFloat xOrigin = i * viewFrameSize.width;
-        controller.view.frame = [self viewFrameWithX0:xOrigin frameSize:viewFrameSize];
+        controller_i.view.frame = [self viewFrameWithX0:xOrigin frameSize:viewFrameSize];
     }
     
     // save data model

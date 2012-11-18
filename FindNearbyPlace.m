@@ -92,9 +92,8 @@
                      coord.latitude, coord.longitude];
     theURL = [[NSURL URLWithString:url] retain];
     NSURLRequest *request = [NSURLRequest requestWithURL:theURL];
-    if (apiConnection) {
-        [apiConnection release];
-    }
+    
+    [apiConnection release];
     apiConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
@@ -108,9 +107,9 @@
 }
 
 -(void)dealloc {
-    [apiConnection release];
-    [responseData release];
-    [theURL release];
+    [apiConnection release], apiConnection = nil;
+    [responseData release], responseData = nil;
+    [theURL release], theURL = nil;
     [super dealloc];
 }
 
