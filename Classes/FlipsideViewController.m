@@ -295,32 +295,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - NSURLConnection delegate methods
 
-- (NSURLRequest *)connection:(NSURLConnection *)connection
-			 willSendRequest:(NSURLRequest *)request
-			redirectResponse:(NSURLResponse *)redirectResponse
-{
-	[theURL autorelease];
-	theURL = [[request URL] retain];
-	return request;
-}
-
-- (void)connection:(NSURLConnection *)connection
-didReceiveResponse:(NSURLResponse *)response
-{
-	[responseData setLength:0];
-}
-
-- (void)connection:(NSURLConnection *)connection
-    didReceiveData:(NSData *)data
-{
-	[responseData appendData:data];
-}
-
-- (void)connection:(NSURLConnection *)connection
-  didFailWithError:(NSError *)error
-{
-}
-
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     // Deal with result returned by autocomplete API
@@ -365,6 +339,32 @@ didReceiveResponse:(NSURLResponse *)response
     //cleanup
     [responseData release];
     responseData = nil;
+}
+
+- (NSURLRequest *)connection:(NSURLConnection *)connection
+			 willSendRequest:(NSURLRequest *)request
+			redirectResponse:(NSURLResponse *)redirectResponse
+{
+	[theURL autorelease];
+	theURL = [[request URL] retain];
+	return request;
+}
+
+- (void)connection:(NSURLConnection *)connection
+didReceiveResponse:(NSURLResponse *)response
+{
+	[responseData setLength:0];
+}
+
+- (void)connection:(NSURLConnection *)connection
+    didReceiveData:(NSData *)data
+{
+	[responseData appendData:data];
+}
+
+- (void)connection:(NSURLConnection *)connection
+  didFailWithError:(NSError *)error
+{
 }
 
 #pragma mark - Screen orientation
