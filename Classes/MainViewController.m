@@ -104,14 +104,14 @@
                      context:self];
 
     // Ideally timer should be called after setupPage
-    timer = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(400.0f) target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
+    //timer = [[NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(400.0f) target:self selector:@selector(timerFired) userInfo:nil repeats:YES] retain];
     
     NSLog(@"# viewDidLoad called");
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    NSLog(@"######## view will appear #########");
+    NSLog(@"[MainViewController viewWillAppear]");
     [super viewWillAppear:animated];
     
     // register applicationWillEnterForeground
@@ -125,7 +125,9 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     // overriding this method solely to remove applicationWillEnterForeground
+    NSLog(@"[MainViewController viewWillDisappear]");
     [super viewWillDisappear:animated];
+    
     [[NSNotificationCenter defaultCenter]
      removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
 }
@@ -133,7 +135,7 @@
 -(void)applicationWillEnterForeground:(UIApplication *)application
 {
     // this gets called when the we switch from background to foreground mode
-    NSLog(@"_________Entering foreground");
+    NSLog(@"[MainViewController applicationWillEnterForeground] received UIApplicationWillEnterForegroundNotification");
     
     // Notify the RSLocalPageController instance for which the view is currently visible
     // that it had become visible.
@@ -147,14 +149,29 @@
     }
 }
 
+-(void) viewDidAppear:(BOOL)animated
+{
+    NSLog(@"[MainViewController viewDidAppear:%d]", animated);
+    [super viewDidAppear:animated];
+    
+    // Note: As long as we invalidate and release timer in viewDidDisappear, we
+    // should set up a new timer object in viewDidAppear.
+    timer = [[NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(400.0f) target:self selector:@selector(timerFired) userInfo:nil repeats:YES] retain];
+}
+
 -(void) viewDidDisappear:(BOOL)animated
 {
     NSLog(@"[MainViewController viewDidDisappear:%d]", animated);
     [super viewDidDisappear:animated];
-
-    // because timer retains its target (in this case self),
-    // the dealloc method will not be called unless we make the invalidate call here.
+    
+    // Note: invalidating timer in this method may not be optimal (timer gets invalidated
+    // every time we switch to flipside view).
+    // Placing this code in dealloc apparently is undesirable because timer object retains
+    // its target resulting in a circular reference and dealloc for this class never gets
+    // called.
+    // Another note: after invalidation, the timer object cannot be reused.
     [timer invalidate];
+    [timer release], timer = nil;
 }
 
 - (void)dealloc {
@@ -163,8 +180,7 @@
     NSLog(@"[MainViewController dealloc]");
     [pageControl removeObserver:self forKeyPath:@"currentPage" context:self];
     
-    // remove timer
-    [timer release],              timer = nil;
+    // release other retained objects
     [flipsideController release], flipsideController = nil;
     [scrollView release],         scrollView = nil;
     [pageControl release],        pageControl = nil;
