@@ -151,11 +151,12 @@
 {
     NSLog(@"[MainViewController viewDidDisappear:%d]", animated);
     [super viewDidDisappear:animated];
-    
+
     // because timer retains its target (in this case self),
     // the dealloc method will not be called unless we make the invalidate call here.
     [timer invalidate];
 }
+
 - (void)dealloc {
     // viewDidUnload deprecated in iOS6
     
