@@ -149,6 +149,7 @@
 
 -(void) viewDidDisappear:(BOOL)animated
 {
+    NSLog(@"[MainViewController viewDidDisappear:%d]", animated);
     [super viewDidDisappear:animated];
     
     // because timer retains its target (in this case self),
@@ -158,6 +159,7 @@
 - (void)dealloc {
     // viewDidUnload deprecated in iOS6
     
+    NSLog(@"[MainViewController dealloc]");
     [pageControl removeObserver:self forKeyPath:@"currentPage" context:self];
     
     // remove timer
