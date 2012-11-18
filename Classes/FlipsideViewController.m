@@ -31,6 +31,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    apiConnection = nil;
+    _requestedLocalityId = nil;
+    
     self.view.backgroundColor = [UIColor viewFlipsideBackgroundColor];
     if (!appDelegate) {
         appDelegate = (WeatherAppDelegate *) [[UIApplication sharedApplication] delegate];
@@ -104,6 +107,7 @@
 
     // We keep _requestedLocalityId as a temporary variable to be reused when
     // the new connection finishes
+    [_requestedLocalityId release];
     _requestedLocalityId = [[selectedLocality apiId] retain];
     RSLocality* currentLocality = [modelDict objectForKey:_requestedLocalityId];
     if (currentLocality) {
@@ -127,6 +131,7 @@
     if (!currentLocality.haveCoord) {
         // Perform a details request to get Latitude and Longitude data
         theURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/details/json?reference=%@&sensor=true&key=AIzaSyAU8uU4oGLZ7eTEazAf9pOr3qnYVzaYTCc", [currentLocality reference]]];
+        [apiConnection release];
         apiConnection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:theURL] delegate:self startImmediately: YES];
     }
     
@@ -321,6 +326,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     // update locality object in modelDict
     RSLocality *locality = [modelDict objectForKey:_requestedLocalityId];
     [_requestedLocalityId release];
+    _requestedLocalityId = nil;
     if (locality) {
         locality.formatted_address = [result objectForKey:@"formatted_address"];
         locality.name = [result objectForKey:@"name"];
