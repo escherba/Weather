@@ -85,17 +85,18 @@
     NSLog(@"Releasing observer");
     [locality removeObserver:self forKeyPath:@"coord" context:self];
     
-    [forecast release],          forecast = nil;
-    [locality release],          locality = nil;
-    [weekdayFormatter release],  weekdayFormatter = nil;
-	[nameLabel release],         nameLabel = nil;
-	[dateLabel release],         dateLabel = nil;
-	[nowImage release],          nowImage = nil;
-	[nowTempLabel release],      nowTempLabel = nil;
-	[nowHumidityLabel release],  nowHumidityLabel = nil;
-	[nowWindLabel release],      nowWindLabel = nil;
-	[nowConditionLabel release], nowConditionLabel = nil;
-    [_tableView release],        _tableView = nil;
+    [locality release],                 locality = nil;
+    [loadingActivityIndicator release], loadingActivityIndicator = nil;
+    [forecast release],                 forecast = nil;
+    [weekdayFormatter release],         weekdayFormatter = nil;
+	[nameLabel release],                nameLabel = nil;
+	[dateLabel release],                dateLabel = nil;
+	[nowImage release],                 nowImage = nil;
+	[nowTempLabel release],             nowTempLabel = nil;
+	[nowHumidityLabel release],         nowHumidityLabel = nil;
+	[nowWindLabel release],             nowWindLabel = nil;
+	[nowConditionLabel release],        nowConditionLabel = nil;
+    [_tableView release],               _tableView = nil;
 	[super dealloc];
 }
 
@@ -157,12 +158,8 @@
     if (localityValue != locality)
     {
         [localityValue retain];
-        
-        // release current locality object
-        NSLog(@"Releasing observer");
         [locality removeObserver:self forKeyPath:@"coord" context:self];
         [locality release];
-
         [localityValue addObserver:self
             forKeyPath:@"coord"
                 options:NSKeyValueObservingOptionNew
