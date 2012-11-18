@@ -64,6 +64,19 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [apiId release],             apiId = nil;
+    [reference release],         reference = nil;
+    [url release],               url = nil;
+    [description release],       description = nil;
+    [formatted_address release], formatted_address = nil;
+    [name release],              name = nil;
+    [vicinity release],          vicinity = nil;
+    [forecastTimestamp release], forecastTimestamp = nil;
+    [super dealloc];
+}
+
 - (void) updateFrom: (RSLocality *)locality
 {
     if ([locality.vicinity length] > 0) {
@@ -182,6 +195,7 @@
     if (self) {
         static NSString *titleString = @"Type City, State or Zip code:";
         self.title = titleString;
+        apiConnection = nil;
     }
     return self;
 }
@@ -352,32 +366,6 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
 
 #pragma mark - NSURLConnection delegate methods
 
-- (NSURLRequest *)connection:(NSURLConnection *)connection
-			 willSendRequest:(NSURLRequest *)request
-			redirectResponse:(NSURLResponse *)redirectResponse
-{
-	[theURL autorelease];
-	theURL = [[request URL] retain];
-	return request;
-}
-
-- (void)connection:(NSURLConnection *)connection
-didReceiveResponse:(NSURLResponse *)response
-{
-	[responseData setLength:0];
-}
-
-- (void)connection:(NSURLConnection *)connection
-    didReceiveData:(NSData *)data
-{
-	[responseData appendData:data];
-}
-
-- (void)connection:(NSURLConnection *)connection
-  didFailWithError:(NSError *)error
-{
-}
-
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     // Deal with predictions returned by autocomplete API
@@ -434,6 +422,32 @@ didReceiveResponse:(NSURLResponse *)response
     //cleanup
     [responseData release];
     responseData = nil;
+}
+
+- (NSURLRequest *)connection:(NSURLConnection *)connection
+			 willSendRequest:(NSURLRequest *)request
+			redirectResponse:(NSURLResponse *)redirectResponse
+{
+	[theURL autorelease];
+	theURL = [[request URL] retain];
+	return request;
+}
+
+- (void)connection:(NSURLConnection *)connection
+didReceiveResponse:(NSURLResponse *)response
+{
+	[responseData setLength:0];
+}
+
+- (void)connection:(NSURLConnection *)connection
+    didReceiveData:(NSData *)data
+{
+	[responseData appendData:data];
+}
+
+- (void)connection:(NSURLConnection *)connection
+  didFailWithError:(NSError *)error
+{
 }
 
 @end
