@@ -26,9 +26,9 @@
 
 // Lifecycle methods: dealloc
 - (void)dealloc {
-    [condition release];
-    [_iconURL release];
-    [_iconData release];
+    [condition release], condition = nil;
+    [_iconURL release],  _iconURL = nil;
+    [_iconData release], _iconData = nil;
     [super dealloc];
 }
 
@@ -59,13 +59,13 @@
 
 // method: loadIcon
 -(void)loadIcon {
-    if (_iconData) {
-        [_iconData release];
-    }
+    [_iconData release];
+    _iconData = nil;
     if (self.iconURL) {
         UIImage *img = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.iconURL]]];
         _iconData = [[img roundCornersWithRadius:3.0] retain];
         [img release];
+        img = nil;
     }
 }
 
@@ -108,10 +108,10 @@
 
 // Lifecycle methods: dealloc
 - (void)dealloc {
-    [date release];
-    [condition release];
-    [_iconURL release];
-    [_iconData release];
+    [date release],      date = nil;
+    [condition release], condition = nil;
+    [_iconURL release],  _iconURL = nil;
+    [_iconData release], _iconData = nil;
     [super dealloc];
 }
 
@@ -142,13 +142,13 @@
 
 // method: loadIcon
 -(void)loadIcon {
-    if (_iconData) {
-        [_iconData release];
-    }
+    [_iconData release];
+    _iconData = nil;
     if (self.iconURL) {
         UIImage *img = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.iconURL]]];
         _iconData = [[[img roundCornersWithRadius:3.0] imageScaledToSize:CGSizeMake(40, 40)] retain];
         [img release];
+        img = nil;
     }
 }
 

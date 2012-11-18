@@ -67,29 +67,50 @@
 - (void) updateFrom: (RSLocality *)locality
 {
     if ([locality.vicinity length] > 0) {
-        vicinity = locality.vicinity;
+        if (vicinity != locality.vicinity) {
+            [vicinity release];
+            vicinity = [locality.vicinity retain];
+        }
     }
     if (locality.haveCoord == YES) {
         haveCoord = YES;
         coord = locality.coord;
     }
     if ([locality.name length] > 0) {
-        name = locality.name;
+        if (name != locality.name) {
+            [name release];
+            name = [locality.name retain];
+        }
     }
     if ([locality.formatted_address length] > 0) {
-        formatted_address = locality.formatted_address;
+        if (formatted_address != locality.formatted_address) {
+            [formatted_address release];
+            formatted_address = [locality.formatted_address retain];
+        }
     }
     if ([locality.description length] > 0) {
-        description = locality.description;
+        if (description != locality.description) {
+            [description release];
+            description = [locality.description retain];
+        }
     }
     if ([locality.url length] > 0) {
-        url = locality.url;
+        if (url != locality.url) {
+            [url release];
+            url = [locality.url retain];
+        }
     }
     if ([locality.reference length] > 0) {
-        reference = locality.reference;
+        if (reference != locality.reference) {
+            [reference release];
+            reference = [locality.reference retain];
+        }
     }
     if ([locality.apiId length] > 0) {
-        apiId = locality.apiId;
+        if (apiId != locality.apiId) {
+            [apiId release];
+            apiId = [locality.apiId retain];
+        }
     }
 }
 
@@ -168,13 +189,11 @@
 - (void)dealloc
 {
     // private variables
-    [theURL release];
-    [apiConnection release];
-    [responseData release];
-    [processedData release];
-    [theURL release];
-    
-    [_selectedLocality release];
+    [theURL release],            theURL = nil;
+    [apiConnection release],     apiConnection = nil;
+    [responseData release],      responseData = nil;
+    [processedData release],     processedData = nil;
+    [_selectedLocality release], _selectedLocality = nil;
     [super dealloc];
 }
 
@@ -196,16 +215,6 @@
     
 	// Do any additional setup after loading the view, typically from a nib.
     self.tableView.scrollEnabled = YES;
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-
-    [processedData release];
-    processedData = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -303,7 +312,8 @@ shouldReloadTableForSearchString:(NSString *)searchString
 {
     [apiConnection cancel];
     [apiConnection release];
-
+    apiConnection = nil;
+    
     [responseData release];
 	responseData = [[NSMutableData data] retain];
     _cancelButtonClicked = NO;
@@ -324,6 +334,7 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
 {
     [apiConnection cancel];
     [apiConnection release];
+    apiConnection = nil;
     
     [responseData release];
 	responseData = [[NSMutableData data] retain];
@@ -410,6 +421,7 @@ didReceiveResponse:(NSURLResponse *)response
             RSLocality *locality = [[RSLocality alloc] initWithId:[item objectForKey:@"id"] reference:[item objectForKey:@"reference"] description:[item objectForKey:@"description"]];
             [processedData addObject:locality];
             [locality release];
+            locality = nil;
         }
     }
     

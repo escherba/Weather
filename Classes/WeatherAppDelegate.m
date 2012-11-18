@@ -86,16 +86,12 @@
 }
 
 - (void)dealloc {
-    [currentLocation release];
-    [findNearby release];
-    [locationManager release];
-    locationManager = nil;
-    [locationManagerStartDate release];
-    locationManagerStartDate = nil;
-    [mainViewController release];
-    mainViewController = nil;
-    [window release];
-    window = nil;
+    [currentLocation release],          currentLocation = nil;
+    [findNearby release],               findNearby = nil;
+    [locationManager release],          locationManager = nil;
+    [locationManagerStartDate release], locationManagerStartDate = nil;
+    [mainViewController release],       mainViewController = nil;
+    [window release],                   window = nil;
     [super dealloc];
 }
 
@@ -116,9 +112,7 @@
     didUpdateToLocation:(CLLocation *)location
 {
     if ([self isValidLocation:location withOldLocation:currentLocation]) {
-        if (currentLocation) {
-            [currentLocation release];
-        }
+        [currentLocation release];
         currentLocation = [location retain];
         NSLog(@"Got coord: lat=%f, long=%f", location.coordinate.latitude, location.coordinate.longitude);
         [callbackObject performSelector:callBackselector withObject:location];

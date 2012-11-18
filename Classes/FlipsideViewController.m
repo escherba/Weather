@@ -62,6 +62,7 @@
     _tableView.delegate = self;
     [_tableView setEditing:YES animated:NO];
     [self.view addSubview:_tableView];
+    //[_tableView release];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -74,19 +75,15 @@
 - (void)dealloc
 {
     // private variables
-    [theURL release];
-    [apiConnection release];
-    [responseData release];
-    [modelDict release];
-    [theURL release];
-    
-    [geoAddController release];
-    [switchView release];
-    [segmentedControl release];
-    
-    [_tableView release];
-    [_requestedLocalityId release];
-    
+    [theURL release],               theURL = nil;
+    [apiConnection release],        apiConnection = nil;
+    [responseData release],         responseData = nil;
+    [modelDict release],            modelDict = nil;
+    [geoAddController release],     geoAddController = nil;
+    [switchView release],           switchView = nil;
+    [segmentedControl release],     segmentedControl = nil;
+    [_tableView release],           _tableView = nil;
+    [_requestedLocalityId release], _requestedLocalityId = nil;
     [super dealloc];
 }
 

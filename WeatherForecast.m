@@ -196,17 +196,12 @@
 - (void)dealloc
 {
 	//[viewController release];
-	[responseData release];
-	[theURL release];
     // [location release];
-	[date release];
-    // release RSCondition object
-	[condition release];
-    
-    // release Days array
-	[days release];
-    
-    // call super
+	[responseData release], responseData = nil;
+	[theURL release],       theURL = nil;
+	[date release],         date = nil;
+	[condition release],    condition = nil;
+	[days release],         days = nil;
 	[super dealloc];
 }
 
@@ -246,9 +241,7 @@
         rsCondition.windspeedMiles = [[current_condition objectForKey:@"windspeedMiles"] integerValue];
         rsCondition.windspeedKmph = [[current_condition objectForKey:@"windspeedKmph"] integerValue];
     }
-    if (condition) {
-        [condition release];
-    }
+    [condition release];
     condition = rsCondition;
 
 	// 5-day forecast ////////////////////////////////////////
@@ -269,16 +262,12 @@
                             condition:[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"] iconURL:[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"]];
             [tmpDays addObject:rsDay];
             [rsDay release];
+            rsDay = nil;
         }
     }
-    if (days) {
-        [days release];
-    }
-    days = tmpDays;
-
-    [dateFormatter release];
-    [responseData release];
-    responseData = nil;
+    [days release],          days = tmpDays;
+    [dateFormatter release], dateFormatter = nil;
+    [responseData release],  responseData = nil;
 
     NSLog(@"Notifying delegate that forecast had finished downloading");
     if (self.delegate) {

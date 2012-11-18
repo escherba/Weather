@@ -56,6 +56,7 @@
     _tableView.dataSource = self;
     _tableView.delegate = self;
     [view addSubview:_tableView];
+    //[_tableView release];
     
     if (locality.haveCoord) {
         NSLog(@"Page %u: viewDidLoad: getting forecast", pageNumber);
@@ -79,26 +80,22 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)dealloc {
-    
-    // release current locality object
+- (void)dealloc
+{
     NSLog(@"Releasing observer");
     [locality removeObserver:self forKeyPath:@"coord" context:self];
-    [locality release];
     
-    [weekdayFormatter release];
-    
-	[nameLabel release];
-	[dateLabel release];
-	
-	[nowImage release];
-	[nowTempLabel release];
-	[nowHumidityLabel release];
-	[nowWindLabel release];
-	[nowConditionLabel release];
-    
-    [_tableView release];
-
+    [forecast release],          forecast = nil;
+    [locality release],          locality = nil;
+    [weekdayFormatter release],  weekdayFormatter = nil;
+	[nameLabel release],         nameLabel = nil;
+	[dateLabel release],         dateLabel = nil;
+	[nowImage release],          nowImage = nil;
+	[nowTempLabel release],      nowTempLabel = nil;
+	[nowHumidityLabel release],  nowHumidityLabel = nil;
+	[nowWindLabel release],      nowWindLabel = nil;
+	[nowConditionLabel release], nowConditionLabel = nil;
+    [_tableView release],        _tableView = nil;
 	[super dealloc];
 }
 
@@ -165,7 +162,7 @@
         NSLog(@"Releasing observer");
         [locality removeObserver:self forKeyPath:@"coord" context:self];
         [locality release];
-        
+
         [localityValue addObserver:self
             forKeyPath:@"coord"
                 options:NSKeyValueObservingOptionNew
@@ -235,6 +232,7 @@
         NSString *title = [[NSString alloc] initWithFormat:@"%@: %@", [weekdayFormatter stringFromDate:day.date], [day getHiLoImperial:showingImperial]];
         cell.textLabel.text = title;
         [title release];
+        title = nil;
         
         cell.detailTextLabel.text = day.condition;
         cell.imageView.image = day.iconData;

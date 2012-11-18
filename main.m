@@ -14,5 +14,6 @@ int main(int argc, char *argv[]) {
     //int retVal = UIApplicationMain(argc, argv, nil, NSStringFromClass([[[UIApplication sharedApplication] delegate] class]));
     int retVal = UIApplicationMain(argc, argv, nil, nil);
     [pool release];
+    pool = nil;
     return retVal;
 }
