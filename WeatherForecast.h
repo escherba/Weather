@@ -20,6 +20,7 @@
 	// Google Weather Service
 	NSMutableData *responseData;
 	NSURL *theURL;
+    NSURLConnection *apiConnection;
     
     BOOL pendingRequest;
 }

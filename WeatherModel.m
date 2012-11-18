@@ -57,6 +57,7 @@
     [self loadIcon];
 }
 
+// TODO: see if this method is synchronous, and if so, make it asynchronous
 // method: loadIcon
 -(void)loadIcon {
     [_iconData release];
@@ -140,6 +141,7 @@
     [self loadIcon];
 }
 
+// TODO: see if this method is synchronous, and if so, make it asynchronous
 // method: loadIcon
 -(void)loadIcon {
     [_iconData release];
