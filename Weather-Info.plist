@@ -11,7 +11,7 @@
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
-	<string>com.rescribble.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>com.appterix.${PRODUCT_NAME:rfc1034identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -24,11 +24,11 @@
 	<string>1.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSMainNibFile</key>
+	<string>MainWindow</string>
 	<key>UISupportedInterfaceOrientations~iphone</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>NSMainNibFile</key>
-	<string>MainWindow</string>
 </dict>
 </plist>
