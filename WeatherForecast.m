@@ -141,7 +141,6 @@
 #import "WeatherForecast.h"
 #import "WeatherModel.h"
 #import "DownloadUrlOperation.h"
-#import "UIImage+RSRoundCorners.h"
 
 @implementation WeatherForecast
 
@@ -263,7 +262,7 @@
             if (![self isValidPNG:img]) {
                 NSLog(@"ERROR: invalid PNG");
             }
-            [prediction setIconData:[img roundCornersWithRadius:3.0]];
+            [prediction setIconData:img];
             [img release];
             img = nil;
             

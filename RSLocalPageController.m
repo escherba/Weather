@@ -11,6 +11,7 @@
 #import "MainViewController.h"
 #import "RSLocalPageController.h"
 #import "RSAddGeo.h"
+#import "UIImage+RSRoundCorners.h"
 
 @implementation RSLocalPageController
 
@@ -206,14 +207,15 @@
     if (index == 0) {
         // if index is zero, then we have current condition icon
         NSLog(@"setting current condition image");
-        nowImage.image = img;
+        
+        nowImage.image = [img roundCornersWithRadius:3.0];
     } else if (index > 0) {
         NSInteger cellIndex = index - 1;
         // otherwise it is one of the forecast icons
         NSLog(@"setting current image at index: %d", cellIndex);
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cellIndex inSection:0] ;
         UITableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
-        cell.imageView.image = img;
+        cell.imageView.image = [[img roundCornersWithRadius:3.0] imageScaledToSize:CGSizeMake(40, 40)];
         
         // [cell setNeedsDisplay];
         // [cell.backgroundView setNeedsDisplay];
