@@ -306,22 +306,6 @@
     NSLog(@"Timer fired");
 }
 
-// this method should be called when scrollview is moved
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if ([keyPath isEqualToString:@"currentPage"]) {
-        NSUInteger newPage = [[change objectForKey:NSKeyValueChangeNewKey] integerValue];
-        NSUInteger oldPage = [[change objectForKey:NSKeyValueChangeOldKey] integerValue];
-        if (newPage != oldPage) {
-            NSLog(@">>>> Current page changed from %u to %u", oldPage, newPage);
-            // send a message to the controller that it will be displayed
-            if ([controllers count] > 0) {
-                [[controllers objectAtIndex:newPage] viewMayNeedUpdate];
-            }
-        }
-    }
-}
-
 -(void)currentLocationDidUpdate:(CLLocation *)location
 {
     if (!showCurrentLocation) {
@@ -363,6 +347,23 @@
             }
         }
         [self saveSettings];
+    }
+}
+
+#pragma mark - KVO observing
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"currentPage"]) {
+        // currentPage property of pageControl has changed
+        NSUInteger newPage = [[change objectForKey:NSKeyValueChangeNewKey] integerValue];
+        NSUInteger oldPage = [[change objectForKey:NSKeyValueChangeOldKey] integerValue];
+        if (newPage != oldPage) {
+            // moved to a different page; send a message to the controller that
+            // a different page will be displayed
+            if ([controllers count] > 0) {
+                [[controllers objectAtIndex:newPage] viewMayNeedUpdate];
+            }
+        }
     }
 }
 

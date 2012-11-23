@@ -21,6 +21,7 @@
 		EF06B679164A69300063E7E9 /* RSLocalPageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF06B677164A69300063E7E9 /* RSLocalPageController.xib */; };
 		EF06B6911650CF470063E7E9 /* fancy_deboss.png in Resources */ = {isa = PBXBuildFile; fileRef = EF06B6901650CF460063E7E9 /* fancy_deboss.png */; };
 		EF06B69E16524E020063E7E9 /* CDLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF06B69D16524E020063E7E9 /* CDLocationManager.m */; };
+		EF1512F1165DEE3300E40702 /* DownloadUrlOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = EF1512F0165DEE3300E40702 /* DownloadUrlOperation.m */; };
 		EF4F77A81476C6D900543F5B /* RSAddGeo.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF4F77A71476C6D900543F5B /* RSAddGeo.xib */; };
 		EF527095146B389200335A36 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		EF527096146B38A200335A36 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -37,7 +38,7 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* WeatherAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeatherAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* WeatherAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeatherAppDelegate.m; sourceTree = "<group>"; };
-		1D6058910D05DD3D006BFB54 /* Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Weather.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* WeatherLux.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherLux.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		280E754A0DD40C5E005A515E /* FlipsideView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FlipsideView.xib; sourceTree = "<group>"; };
 		280E754B0DD40C5E005A515E /* MainView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainView.xib; sourceTree = "<group>"; };
@@ -62,6 +63,8 @@
 		EF06B6901650CF460063E7E9 /* fancy_deboss.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fancy_deboss.png; path = backgrounds/fancy_deboss.png; sourceTree = "<group>"; };
 		EF06B69C16524E020063E7E9 /* CDLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLocationManager.h; sourceTree = "<group>"; };
 		EF06B69D16524E020063E7E9 /* CDLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLocationManager.m; sourceTree = "<group>"; };
+		EF1512EF165DEE3300E40702 /* DownloadUrlOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadUrlOperation.h; sourceTree = "<group>"; };
+		EF1512F0165DEE3300E40702 /* DownloadUrlOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadUrlOperation.m; sourceTree = "<group>"; };
 		EF4F77A71476C6D900543F5B /* RSAddGeo.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RSAddGeo.xib; sourceTree = "<group>"; };
 		EF68438C1476C70C009E285E /* RSAddGeo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSAddGeo.h; sourceTree = "<group>"; };
 		EF68438D1476C70C009E285E /* RSAddGeo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSAddGeo.m; sourceTree = "<group>"; };
@@ -102,7 +105,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* Weather.app */,
+				1D6058910D05DD3D006BFB54 /* WeatherLux.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -137,8 +140,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				EF06B6901650CF460063E7E9 /* fancy_deboss.png */,
-				EF9E7EBC161B86EC005CAEA8 /* Default-568h@2x.png */,
+				EF1512EE165DEE3300E40702 /* DownloadUrlOperation */,
 				EF06B69F16524E0C0063E7E9 /* CDLocationManager */,
 				EF06B69B16524DA70063E7E9 /* JSONKit */,
 				289233A00DB2D0730083E9F9 /* Main View */,
@@ -172,6 +174,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				EF06B6901650CF460063E7E9 /* fancy_deboss.png */,
+				EF9E7EBC161B86EC005CAEA8 /* Default-568h@2x.png */,
 				EFB2FA131478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png */,
 				8D1107310486CEB800E47090 /* Weather-Info.plist */,
 			);
@@ -207,12 +211,21 @@
 			name = CDLocationManager;
 			sourceTree = "<group>";
 		};
+		EF1512EE165DEE3300E40702 /* DownloadUrlOperation */ = {
+			isa = PBXGroup;
+			children = (
+				EF1512EF165DEE3300E40702 /* DownloadUrlOperation.h */,
+				EF1512F0165DEE3300E40702 /* DownloadUrlOperation.m */,
+			);
+			path = DownloadUrlOperation;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* Weather */ = {
+		1D6058900D05DD3D006BFB54 /* WeatherLux */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Weather" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "WeatherLux" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -222,9 +235,9 @@
 			);
 			dependencies = (
 			);
-			name = Weather;
+			name = WeatherLux;
 			productName = Weather;
-			productReference = 1D6058910D05DD3D006BFB54 /* Weather.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* WeatherLux.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -250,7 +263,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* Weather */,
+				1D6058900D05DD3D006BFB54 /* WeatherLux */,
 			);
 		};
 /* End PBXProject section */
@@ -290,6 +303,7 @@
 				EF92F7E11477558600288305 /* UIImage+RSRoundCorners.m in Sources */,
 				EF06B678164A69300063E7E9 /* RSLocalPageController.m in Sources */,
 				EF06B69E16524E020063E7E9 /* CDLocationManager.m in Sources */,
+				EF1512F1165DEE3300E40702 /* DownloadUrlOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,7 +320,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Weather_Prefix.pch;
 				INFOPLIST_FILE = "Weather-Info.plist";
-				PRODUCT_NAME = Weather;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_NAME = WeatherLux;
 			};
 			name = Debug;
 		};
@@ -318,7 +333,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Weather_Prefix.pch;
 				INFOPLIST_FILE = "Weather-Info.plist";
-				PRODUCT_NAME = Weather;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_NAME = WeatherLux;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -356,7 +372,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Weather" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "WeatherLux" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,

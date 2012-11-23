@@ -145,7 +145,6 @@
 	nowHumidityLabel.text = [NSString stringWithFormat:@"%u%%", forecast.condition.humidity];
     nowWindLabel.text = [forecast.condition formatWindSpeedImperial:showingImperial];
 	nowConditionLabel.text = forecast.condition.condition;
-	nowImage.image = forecast.condition.iconData;
     
     // Forecast
     [_tableView reloadData];
@@ -199,6 +198,38 @@
 	[self reloadDataViews];
 }
 
+- (void)iconDidLoad:(id)iconOwner
+{
+    // icon loaded asynchronously
+    UIImage* img = [iconOwner iconData];
+    NSInteger index = [iconOwner index];
+    if (index == 0) {
+        // if index is zero, then we have current condition icon
+        NSLog(@"setting current condition image");
+        nowImage.image = img;
+    } else if (index > 0) {
+        NSInteger cellIndex = index - 1;
+        // otherwise it is one of the forecast icons
+        NSLog(@"setting current image at index: %d", cellIndex);
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cellIndex inSection:0] ;
+        UITableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
+        cell.imageView.image = img;
+        
+        // [cell setNeedsDisplay];
+        // [cell.backgroundView setNeedsDisplay];
+        // [cell.contentView setNeedsDisplay];
+    } else {
+        // Have an error
+        NSLog(@"ERROR: bad index");
+    }
+}
+
+-(void)allIconsLoaded
+{
+    NSLog(@"allIconsLoaded called");
+    [_tableView reloadData];
+}
+
 #pragma mark - UITableViewDelegate methods
 
 // Customize the number of sections in the table view.
@@ -228,15 +259,16 @@
         RSDay* day = [self.forecast.days objectAtIndex:indexPath.row];
         NSString *title = [[NSString alloc] initWithFormat:@"%@: %@", [weekdayFormatter stringFromDate:day.date], [day getHiLoImperial:showingImperial]];
         cell.textLabel.text = title;
-        [title release];
-        title = nil;
-        
+        [title release], title = nil;
         cell.detailTextLabel.text = day.condition;
-        cell.imageView.image = day.iconData;
         
         // check if row is odd or even and set color accordingly
         //cell.backgroundColor = (indexPath.row % 2) ? [UIColor whiteColor] : [UIColor lightGrayColor];
     }
+
+    //[cell setNeedsDisplay];
+    //[cell.backgroundView setNeedsDisplay];
+    //[cell.contentView setNeedsDisplay];
     return cell;
 }
 

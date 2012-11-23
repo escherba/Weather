@@ -15,7 +15,7 @@
 @interface WeatherAppDelegate : NSObject <UIApplicationDelegate, CDLocationManagerDelegate> {
     UIWindow *window;
     MainViewController *mainViewController;
-
+    
     FindNearbyPlace *findNearby;
     CLLocation *currentLocation;
     CDLocationManager *locationManager;
@@ -31,5 +31,6 @@
 @property (nonatomic, retain) IBOutlet MainViewController *mainViewController;
 @property (nonatomic, retain) FindNearbyPlace* findNearby;
 @property (nonatomic, retain, readonly) CLLocation *currentLocation;
+@property (nonatomic, retain) NSOperationQueue *operationQueue;
 
 @end
