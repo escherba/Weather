@@ -12,6 +12,7 @@
 #import "RSLocalPageController.h"
 #import "RSAddGeo.h"
 #import "UIImage+RSRoundCorners.h"
+#import "UATableViewCell.h"
 
 @implementation RSLocalPageController
 
@@ -250,20 +251,28 @@
 {
     static NSString *CellIdentifier = @"Cell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    //UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    UATableViewCell *cell = (UATableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+        //cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UATableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
         cell.accessoryType = UITableViewCellAccessoryNone;
+        [cell setPosition:UACellBackgroundViewPositionMiddle];
     }
     
     // Configure the cell.
     if ([tableView isEqual:_tableView]) {
         RSDay* day = [self.forecast.days objectAtIndex:indexPath.row];
+        
+        UIColor *cachedClearColor = [UIColor clearColor];
         NSString *title = [[NSString alloc] initWithFormat:@"%@: %@", [weekdayFormatter stringFromDate:day.date], [day getHiLoImperial:showingImperial]];
         cell.textLabel.text = title;
+        cell.textLabel.backgroundColor = cachedClearColor;
         [title release], title = nil;
         cell.detailTextLabel.text = day.condition;
+        cell.detailTextLabel.backgroundColor = cachedClearColor;
         
+        //cell.backgroundView = [[[UACellBackgroundView alloc] initWithFrame:CGRectZero] autorelease];
         // check if row is odd or even and set color accordingly
         //cell.backgroundColor = (indexPath.row % 2) ? [UIColor whiteColor] : [UIColor lightGrayColor];
     }
