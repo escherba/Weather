@@ -10,8 +10,9 @@
 #import "WeatherForecast.h"
 #import "RSAddGeo.h"
 #import "FindNearbyPlace.h"
+#import "PullToRefreshView.h"
 
-@interface RSLocalPageController : UIViewController <UITableViewDelegate, UITableViewDataSource, WeatherForecastDelegate> {
+@interface RSLocalPageController : UIViewController <UITableViewDelegate, UITableViewDataSource, WeatherForecastDelegate, PullToRefreshViewDelegate> {
 
     WeatherAppDelegate *appDelegate;
     
@@ -29,6 +30,7 @@
     IBOutlet UILabel *nowWindLabel;
     IBOutlet UILabel *nowConditionLabel;
     
+    PullToRefreshView *pull;
     IBOutlet UITableView *_tableView;
 }
 

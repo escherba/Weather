@@ -73,6 +73,20 @@
     [super dealloc];
 }
 
+#pragma mark - Custom Setters
+- (void)setIconData:(UIImage *)img
+{
+    // Note had a memory error once at the point of setting image icon,
+    // so implementing setter manually to make sure we do not release the
+    // new value before retaining it.
+    if (_iconData == img) {
+        return;
+    }
+    UIImage *oldValue = _iconData;
+    _iconData = [img retain];
+    [oldValue release];
+}
+
 #pragma mark - methods
 -(NSString*)formatWindSpeedImperial:(BOOL)useImperial {
     if (useImperial) {

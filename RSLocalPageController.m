@@ -60,6 +60,10 @@
     [view addSubview:_tableView];
     //[_tableView release];
     
+    pull = [[PullToRefreshView alloc] initWithScrollView:(UIScrollView *) _tableView];
+    [pull setDelegate:self];
+    [_tableView addSubview:pull];
+    
     if (locality.haveCoord) {
         NSLog(@"Page %u: viewDidLoad: getting forecast", pageNumber);
         [loadingActivityIndicator startAnimating];
@@ -87,6 +91,7 @@
     NSLog(@"Releasing observer");
     [locality removeObserver:self forKeyPath:@"coord" context:self];
     
+    [pull release],                     pull = nil;
     [locality release],                 locality = nil;
     [loadingActivityIndicator release], loadingActivityIndicator = nil;
     [forecast release],                 forecast = nil;
@@ -186,6 +191,9 @@
 #pragma mark - WeatherForecastDelegate method
 -(void)weatherForecastDidFinish:(WeatherForecast *)sender
 {
+    // temporary
+    [pull finishedLoading];
+    
     // do whatever needs to be done when we finish downloading forecast
     [loadingActivityIndicator stopAnimating];
     
@@ -281,6 +289,23 @@
     //[cell.backgroundView setNeedsDisplay];
     //[cell.contentView setNeedsDisplay];
     return cell;
+}
+
+#pragma mark - PullToRefreshViewDelegate
+- (void)pullToRefreshViewShouldRefresh:(PullToRefreshView *)view;
+{
+    [self reloadTableData];
+}
+
+-(void) reloadTableData
+{
+    // call to reload your data
+    NSLog(@"reloadTableData called");
+    [forecast queryService:locality.coord];
+    if (locality.trackLocation) {
+        [appDelegate.findNearby queryServiceWithCoord:locality.coord];
+    }
+    // will stop animation in weatherForecastDidFinish
 }
 
 #pragma mark - Screen orientation
