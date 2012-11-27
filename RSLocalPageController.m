@@ -67,10 +67,7 @@
     if (locality.haveCoord) {
         NSLog(@"Page %u: viewDidLoad: getting forecast", pageNumber);
         [loadingActivityIndicator startAnimating];
-        [forecast queryService:locality.coord];
-        if (locality.trackLocation) {
-            [appDelegate.findNearby queryServiceWithCoord:locality.coord];
-        }
+        [self reloadTableData];
     } else {
         NSLog(@"Page %u: viewDidLoad: missing coordinates", pageNumber);
         NSLog(@"lat: %f, long: %f", self.locality.coord.latitude, self.locality.coord.longitude);
@@ -97,7 +94,6 @@
     [forecast release],                 forecast = nil;
     [weekdayFormatter release],         weekdayFormatter = nil;
 	[nameLabel release],                nameLabel = nil;
-	[dateLabel release],                dateLabel = nil;
 	[nowImage release],                 nowImage = nil;
 	[nowTempLabel release],             nowTempLabel = nil;
 	[nowHumidityLabel release],         nowHumidityLabel = nil;
@@ -121,6 +117,7 @@
     NSLog(@"RSLocalPageController findNearbyPlaceDidFinish:");
     NSString* placeName = [dict objectForKey:@"name"];
     nameLabel.text = placeName;
+    nameLabel.textColor = [UIColor blueColor];
 }
 
 -(void)viewMayNeedUpdate {
@@ -157,6 +154,18 @@
     [_tableView reloadData];
 }
 
+-(void) reloadTableData
+{
+    // call to reload your data
+    NSLog(@"reloadTableData called");
+    [forecast queryService:locality.coord];
+    if (locality.trackLocation) {
+        [appDelegate.findNearby queryServiceWithCoord:locality.coord];
+    }
+    // will stop animation in weatherForecastDidFinish
+}
+
+
 #pragma mark - Key-Value-Observing
 // override setter so that we register observing method whenever locality is added
 -(void)setLocality:(RSLocality *)localityValue
@@ -181,17 +190,14 @@
     if ([keyPath isEqualToString:@"coord"]) {
         NSLog(@"RSLocalPageController observeValueForKeyPath:coord called");
         [loadingActivityIndicator startAnimating];
-        [forecast queryService:locality.coord];
-        if (locality.trackLocation) {
-            [appDelegate.findNearby queryServiceWithCoord:locality.coord];
-        }
+        [self reloadTableData];
     }
 }
 
 #pragma mark - WeatherForecastDelegate method
 -(void)weatherForecastDidFinish:(WeatherForecast *)sender
 {
-    // temporary
+    // no effect if UITableView control was not pulled down by the user
     [pull finishedLoading];
     
     // do whatever needs to be done when we finish downloading forecast
@@ -202,9 +208,9 @@
     
 	// City and Date
 	//nameLabel.text = locationName;
-    nameLabel.text = locality.description;
-	dateLabel.text = forecast.date;
-    
+    if (!locality.trackLocation) {
+        nameLabel.text = locality.description;
+    }
 	[self reloadDataViews];
 }
 
@@ -294,18 +300,15 @@
 #pragma mark - PullToRefreshViewDelegate
 - (void)pullToRefreshViewShouldRefresh:(PullToRefreshView *)view;
 {
+    // PullToRefreshView control starts animating automatically here
     [self reloadTableData];
 }
 
--(void) reloadTableData
+- (NSDate *)pullToRefreshViewLastUpdated:(PullToRefreshView *)view
 {
-    // call to reload your data
-    NSLog(@"reloadTableData called");
-    [forecast queryService:locality.coord];
-    if (locality.trackLocation) {
-        [appDelegate.findNearby queryServiceWithCoord:locality.coord];
-    }
-    // will stop animation in weatherForecastDidFinish
+    // This is optional protocol method. Implementing it to show the correct
+    // last update time/date.
+    return locality.forecastTimestamp;
 }
 
 #pragma mark - Screen orientation

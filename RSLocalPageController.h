@@ -24,7 +24,6 @@
     
     IBOutlet UIImageView *nowImage;
     IBOutlet UILabel *nameLabel;
-    IBOutlet UILabel *dateLabel;
     IBOutlet UILabel *nowTempLabel;
     IBOutlet UILabel *nowHumidityLabel;
     IBOutlet UILabel *nowWindLabel;
