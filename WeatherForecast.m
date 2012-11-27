@@ -145,6 +145,7 @@
 @implementation WeatherForecast
 
 //@synthesize location;
+@synthesize delegate;
 @synthesize date;
 @synthesize condition;
 @synthesize days;
@@ -168,7 +169,6 @@
     }
     pendingRequest = YES;
     
-	//viewController = (RSLocalPageController *)controller;
 	[responseData release];
 	responseData = [[NSMutableData data] retain];
 	
@@ -192,6 +192,7 @@
 - (id)init {
     self = [super init];
     if (self) {
+        delegate = nil;
         apiConnection = nil;
         responseData = nil;
         theURL = nil;
@@ -209,7 +210,6 @@
 {
     operationQueue = nil;
     
-	//[viewController release];
     // [location release];
 	[responseData release],  responseData = nil;
 	[theURL release],        theURL = nil;
@@ -267,7 +267,7 @@
             img = nil;
             
             // post notification
-            [self.delegate iconDidLoad:prediction];
+            [delegate iconDidLoad:prediction];
         } else {
             NSLog(@"ERROR: download did not complete");
             // handle error
@@ -279,7 +279,7 @@
         //NSUInteger opRem = [operationQueue operationCount];
         //NSLog(@"Operations remaining: %u", opRem);
         if (operationCount < 1) {
-            [self.delegate allIconsLoaded];
+            [delegate allIconsLoaded];
         }
     }
 }
@@ -345,9 +345,7 @@
     [responseData release],  responseData = nil;
 
     NSLog(@"Notifying delegate that forecast had finished downloading");
-    if (self.delegate) {
-        [self.delegate weatherForecastDidFinish:self];
-    }
+    [delegate weatherForecastDidFinish:self];
 }
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection

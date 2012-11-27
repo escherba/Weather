@@ -107,6 +107,7 @@
 
 -(void)currentLocationDidUpdate:(CLLocation *)location
 {
+    //TODO: see if we need to update forecast at this point
     CLLocationCoordinate2D coord = location.coordinate;
     [appDelegate.findNearby queryServiceWithCoord:coord];
     //[forecast queryService:coord];
