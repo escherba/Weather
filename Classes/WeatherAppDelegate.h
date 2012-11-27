@@ -31,6 +31,7 @@
 @property (nonatomic, retain) IBOutlet MainViewController *mainViewController;
 @property (nonatomic, retain) FindNearbyPlace* findNearby;
 @property (nonatomic, retain, readonly) CLLocation *currentLocation;
-@property (nonatomic, retain) NSOperationQueue *operationQueue;
+@property (nonatomic, retain, readonly) NSMutableDictionary *wsymbols;
+//@property (nonatomic, retain) NSOperationQueue *operationQueue;
 
 @end

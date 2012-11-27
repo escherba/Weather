@@ -140,7 +140,8 @@
 #import "JSONKit.h"
 #import "WeatherForecast.h"
 #import "WeatherModel.h"
-#import "DownloadUrlOperation.h"
+//#import "DownloadUrlOperation.h"
+#include "sunriset.h"
 
 @implementation WeatherForecast
 
@@ -149,6 +150,7 @@
 @synthesize date;
 @synthesize condition;
 @synthesize days;
+@synthesize timestamp;
 
 #pragma mark - Instance Methods
 
@@ -196,19 +198,19 @@
         apiConnection = nil;
         responseData = nil;
         theURL = nil;
+        timestamp = nil;
         pendingRequest = NO;
         operationCount = 0;
         
         // grab on to shared application's delegate
         appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
-        operationQueue = appDelegate.operationQueue;
     }
     return self;
 }
 
 - (void)dealloc
 {
-    operationQueue = nil;
+    [timestamp release],     timestamp = nil;
     
     // [location release];
 	[responseData release],  responseData = nil;
@@ -219,71 +221,6 @@
 	[days release],          days = nil;
 	[super dealloc];
 }
-
-#pragma mark - KVO observing
-
--(BOOL)isValidPNG:(UIImage*)img{
-    NSData *png = UIImagePNGRepresentation(img);
-    if (png == nil) {
-        return NO;
-    }
-    NSUInteger length = [png length];
-    const char *img_bytes = [png bytes];
-    if (memcmp(img_bytes, "\211PNG", 4) != 0) {
-        return NO;
-    }
-    else if (OSReadBigInt64(img_bytes, (length - 8)) != 5279712195050102914) {
-        return NO;
-    }
-    else {
-        return YES;
-    }
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)operation change:(NSDictionary *)change context:(void *)context
-{
-    if ([operation isKindOfClass:[DownloadUrlOperation class]]) {
-        operationCount--;
-        NSLog(@"Operation finished");
-        
-        DownloadUrlOperation *downloadOperation = (DownloadUrlOperation *)operation;
-        RSCondition *prediction = (RSCondition *)context;
-        NSData *data = [downloadOperation data];
-        NSError *error = [downloadOperation error];
-        
-        if (error == nil) {
-            // Notify that we have got this source data;
-            /*[[NSNotificationCenter defaultCenter] postNotificationName:@"DataDownloadFinished"
-             object:self
-             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:source, @"source", data, @"data", nil]];*/
-            
-            // save data
-            UIImage *img = [[UIImage alloc] initWithData:data];
-            if (![self isValidPNG:img]) {
-                NSLog(@"ERROR: invalid PNG");
-            }
-            [prediction setIconData:img];
-            [img release];
-            img = nil;
-            
-            // post notification
-            [delegate iconDidLoad:prediction];
-        } else {
-            NSLog(@"ERROR: download did not complete");
-            // handle error
-            // Notify that we have got an error downloading this data;
-            /*[[NSNotificationCenter defaultCenter] postNotificationName:@"DataDownloadFailed"
-             object:self
-             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:source, @"source", error, @"error", nil]];*/
-        }
-        //NSUInteger opRem = [operationQueue operationCount];
-        //NSLog(@"Operations remaining: %u", opRem);
-        if (operationCount < 1) {
-            [delegate allIconsLoaded];
-        }
-    }
-}
-
 
 #pragma mark - NSURLConnection delegate methods
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection
@@ -309,13 +246,13 @@
 	// Current Conditions /////////////////////////////////////////
     NSDictionary *current_condition = [[data objectForKey:@"current_condition"] objectAtIndex:0];
     RSCurrentCondition* rsCurrentCondition = [[RSCurrentCondition alloc] initWithDict:current_condition withIndex:0];
-
+    
     //download weather condition image icon
-    DownloadUrlOperation *operation = [[DownloadUrlOperation alloc] initWithURL:[NSURL URLWithString:rsCurrentCondition.iconURL]];
-    [operation addObserver:self forKeyPath:@"isFinished" options:NSKeyValueObservingOptionNew context:rsCurrentCondition];
-    [operationQueue addOperation:operation]; // operation starts as soon as its added
-    [operation release];
-    operationCount++;
+    //DownloadUrlOperation *operation = [[DownloadUrlOperation alloc] initWithURL:[NSURL URLWithString:rsCurrentCondition.iconURL]];
+    //[operation addObserver:self forKeyPath:@"isFinished" options:NSKeyValueObservingOptionNew context:rsCurrentCondition];
+    //[operationQueue addOperation:operation]; // operation starts as soon as its added
+    //[operation release];
+    //operationCount++;
     
     [condition release];
     condition = rsCurrentCondition;
@@ -329,11 +266,11 @@
             RSDay *rsDay = [[RSDay alloc] initWithDict:node withIndex:i];
             
             //download weather condition image icon
-            DownloadUrlOperation *operation = [[DownloadUrlOperation alloc] initWithURL:[NSURL URLWithString:rsDay.iconURL]];
-            [operation addObserver:self forKeyPath:@"isFinished" options:NSKeyValueObservingOptionNew context:rsDay];
-            [operationQueue addOperation:operation]; // operation starts as soon as its added
-            [operation release];
-            operationCount++;
+            //DownloadUrlOperation *operation = [[DownloadUrlOperation alloc] initWithURL:[NSURL URLWithString:rsDay.iconURL]];
+            //[operation addObserver:self forKeyPath:@"isFinished" options:NSKeyValueObservingOptionNew context:rsDay];
+            //[operationQueue addOperation:operation]; // operation starts as soon as its added
+            //[operation release];
+            //operationCount++;
             
             [tmpDays addObject:rsDay];
             [rsDay release];

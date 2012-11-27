@@ -28,13 +28,13 @@
 @synthesize apiId;
 @synthesize reference;
 //@synthesize coord; // have custom accessors written for this property
+//@synthesize forecastTimestamp;
 @synthesize url;
 @synthesize description;
 @synthesize formatted_address;
 @synthesize name;
 @synthesize vicinity;
 @synthesize haveCoord;
-@synthesize forecastTimestamp;
 @synthesize trackLocation;
 
 #pragma mark - Lifecycle
@@ -42,9 +42,20 @@
 - (id) init
 {
     self = [super init];
-    if (self) {
+    if (self)
+    {
         haveCoord     = NO;
         trackLocation = NO;
+        
+        apiId = nil;
+        reference = nil;
+        description = nil;
+        
+        url = nil;
+        formatted_address = nil;
+        name = nil;
+        vicinity = nil;
+        //forecastTimestamp = nil;
     }
     return self;
 }
@@ -54,12 +65,20 @@
            description:(NSString *)desc1;
 {
     self = [super init];
-    if (self) {
+    if (self)
+    {
+        haveCoord     = NO;
+        trackLocation = NO;
+        
         apiId         = [id1 retain];
         reference     = [ref1 retain];
         description   = [desc1 retain];
-        haveCoord     = NO;
-        trackLocation = NO;
+        
+        url = nil;
+        formatted_address = nil;
+        name = nil;
+        vicinity = nil;
+        //forecastTimestamp = nil;
     }
     return self;
 }
@@ -68,12 +87,12 @@
 {
     [apiId release],             apiId = nil;
     [reference release],         reference = nil;
-    [url release],               url = nil;
     [description release],       description = nil;
+    [url release],               url = nil;
     [formatted_address release], formatted_address = nil;
     [name release],              name = nil;
     [vicinity release],          vicinity = nil;
-    [forecastTimestamp release], forecastTimestamp = nil;
+    //[forecastTimestamp release], forecastTimestamp = nil;
     [super dealloc];
 }
 
@@ -158,7 +177,7 @@
         self.url =               [coder decodeObjectForKey:@"url"];
         self.reference =         [coder decodeObjectForKey:@"reference"];
         self.apiId =             [coder decodeObjectForKey:@"apiId"];
-        self.forecastTimestamp = [coder decodeObjectForKey:@"forecastTimestamp"];
+        //self.forecastTimestamp = [coder decodeObjectForKey:@"forecastTimestamp"];
     }
     return self;
 }
@@ -178,7 +197,7 @@
     [coder encodeObject:url               forKey:@"url"];
     [coder encodeObject:reference         forKey:@"reference"];
     [coder encodeObject:apiId             forKey:@"apiId"];
-    [coder encodeObject:forecastTimestamp forKey:@"forecastTimestamp"];
+    //[coder encodeObject:forecastTimestamp forKey:@"forecastTimestamp"];
 }
 @end
 

@@ -15,6 +15,7 @@
 @interface RSLocalPageController : UIViewController <UITableViewDelegate, UITableViewDataSource, WeatherForecastDelegate, PullToRefreshViewDelegate> {
 
     WeatherAppDelegate *appDelegate;
+    NSDictionary *wsymbols;
     
     IBOutlet UIActivityIndicatorView *loadingActivityIndicator;
     

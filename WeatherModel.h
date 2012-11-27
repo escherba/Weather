@@ -20,8 +20,8 @@
 @property (nonatomic, assign) NSUInteger windspeedKmph;
 @property (nonatomic, retain) NSString* winddir16Point;
 @property (nonatomic, retain) NSString* condition;
-@property (nonatomic, retain) NSString* iconURL;
-@property (nonatomic, retain) UIImage* iconData;
+@property (nonatomic, retain) NSString* weatherCode;
+//@property (nonatomic, retain) NSString* iconURL;
 
 -(id)initWithDict:(NSDictionary *)node withIndex:(NSInteger)index;
 -(NSString*) formatWindSpeedImperial:(BOOL)useImperial;

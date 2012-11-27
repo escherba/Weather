@@ -29,6 +29,7 @@
 	[super viewDidLoad];
     
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
+    wsymbols = appDelegate.wsymbols;
     showingImperial = appDelegate.mainViewController.useImperial;
     
     UIColor *pattern = [UIColor colorWithPatternImage:[UIImage imageNamed: @"fancy_deboss.png"]];
@@ -88,6 +89,8 @@
     NSLog(@"Releasing observer");
     [locality removeObserver:self forKeyPath:@"coord" context:self];
     
+    wsymbols = nil;
+    
     [pull release],                     pull = nil;
     [locality release],                 locality = nil;
     [loadingActivityIndicator release], loadingActivityIndicator = nil;
@@ -133,7 +136,8 @@
     }
     
     NSDate *currentTime = [NSDate date];
-    NSTimeInterval interval = [currentTime timeIntervalSinceDate:locality.forecastTimestamp];
+    NSTimeInterval interval = [currentTime timeIntervalSinceDate:forecast.timestamp];
+    //NSTimeInterval interval = [currentTime timeIntervalSinceDate:locality.forecastTimestamp];
     
     // 900 seconds is 15 minutes
     if (interval >= 900.0f) {
@@ -150,6 +154,16 @@
 	nowHumidityLabel.text = [NSString stringWithFormat:@"%u%%", forecast.condition.humidity];
     nowWindLabel.text = [forecast.condition formatWindSpeedImperial:showingImperial];
 	nowConditionLabel.text = forecast.condition.condition;
+    
+    // load icon image
+    NSArray *conditionInfo = [wsymbols objectForKey:forecast.condition.weatherCode];
+    NSString *dayIconPath = [conditionInfo objectAtIndex:5];
+    //NSString *nightIconName = [conditionInfo objectAtIndex:2];
+    //NSString *iconPath = [NSString stringWithFormat:@"%@.png", dayIconName];
+    //NSString *iconPath = [[NSBundle mainBundle] pathForResource:dayIconName ofType:@"png"];
+    UIImage *img = [UIImage imageWithContentsOfFile:dayIconPath];
+    NSLog(@"setting current condition image: %@", dayIconPath);
+    nowImage.image = [img roundCornersWithRadius:6.0];
     
     // Forecast
     [_tableView reloadData];
@@ -205,7 +219,8 @@
     [loadingActivityIndicator stopAnimating];
     
     // update timestamp to current time
-    locality.forecastTimestamp = [NSDate date];
+    //locality.forecastTimestamp = [NSDate date];
+    forecast.timestamp = [NSDate date];
     
 	// City and Date
 	//nameLabel.text = locationName;
@@ -213,39 +228,6 @@
         nameLabel.text = locality.description;
     }
 	[self reloadDataViews];
-}
-
-- (void)iconDidLoad:(id)iconOwner
-{
-    // icon loaded asynchronously
-    UIImage* img = [iconOwner iconData];
-    NSInteger index = [iconOwner index];
-    if (index == 0) {
-        // if index is zero, then we have current condition icon
-        NSLog(@"setting current condition image");
-        
-        nowImage.image = [img roundCornersWithRadius:3.0];
-    } else if (index > 0) {
-        NSInteger cellIndex = index - 1;
-        // otherwise it is one of the forecast icons
-        NSLog(@"setting current image at index: %d", cellIndex);
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cellIndex inSection:0] ;
-        UITableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
-        cell.imageView.image = [[img roundCornersWithRadius:3.0] imageScaledToSize:CGSizeMake(40, 40)];
-        
-        // [cell setNeedsDisplay];
-        // [cell.backgroundView setNeedsDisplay];
-        // [cell.contentView setNeedsDisplay];
-    } else {
-        // Have an error
-        NSLog(@"ERROR: bad index");
-    }
-}
-
--(void)allIconsLoaded
-{
-    NSLog(@"allIconsLoaded called");
-    [_tableView reloadData];
 }
 
 #pragma mark - UITableViewDelegate methods
@@ -287,6 +269,16 @@
         cell.detailTextLabel.text = day.condition;
         cell.detailTextLabel.backgroundColor = cachedClearColor;
         
+        // load icon image
+        NSArray *conditionInfo = [wsymbols objectForKey:day.weatherCode];
+        NSString *dayIconPath = [conditionInfo objectAtIndex:3];
+        //NSString *nightIconName = [conditionInfo objectAtIndex:2];
+        //NSString *iconPath = [NSString stringWithFormat:@"%@.png", dayIconName];
+        UIImage *img = [UIImage imageWithContentsOfFile:dayIconPath];
+        NSLog(@"setting day image: %@", dayIconPath);
+        cell.imageView.contentMode = UIViewContentModeCenter;
+        cell.imageView.image = [[img roundCornersWithRadius:3.0] imageScaledToSize:CGSizeMake(40, 40)];
+        
         //cell.backgroundView = [[[UACellBackgroundView alloc] initWithFrame:CGRectZero] autorelease];
         // check if row is odd or even and set color accordingly
         //cell.backgroundColor = (indexPath.row % 2) ? [UIColor whiteColor] : [UIColor lightGrayColor];
@@ -309,7 +301,8 @@
 {
     // This is optional protocol method. Implementing it to show the correct
     // last update time/date.
-    return locality.forecastTimestamp;
+    //return locality.forecastTimestamp;
+    return forecast.timestamp;
 }
 
 #pragma mark - Screen orientation

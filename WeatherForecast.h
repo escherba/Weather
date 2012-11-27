@@ -15,8 +15,6 @@
 
 @protocol WeatherForecastDelegate
 - (void)weatherForecastDidFinish:(WeatherForecast *)sender;
-- (void)iconDidLoad:(id)iconOwner;
-- (void)allIconsLoaded;
 @end
 
 @interface WeatherForecast : NSObject {
@@ -26,12 +24,12 @@
     NSURLConnection *apiConnection;
 
     WeatherAppDelegate *appDelegate;
-    NSOperationQueue *operationQueue;
     BOOL pendingRequest;
     NSInteger operationCount;
 }
 
 //@property (nonatomic, retain) NSString *location;
+@property (nonatomic, retain) NSDate* timestamp;
 @property (nonatomic, retain) NSString *date;
 @property (nonatomic, retain) RSCurrentCondition *condition;
 @property (nonatomic, retain) NSMutableArray *days;

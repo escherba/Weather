@@ -10,7 +10,6 @@
 
 
 #import "WeatherModel.h"
-//#import "ASIHTTPRequest.h"
 
 //========================================================================
 //Super class
@@ -22,10 +21,10 @@
 @synthesize windspeedMiles;
 @synthesize index;
 
+@synthesize weatherCode = _weatherCode;
 @synthesize winddir16Point = _winddir16Point;
 @synthesize condition = _condition;
-@synthesize iconURL = _iconURL;
-@synthesize iconData = _iconData;
+//@synthesize iconURL = _iconURL;
 
 #pragma mark - Lifecycle
 - (id)init
@@ -39,8 +38,8 @@
         // set retained variables to nil
         _winddir16Point = nil;
         _condition = nil;
-        _iconURL = nil;
-        _iconData = nil;
+        //_iconURL = nil;
+        _weatherCode = nil;
     }
     return self;
 }
@@ -59,7 +58,8 @@
         
         _winddir16Point = [[node objectForKey:@"winddir16Point"] retain];
         _condition = [[[[node objectForKey:@"weatherDesc"] objectAtIndex:0] objectForKey:@"value"] retain];
-        _iconURL = [[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"] retain];
+        //_iconURL = [[[[node objectForKey:@"weatherIconUrl"] objectAtIndex:0] objectForKey:@"value"] retain];
+        _weatherCode = [[node objectForKey:@"weatherCode"] retain];
     }
     return self;
 }
@@ -68,23 +68,8 @@
 {
     [_winddir16Point release], _winddir16Point = nil;
     [_condition release], _condition = nil;
-    [_iconURL release],  _iconURL = nil;
-    [_iconData release], _iconData = nil;
+    [_weatherCode release], _weatherCode = nil;
     [super dealloc];
-}
-
-#pragma mark - Custom Setters
-- (void)setIconData:(UIImage *)img
-{
-    // Note had a memory error once at the point of setting image icon,
-    // so implementing setter manually to make sure we do not release the
-    // new value before retaining it.
-    if (_iconData == img) {
-        return;
-    }
-    UIImage *oldValue = _iconData;
-    _iconData = [img retain];
-    [oldValue release];
 }
 
 #pragma mark - methods

@@ -17,16 +17,39 @@
 @synthesize mainViewController;
 @synthesize findNearby;
 @synthesize currentLocation;
-@synthesize operationQueue;
+@synthesize wsymbols;
+//@synthesize operationQueue;
 
 #pragma mark - Lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    // initialize table of weather conditions
+    NSBundle* bundle = [NSBundle mainBundle];
+    NSString *path = [bundle pathForResource:@"icons" ofType:@"plist"];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:path]) {
+        NSLog(@"file %@ does not exist", path);
+    }
+    wsymbols = [[NSMutableDictionary alloc] initWithContentsOfFile:path];
+    for (id key in wsymbols) {
+        NSMutableArray *arr = (NSMutableArray *)[wsymbols objectForKey:key];
+        NSString *dayIconName = [arr objectAtIndex:1];
+        NSString *nightIconName = [arr objectAtIndex:2];
+        NSString *dayIconPath64 = [bundle pathForResource:dayIconName ofType:@"png" inDirectory:@"wsymbols01_png_64"];
+        NSString *nightIconPath64 = [bundle pathForResource:nightIconName ofType:@"png" inDirectory:@"wsymbols01_png_64"];
+        NSString *dayIconPath128 = [bundle pathForResource:dayIconName ofType:@"png" inDirectory:@"wsymbols01_png_128"];
+        NSString *nightIconPath128 = [bundle pathForResource:nightIconName ofType:@"png" inDirectory:@"wsymbols01_png_128"];
+        [arr addObject:dayIconPath64];
+        [arr addObject:nightIconPath64];
+        [arr addObject:dayIconPath128];
+        [arr addObject:nightIconPath128];
+    }
+    
     // Create operation queue
-    operationQueue = [NSOperationQueue new];
+    //operationQueue = [NSOperationQueue new];
     // set maximum operations possible
-    [operationQueue setMaxConcurrentOperationCount:3];
+    //[operationQueue setMaxConcurrentOperationCount:3];
     
     findNearby = [[FindNearbyPlace alloc] init];
     findNearby.delegate = mainViewController;
@@ -99,7 +122,8 @@
 
 - (void)dealloc
 {
-    [operationQueue release],           operationQueue = nil;
+    //[operationQueue release],           operationQueue = nil;
+    [wsymbols release],                 wsymbols = nil;
     [currentLocation release],          currentLocation = nil;
     [findNearby release],               findNearby = nil;
     [locationManager release],          locationManager = nil;

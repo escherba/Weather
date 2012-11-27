@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>113</key>
+	<array>
+		<string>Clear/Sunny</string>
+		<string>wsymbol_0001_sunny</string>
+		<string>wsymbol_0008_clear_sky_night</string>
+	</array>
+	<key>116</key>
+	<array>
+		<string>Partly Cloudy</string>
+		<string>wsymbol_0002_sunny_intervals</string>
+		<string>wsymbol_0008_clear_sky_night</string>
+	</array>
+	<key>119</key>
+	<array>
+		<string>Cloudy</string>
+		<string>wsymbol_0003_white_cloud</string>
+		<string>wsymbol_0004_black_low_cloud</string>
+	</array>
+	<key>122</key>
+	<array>
+		<string>Overcast</string>
+		<string>wsymbol_0004_black_low_cloud</string>
+		<string>wsymbol_0004_black_low_cloud</string>
+	</array>
+	<key>143</key>
+	<array>
+		<string>Mist</string>
+		<string>wsymbol_0006_mist</string>
+		<string>wsymbol_0006_mist</string>
+	</array>
+	<key>176</key>
+	<array>
+		<string>Patchy rain nearby</string>
+		<string>wsymbol_0009_light_rain_showers</string>
+		<string>wsymbol_0025_light_rain_showers_night</string>
+	</array>
+	<key>179</key>
+	<array>
+		<string>Patchy snow nearby</string>
+		<string>wsymbol_0013_sleet_showers</string>
+		<string>wsymbol_0029_sleet_showers_night</string>
+	</array>
+	<key>182</key>
+	<array>
+		<string>Patchy sleet nearby</string>
+		<string>wsymbol_0021_cloudy_with_sleet</string>
+		<string>wsymbol_0037_cloudy_with_sleet_night</string>
+	</array>
+	<key>185</key>
+	<array>
+		<string>Patchy freezing drizzle nearby</string>
+		<string>wsymbol_0021_cloudy_with_sleet</string>
+		<string>wsymbol_0037_cloudy_with_sleet_night</string>
+	</array>
+	<key>200</key>
+	<array>
+		<string>Thundery outbreaks in nearby</string>
+		<string>wsymbol_0016_thundery_showers</string>
+		<string>wsymbol_0032_thundery_showers_night</string>
+	</array>
+	<key>227</key>
+	<array>
+		<string>Blowing snow</string>
+		<string>wsymbol_0019_cloudy_with_light_snow</string>
+		<string>wsymbol_0035_cloudy_with_light_snow_night</string>
+	</array>
+	<key>230</key>
+	<array>
+		<string>Blizzard</string>
+		<string>wsymbol_0020_cloudy_with_heavy_snow</string>
+		<string>wsymbol_0036_cloudy_with_heavy_snow_night</string>
+	</array>
+	<key>248</key>
+	<array>
+		<string>Fog</string>
+		<string>wsymbol_0007_fog</string>
+		<string>wsymbol_0007_fog</string>
+	</array>
+	<key>260</key>
+	<array>
+		<string>Freezing fog</string>
+		<string>wsymbol_0007_fog</string>
+		<string>wsymbol_0007_fog</string>
+	</array>
+	<key>263</key>
+	<array>
+		<string>Patchy light drizzle</string>
+		<string>wsymbol_0009_light_rain_showers</string>
+		<string>wsymbol_0025_light_rain_showers_night</string>
+	</array>
+	<key>266</key>
+	<array>
+		<string>Light drizzle</string>
+		<string>wsymbol_0017_cloudy_with_light_rain</string>
+		<string>wsymbol_0033_cloudy_with_light_rain_night</string>
+	</array>
+	<key>281</key>
+	<array>
+		<string>Freezing drizzle</string>
+		<string>wsymbol_0021_cloudy_with_sleet</string>
+		<string>wsymbol_0037_cloudy_with_sleet_night</string>
+	</array>
+	<key>284</key>
+	<array>
+		<string>Heavy freezing drizzle</string>
+		<string>wsymbol_0021_cloudy_with_sleet</string>
+		<string>wsymbol_0037_cloudy_with_sleet_night</string>
+	</array>
+	<key>293</key>
+	<array>
+		<string>Patchy light rain</string>
+		<string>wsymbol_0017_cloudy_with_light_rain</string>
+		<string>wsymbol_0033_cloudy_with_light_rain_night</string>
+	</array>
+	<key>296</key>
+	<array>
+		<string>Light rain</string>
+		<string>wsymbol_0017_cloudy_with_light_rain</string>
+		<string>wsymbol_0025_light_rain_showers_night</string>
+	</array>
+	<key>299</key>
+	<array>
+		<string>Moderate rain at times</string>
+		<string>wsymbol_0010_heavy_rain_showers</string>
+		<string>wsymbol_0026_heavy_rain_showers_night</string>
+	</array>
+	<key>302</key>
+	<array>
+		<string>Moderate rain</string>
+		<string>wsymbol_0018_cloudy_with_heavy_rain</string>
+		<string>wsymbol_0034_cloudy_with_heavy_rain_night</string>
+	</array>
+	<key>305</key>
+	<array>
+		<string>Heavy rain at times</string>
+		<string>wsymbol_0010_heavy_rain_showers</string>
+		<string>wsymbol_0026_heavy_rain_showers_night</string>
+	</array>
+	<key>308</key>
+	<array>
+		<string>Heavy rain</string>
+		<string>wsymbol_0018_cloudy_with_heavy_rain</string>
+		<string>wsymbol_0034_cloudy_with_heavy_rain_night</string>
+	</array>
+	<key>311</key>
+	<array>
+		<string>Light freezing rain</string>
+		<string>wsymbol_0021_cloudy_with_sleet</string>
+		<string>wsymbol_0037_cloudy_with_sleet_night</string>
+	</array>
+	<key>314</key>
+	<array>
+		<string>Moderate or Heavy freezing rain</string>
+		<string>wsymbol_0021_cloudy_with_sleet</string>
+		<string>wsymbol_0037_cloudy_with_sleet_night</string>
+	</array>
+	<key>317</key>
+	<array>
+		<string>Light sleet</string>
+		<string>wsymbol_0021_cloudy_with_sleet</string>
+		<string>wsymbol_0037_cloudy_with_sleet_night</string>
+	</array>
+	<key>320</key>
+	<array>
+		<string>Moderate or heavy sleet</string>
+		<string>wsymbol_0019_cloudy_with_light_snow</string>
+		<string>wsymbol_0035_cloudy_with_light_snow_night</string>
+	</array>
+	<key>323</key>
+	<array>
+		<string>Patchy light snow</string>
+		<string>wsymbol_0011_light_snow_showers</string>
+		<string>wsymbol_0027_light_snow_showers_night</string>
+	</array>
+	<key>326</key>
+	<array>
+		<string>Light snow</string>
+		<string>wsymbol_0011_light_snow_showers</string>
+		<string>wsymbol_0027_light_snow_showers_night</string>
+	</array>
+	<key>329</key>
+	<array>
+		<string>Patchy moderate snow</string>
+		<string>wsymbol_0020_cloudy_with_heavy_snow</string>
+		<string>wsymbol_0036_cloudy_with_heavy_snow_night</string>
+	</array>
+	<key>332</key>
+	<array>
+		<string>Moderate snow</string>
+		<string>wsymbol_0020_cloudy_with_heavy_snow</string>
+		<string>wsymbol_0036_cloudy_with_heavy_snow_night</string>
+	</array>
+	<key>335</key>
+	<array>
+		<string>Patchy heavy snow</string>
+		<string>wsymbol_0012_heavy_snow_showers</string>
+		<string>wsymbol_0028_heavy_snow_showers_night</string>
+	</array>
+	<key>338</key>
+	<array>
+		<string>Heavy snow</string>
+		<string>wsymbol_0020_cloudy_with_heavy_snow</string>
+		<string>wsymbol_0036_cloudy_with_heavy_snow_night</string>
+	</array>
+	<key>350</key>
+	<array>
+		<string>Ice pellets</string>
+		<string>wsymbol_0021_cloudy_with_sleet</string>
+		<string>wsymbol_0037_cloudy_with_sleet_night</string>
+	</array>
+	<key>353</key>
+	<array>
+		<string>Light rain shower</string>
+		<string>wsymbol_0009_light_rain_showers</string>
+		<string>wsymbol_0025_light_rain_showers_night</string>
+	</array>
+	<key>356</key>
+	<array>
+		<string>Moderate or heavy rain shower</string>
+		<string>wsymbol_0010_heavy_rain_showers</string>
+		<string>wsymbol_0026_heavy_rain_showers_night</string>
+	</array>
+	<key>359</key>
+	<array>
+		<string>Torrential rain shower</string>
+		<string>wsymbol_0018_cloudy_with_heavy_rain</string>
+		<string>wsymbol_0034_cloudy_with_heavy_rain_night</string>
+	</array>
+	<key>362</key>
+	<array>
+		<string>Light sleet showers</string>
+		<string>wsymbol_0013_sleet_showers</string>
+		<string>wsymbol_0029_sleet_showers_night</string>
+	</array>
+	<key>365</key>
+	<array>
+		<string>Moderate or heavy sleet showers</string>
+		<string>wsymbol_0013_sleet_showers</string>
+		<string>wsymbol_0029_sleet_showers_night</string>
+	</array>
+	<key>368</key>
+	<array>
+		<string>Light snow showers</string>
+		<string>wsymbol_0011_light_snow_showers</string>
+		<string>wsymbol_0027_light_snow_showers_night</string>
+	</array>
+	<key>371</key>
+	<array>
+		<string>Moderate or heavy snow showers</string>
+		<string>wsymbol_0012_heavy_snow_showers</string>
+		<string>wsymbol_0028_heavy_snow_showers_night</string>
+	</array>
+	<key>374</key>
+	<array>
+		<string>Light showers of ice pellets</string>
+		<string>wsymbol_0013_sleet_showers</string>
+		<string>wsymbol_0029_sleet_showers_night</string>
+	</array>
+	<key>377</key>
+	<array>
+		<string>Moderate or heavy showers of ice pellets</string>
+		<string>wsymbol_0021_cloudy_with_sleet</string>
+		<string>wsymbol_0037_cloudy_with_sleet_night</string>
+	</array>
+	<key>386</key>
+	<array>
+		<string>Patchy light rain in area with thunder</string>
+		<string>wsymbol_0016_thundery_showers</string>
+		<string>wsymbol_0032_thundery_showers_night</string>
+	</array>
+	<key>389</key>
+	<array>
+		<string>Moderate or heavy rain in area with thunder</string>
+		<string>wsymbol_0024_thunderstorms</string>
+		<string>wsymbol_0040_thunderstorms_night</string>
+	</array>
+	<key>392</key>
+	<array>
+		<string>Patchy light snow in area with thunder</string>
+		<string>wsymbol_0016_thundery_showers</string>
+		<string>wsymbol_0032_thundery_showers_night</string>
+	</array>
+	<key>395</key>
+	<array>
+		<string>Moderate or heavy snow in area with thunder</string>
+		<string>wsymbol_0012_heavy_snow_showers</string>
+		<string>wsymbol_0028_heavy_snow_showers_night</string>
+	</array>
+</dict>
+</plist>

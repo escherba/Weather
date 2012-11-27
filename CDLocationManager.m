@@ -139,8 +139,8 @@
 }
 
 - (void)dealloc {
-  accurateUpdateStarted = nil;
-  locationManager = nil;
+  [accurateUpdateStarted release], accurateUpdateStarted = nil;
+  locationManager = nil; //autoreleased
   [super dealloc];
 }
 

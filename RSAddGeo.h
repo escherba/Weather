@@ -18,6 +18,7 @@
 // have this object implement NSCoding protocol for saving with NSUserDefaults;
 // implement initWithCoder and encodeWithCoder methods.
 @interface RSLocality : NSObject <NSCoding> {
+    // coord property has custom accessors
     CLLocationCoordinate2D coord;
 }
 - (id) initWithCoder: (NSCoder *)coder;
@@ -35,8 +36,8 @@
 @property (nonatomic, retain) NSString* formatted_address;
 @property (nonatomic, retain) NSString* name;
 @property (nonatomic, retain) NSString* vicinity;
+
 @property (nonatomic, assign) CLLocationCoordinate2D coord;
-@property (nonatomic, retain) NSDate* forecastTimestamp;
 @property (nonatomic, assign) BOOL haveCoord;
 @property (nonatomic, assign) BOOL trackLocation;
 @end
