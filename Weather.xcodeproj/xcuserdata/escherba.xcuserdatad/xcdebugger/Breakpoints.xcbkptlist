@@ -293,8 +293,8 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "284"
          endingLineNumber = "284"
-         landmarkName = "-observeValueForKeyPath:ofObject:change:context:"
-         landmarkType = "5">
+         landmarkName = "@implementation RSLocalPageController"
+         landmarkType = "3">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"

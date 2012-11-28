@@ -194,8 +194,8 @@
 
     if (result == 0) {
         //  0 - sun rises/sets this day, times stored in rise and set
-        double dayLength = (set - rise) * 3600.0f;
-        assert(dayLength >= 0.0f);
+        //double dayLength = (set - rise) * 3600.0f;
+        double dayLength = day_length(year, month, day, coord.longitude, coord.latitude) * 3600.0f;
         
         NSDate *sunrise = [self dateFromHour:rise components:dateComponents];
         NSDate *sunset = [self dateFromHour:set components:dateComponents];
