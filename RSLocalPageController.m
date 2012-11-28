@@ -13,6 +13,7 @@
 #import "RSAddGeo.h"
 #import "UIImage+RSRoundCorners.h"
 #import "UATableViewCell.h"
+#include "sunriset.h"
 
 @implementation RSLocalPageController
 
@@ -28,8 +29,10 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
     
+    sunPosition = 0; // undefined
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
     wsymbols = appDelegate.wsymbols;
+    calendar = appDelegate.calendar;
     showingImperial = appDelegate.mainViewController.useImperial;
     
     UIColor *pattern = [UIColor colorWithPatternImage:[UIImage imageNamed: @"fancy_deboss.png"]];
@@ -68,7 +71,7 @@
     if (locality.haveCoord) {
         NSLog(@"Page %u: viewDidLoad: getting forecast", pageNumber);
         [loadingActivityIndicator startAnimating];
-        [self reloadTableData];
+        [self getForecast];
     } else {
         NSLog(@"Page %u: viewDidLoad: missing coordinates", pageNumber);
         NSLog(@"lat: %f, long: %f", self.locality.coord.latitude, self.locality.coord.longitude);
@@ -90,6 +93,7 @@
     [locality removeObserver:self forKeyPath:@"coord" context:self];
     
     wsymbols = nil;
+    calendar = nil;
     
     [pull release],                     pull = nil;
     [locality release],                 locality = nil;
@@ -141,6 +145,7 @@
     
     // 900 seconds is 15 minutes
     if (interval >= 900.0f) {
+        //TODO: find out if we need to update location at this point
         [loadingActivityIndicator startAnimating];
         [forecast queryService:locality.coord];
     }
@@ -148,7 +153,77 @@
 }
 
 
--(void)reloadDataViews {
+- (NSDate*)dateFromHour:(double)rise_set components:(NSDateComponents*)argComps
+{
+    NSDateComponents *comps = [argComps copy];
+    NSTimeZone *utc = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    [comps setTimeZone:utc];
+    [comps setHour:0];
+    [comps setMinute:0];
+    [comps setSecond:0];
+    NSDate* date_begin = [calendar dateFromComponents:comps];
+    [comps release];
+    
+    NSDate* date_rise_set = [date_begin dateByAddingTimeInterval:(rise_set * 3600.0f)];
+    
+    // for debugging
+    //NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    //[formatter setLocale:[NSLocale currentLocale]];
+    //[formatter setDateStyle:NSDateFormatterMediumStyle];
+    //[formatter setTimeStyle:NSDateFormatterMediumStyle];
+    //NSLog(@"~~ Sunrise/sunset at: %@", [formatter stringFromDate:date_rise_set]);
+    //[formatter release];
+    //end debugging
+    
+    return date_rise_set;
+}
+
+-(void)reloadDataViews
+{
+    // This looks like a good place to check sunrise/sunset times and compare with
+    // current
+    double rise = 0.0f;
+    double set = 0.0f;
+
+    CLLocationCoordinate2D coord = locality.coord;
+    NSDateComponents *dateComponents = [calendar components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit) fromDate:[NSDate date]];
+    NSInteger year = [dateComponents year];
+    NSInteger month = [dateComponents month];
+    NSInteger day = [dateComponents day];
+    int result = sun_rise_set(year, month, day, coord.longitude, coord.latitude, &rise, &set);
+
+    if (result == 0) {
+        //  0 - sun rises/sets this day, times stored in rise and set
+        double dayLength = (set - rise) * 3600.0f;
+        assert(dayLength >= 0.0f);
+        
+        NSDate *sunrise = [self dateFromHour:rise components:dateComponents];
+        NSDate *sunset = [self dateFromHour:set components:dateComponents];
+        NSTimeInterval sunriseSinceNow = [sunrise timeIntervalSinceNow];
+        NSTimeInterval sunsetSinceNow = [sunset timeIntervalSinceNow];
+        NSLog(@"Sunrise at %f, sunset at %f", rise, set);
+        NSLog(@"sunriseSinceNow at %f, sunsetSinceNow at %f", sunriseSinceNow, sunsetSinceNow);
+        
+        if (sunriseSinceNow < 0.0f) {
+            // find remainder of the time since last sunset (when divided by 24*3600) and
+            // compare it with the length of day.
+            double secondsSinceSunrise = fmod(fabs(sunriseSinceNow), (double)(24*3600));
+            sunPosition = (secondsSinceSunrise <= dayLength) ? 1 : -1;
+        } else {
+            // we are asserting that sunset always follows sunrise, so when sunrise is
+            // positive, sunset should be an even larger number. We find remainder of that
+            // number when divided by (24 * 3600) and compare it with day length.
+            double secondsTilSunset = fmod(fabs(sunsetSinceNow), (double)(24*3600));
+            sunPosition = (secondsTilSunset <= dayLength) ? 1 : -1;
+        }
+    } else {
+        // +1 - sun above ground all day (polar summer)
+        // -1 - sun below ground all day (polar winter)
+        sunPosition = result;
+    }
+    
+    // =============================================================================
+    // Now proceed with updating views
     // Current condition
 	nowTempLabel.text = [forecast.condition formatTemperatureImperial:showingImperial];
 	nowHumidityLabel.text = [NSString stringWithFormat:@"%u%%", forecast.condition.humidity];
@@ -157,22 +232,30 @@
     
     // load icon image
     NSArray *conditionInfo = [wsymbols objectForKey:forecast.condition.weatherCode];
-    NSString *dayIconPath = [conditionInfo objectAtIndex:5];
+    NSString *iconPath;
+    if (sunPosition < 0) {
+        // sun is below ground (night)
+        iconPath = [conditionInfo objectAtIndex:6];
+    } else {
+        // sun is either above ground (day) or undefined
+        iconPath = [conditionInfo objectAtIndex:5];
+    }
+    
     //NSString *nightIconName = [conditionInfo objectAtIndex:2];
     //NSString *iconPath = [NSString stringWithFormat:@"%@.png", dayIconName];
     //NSString *iconPath = [[NSBundle mainBundle] pathForResource:dayIconName ofType:@"png"];
-    UIImage *img = [UIImage imageWithContentsOfFile:dayIconPath];
-    NSLog(@"setting current condition image: %@", dayIconPath);
+    UIImage *img = [UIImage imageWithContentsOfFile:iconPath];
+    NSLog(@"setting current condition image: %@", iconPath);
     nowImage.image = [img roundCornersWithRadius:6.0];
     
-    // Forecast
+    // display forecast for upcoming days
     [_tableView reloadData];
 }
 
--(void) reloadTableData
+-(void) getForecast
 {
     // call to reload your data
-    NSLog(@"reloadTableData called");
+    NSLog(@"getForecast called");
     [forecast queryService:locality.coord];
     if (locality.trackLocation) {
         [appDelegate.findNearby queryServiceWithCoord:locality.coord];
@@ -205,7 +288,7 @@
     if ([keyPath isEqualToString:@"coord"]) {
         NSLog(@"RSLocalPageController observeValueForKeyPath:coord called");
         [loadingActivityIndicator startAnimating];
-        [self reloadTableData];
+        [self getForecast];
     }
 }
 
@@ -267,11 +350,18 @@
         
         // load icon image
         NSArray *conditionInfo = [wsymbols objectForKey:day.weatherCode];
-        NSString *dayIconPath = [conditionInfo objectAtIndex:3];
+        NSString *iconPath;
+        if (sunPosition < 0) {
+            // sun is below ground (night)
+            iconPath = [conditionInfo objectAtIndex:4];
+        } else {
+            // sun is either above ground (day) or undefined
+            iconPath = [conditionInfo objectAtIndex:3];
+        }
         //NSString *nightIconName = [conditionInfo objectAtIndex:2];
         //NSString *iconPath = [NSString stringWithFormat:@"%@.png", dayIconName];
-        UIImage *img = [UIImage imageWithContentsOfFile:dayIconPath];
-        NSLog(@"setting day image: %@", dayIconPath);
+        UIImage *img = [UIImage imageWithContentsOfFile:iconPath];
+        NSLog(@"setting day image: %@", iconPath);
         cell.imageView.contentMode = UIViewContentModeCenter;
         cell.imageView.image = [[img roundCornersWithRadius:3.0] imageScaledToSize:CGSizeMake(40, 40)];
         
@@ -290,7 +380,7 @@
 - (void)pullToRefreshViewShouldRefresh:(PullToRefreshView *)view;
 {
     // PullToRefreshView control starts animating automatically here
-    [self reloadTableData];
+    [self getForecast];
 }
 
 - (NSDate *)pullToRefreshViewLastUpdated:(PullToRefreshView *)view

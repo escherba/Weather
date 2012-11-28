@@ -16,12 +16,14 @@
 
     WeatherAppDelegate *appDelegate;
     NSDictionary *wsymbols;
+    NSCalendar *calendar;
     
     IBOutlet UIActivityIndicatorView *loadingActivityIndicator;
     
     // different location (in different time zones) could have different dates
     NSDateFormatter *weekdayFormatter;
     BOOL showingImperial;
+    NSInteger sunPosition;
     
     IBOutlet UIImageView *nowImage;
     IBOutlet UILabel *nameLabel;

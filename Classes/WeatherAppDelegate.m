@@ -18,11 +18,14 @@
 @synthesize findNearby;
 @synthesize currentLocation;
 @synthesize wsymbols;
+@synthesize calendar;
 //@synthesize operationQueue;
 
 #pragma mark - Lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     
     // initialize table of weather conditions
     NSBundle* bundle = [NSBundle mainBundle];
@@ -123,6 +126,7 @@
 - (void)dealloc
 {
     //[operationQueue release],           operationQueue = nil;
+    [calendar release],                 calendar = nil;
     [wsymbols release],                 wsymbols = nil;
     [currentLocation release],          currentLocation = nil;
     [findNearby release],               findNearby = nil;
