@@ -218,10 +218,6 @@
     // do whatever needs to be done when we finish downloading forecast
     [loadingActivityIndicator stopAnimating];
     
-    // update timestamp to current time
-    //locality.forecastTimestamp = [NSDate date];
-    forecast.timestamp = [NSDate date];
-    
 	// City and Date
 	//nameLabel.text = locationName;
     if (!locality.trackLocation) {

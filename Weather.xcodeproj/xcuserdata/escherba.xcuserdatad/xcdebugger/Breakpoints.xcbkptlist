@@ -140,9 +140,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "328"
-         endingLineNumber = "328"
-         landmarkName = "-connectionDidFinishLoading:"
-         landmarkType = "5">
+         endingLineNumber = "328">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -154,7 +152,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "314"
          endingLineNumber = "314"
-         landmarkName = "-connectionDidFinishLoading:"
+         landmarkName = "-connection:didFailWithError:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -166,9 +164,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "348"
-         endingLineNumber = "348"
-         landmarkName = "-connectionDidFinishLoading:"
-         landmarkType = "5">
+         endingLineNumber = "348">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -219,7 +215,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "301"
          endingLineNumber = "301"
-         landmarkName = "-connectionDidFinishLoading:"
+         landmarkName = "-connection:didReceiveResponse:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -232,7 +228,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "226"
          endingLineNumber = "226"
-         landmarkName = "-dealloc"
+         landmarkName = "-connectionDidFinishLoading:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -465,9 +461,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "321"
-         endingLineNumber = "321"
-         landmarkName = "-tableView:cellForRowAtIndexPath:"
-         landmarkType = "5">
+         endingLineNumber = "321">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -478,9 +472,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "335"
-         endingLineNumber = "335"
-         landmarkName = "-connectionDidFinishLoading:"
-         landmarkType = "5">
+         endingLineNumber = "335">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"

@@ -242,11 +242,12 @@
 	// Forecast Information ///////////////////////////////////////
     //[self.location release];
 	//self.location = [[[data objectForKey:@"request"] objectAtIndex:0] objectForKey:@"query"];
+    self.timestamp = [NSDate date];
     
 	// Current Conditions /////////////////////////////////////////
     NSDictionary *current_condition = [[data objectForKey:@"current_condition"] objectAtIndex:0];
     RSCurrentCondition* rsCurrentCondition = [[RSCurrentCondition alloc] initWithDict:current_condition withIndex:0];
-    
+
     //download weather condition image icon
     //DownloadUrlOperation *operation = [[DownloadUrlOperation alloc] initWithURL:[NSURL URLWithString:rsCurrentCondition.iconURL]];
     //[operation addObserver:self forKeyPath:@"isFinished" options:NSKeyValueObservingOptionNew context:rsCurrentCondition];
