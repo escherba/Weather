@@ -262,11 +262,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "RSLocalPageController.m"
-         timestampString = "375771811.807422"
+         timestampString = "375832947.857975"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "118"
-         endingLineNumber = "118"
+         startingLineNumber = "117"
+         endingLineNumber = "117"
          landmarkName = "-currentLocationDidUpdate:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -275,11 +275,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "RSLocalPageController.m"
-         timestampString = "375771811.807422"
+         timestampString = "375832947.857975"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "124"
-         endingLineNumber = "124"
+         startingLineNumber = "123"
+         endingLineNumber = "123"
          landmarkName = "-findNearbyPlaceDidFinish:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -288,11 +288,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "RSLocalPageController.m"
-         timestampString = "375783556.682766"
+         timestampString = "375832947.857975"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "284"
-         endingLineNumber = "284"
+         startingLineNumber = "219"
+         endingLineNumber = "219"
          landmarkName = "@implementation RSLocalPageController"
          landmarkType = "3">
       </FileBreakpoint>
@@ -340,11 +340,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "RSLocalPageController.m"
-         timestampString = "375771811.807422"
+         timestampString = "375832947.857975"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "138"
-         endingLineNumber = "138"
+         startingLineNumber = "137"
+         endingLineNumber = "137"
          landmarkName = "-viewMayNeedUpdate"
          landmarkType = "5">
       </FileBreakpoint>
@@ -457,11 +457,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "RSLocalPageController.m"
-         timestampString = "375783556.682766"
+         timestampString = "375832947.857975"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "403"
-         endingLineNumber = "403">
+         startingLineNumber = "338"
+         endingLineNumber = "338">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -479,11 +479,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/WeatherAppDelegate.m"
-         timestampString = "375771811.807422"
+         timestampString = "375832947.857975"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "57"
-         endingLineNumber = "57"
+         startingLineNumber = "58"
+         endingLineNumber = "58"
          landmarkName = "-application:didFinishLaunchingWithOptions:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -492,11 +492,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/WeatherAppDelegate.m"
-         timestampString = "375771811.807422"
+         timestampString = "375832947.857975"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "145"
-         endingLineNumber = "145"
+         startingLineNumber = "146"
+         endingLineNumber = "146"
          landmarkName = "-startUpdatingLocation:withCallback:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -505,11 +505,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "RSLocalPageController.m"
-         timestampString = "375783556.682766"
+         timestampString = "375832947.857975"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "245"
-         endingLineNumber = "245"
+         startingLineNumber = "180"
+         endingLineNumber = "180"
          landmarkName = "-reloadDataViews"
          landmarkType = "5">
       </FileBreakpoint>
@@ -518,11 +518,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/WeatherAppDelegate.m"
-         timestampString = "375771811.807422"
+         timestampString = "375832947.857975"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "37"
-         endingLineNumber = "37"
+         startingLineNumber = "38"
+         endingLineNumber = "38"
          landmarkName = "-application:didFinishLaunchingWithOptions:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -531,11 +531,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/WeatherAppDelegate.m"
-         timestampString = "375771811.807422"
+         timestampString = "375832947.857975"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "46"
-         endingLineNumber = "46"
+         startingLineNumber = "47"
+         endingLineNumber = "47"
          landmarkName = "-application:didFinishLaunchingWithOptions:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -544,11 +544,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/WeatherAppDelegate.m"
-         timestampString = "375771811.807422"
+         timestampString = "375832947.857975"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "32"
-         endingLineNumber = "32"
+         startingLineNumber = "33"
+         endingLineNumber = "33"
          landmarkName = "-application:didFinishLaunchingWithOptions:"
          landmarkType = "5">
       </FileBreakpoint>

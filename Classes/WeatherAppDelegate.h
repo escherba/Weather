@@ -26,6 +26,7 @@
 }
 
 -(void)startUpdatingLocation:(id)obj withCallback:(SEL)selector;
+-(NSInteger)getSunPositionWithCoord:(CLLocationCoordinate2D)coord;
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet MainViewController *mainViewController;

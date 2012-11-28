@@ -421,21 +421,21 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
     for (NSDictionary *item in predictions) {
         // Data in the table are search results.
         // We only show localities, not countries or other types
-        int haveLocality = 0;
-        NSMutableArray *types = [item objectForKey:@"types"];
-        for (NSString *type in types) {
-            if ([type isEqualToString:@"locality"]) {
-                haveLocality = 1;
-                break;
-            }
-        }
-        if (haveLocality == 1) {
-            // at this point, store id, reference id, and description of locality
-            RSLocality *locality = [[RSLocality alloc] initWithId:[item objectForKey:@"id"] reference:[item objectForKey:@"reference"] description:[item objectForKey:@"description"]];
-            [processedData addObject:locality];
-            [locality release];
-            locality = nil;
-        }
+        //int haveLocality = 0;
+        //NSMutableArray *types = [item objectForKey:@"types"];
+        //for (NSString *type in types) {
+        //    if ([type isEqualToString:@"locality"]) {
+        //        haveLocality = 1;
+        //        break;
+        //    }
+        //}
+        //if (haveLocality == 1) {
+        // at this point, store id, reference id, and description of locality
+        RSLocality *locality = [[RSLocality alloc] initWithId:[item objectForKey:@"id"] reference:[item objectForKey:@"reference"] description:[item objectForKey:@"description"]];
+        [processedData addObject:locality];
+        [locality release];
+        locality = nil;
+        //}
     }
     
     // reload table view

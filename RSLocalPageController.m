@@ -13,7 +13,6 @@
 #import "RSAddGeo.h"
 #import "UIImage+RSRoundCorners.h"
 #import "UATableViewCell.h"
-#include "sunriset.h"
 
 @implementation RSLocalPageController
 
@@ -152,75 +151,11 @@
     NSLog(@"!!! Seconds since last update: %f", interval);
 }
 
-
-- (NSDate*)dateFromHour:(double)rise_set components:(NSDateComponents*)argComps
-{
-    NSDateComponents *comps = [argComps copy];
-    NSTimeZone *utc = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-    [comps setTimeZone:utc];
-    [comps setHour:0];
-    [comps setMinute:0];
-    [comps setSecond:0];
-    NSDate* date_begin = [calendar dateFromComponents:comps];
-    [comps release];
-    
-    NSDate* date_rise_set = [date_begin dateByAddingTimeInterval:(rise_set * 3600.0f)];
-    
-    // for debugging
-    //NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    //[formatter setLocale:[NSLocale currentLocale]];
-    //[formatter setDateStyle:NSDateFormatterMediumStyle];
-    //[formatter setTimeStyle:NSDateFormatterMediumStyle];
-    //NSLog(@"~~ Sunrise/sunset at: %@", [formatter stringFromDate:date_rise_set]);
-    //[formatter release];
-    //end debugging
-    
-    return date_rise_set;
-}
-
 -(void)reloadDataViews
 {
     // This looks like a good place to check sunrise/sunset times and compare with
     // current
-    double rise = 0.0f;
-    double set = 0.0f;
-
-    CLLocationCoordinate2D coord = locality.coord;
-    NSDateComponents *dateComponents = [calendar components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit) fromDate:[NSDate date]];
-    NSInteger year = [dateComponents year];
-    NSInteger month = [dateComponents month];
-    NSInteger day = [dateComponents day];
-    int result = sun_rise_set(year, month, day, coord.longitude, coord.latitude, &rise, &set);
-
-    if (result == 0) {
-        //  0 - sun rises/sets this day, times stored in rise and set
-        //double dayLength = (set - rise) * 3600.0f;
-        double dayLength = day_length(year, month, day, coord.longitude, coord.latitude) * 3600.0f;
-        
-        NSDate *sunrise = [self dateFromHour:rise components:dateComponents];
-        NSDate *sunset = [self dateFromHour:set components:dateComponents];
-        NSTimeInterval sunriseSinceNow = [sunrise timeIntervalSinceNow];
-        NSTimeInterval sunsetSinceNow = [sunset timeIntervalSinceNow];
-        NSLog(@"Sunrise at %f, sunset at %f", rise, set);
-        NSLog(@"sunriseSinceNow at %f, sunsetSinceNow at %f", sunriseSinceNow, sunsetSinceNow);
-        
-        if (sunriseSinceNow < 0.0f) {
-            // find remainder of the time since last sunset (when divided by 24*3600) and
-            // compare it with the length of day.
-            double secondsSinceSunrise = fmod(fabs(sunriseSinceNow), (double)(24*3600));
-            sunPosition = (secondsSinceSunrise <= dayLength) ? 1 : -1;
-        } else {
-            // we are asserting that sunset always follows sunrise, so when sunrise is
-            // positive, sunset should be an even larger number. We find remainder of that
-            // number when divided by (24 * 3600) and compare it with day length.
-            double secondsTilSunset = fmod(fabs(sunsetSinceNow), (double)(24*3600));
-            sunPosition = (secondsTilSunset <= dayLength) ? 1 : -1;
-        }
-    } else {
-        // +1 - sun above ground all day (polar summer)
-        // -1 - sun below ground all day (polar winter)
-        sunPosition = result;
-    }
+    sunPosition = [appDelegate getSunPositionWithCoord:locality.coord];
     
     // =============================================================================
     // Now proceed with updating views
