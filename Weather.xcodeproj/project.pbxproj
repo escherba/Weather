@@ -9,9 +9,6 @@
 /* Begin PBXBuildFile section */
 		1D3623260D0F684500981E51 /* WeatherAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* WeatherAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
-		280E754D0DD40C5E005A515E /* FlipsideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 280E754A0DD40C5E005A515E /* FlipsideView.xib */; };
-		280E754E0DD40C5E005A515E /* MainView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 280E754B0DD40C5E005A515E /* MainView.xib */; };
-		280E754F0DD40C5E005A515E /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 280E754C0DD40C5E005A515E /* MainWindow.xib */; };
 		289233AE0DB2D0DB0083E9F9 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233A90DB2D0DB0083E9F9 /* MainViewController.m */; };
 		289233B00DB2D0DB0083E9F9 /* FlipsideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */; };
 		EF06B6911650CF470063E7E9 /* fancy_deboss.png in Resources */ = {isa = PBXBuildFile; fileRef = EF06B6901650CF460063E7E9 /* fancy_deboss.png */; };
@@ -42,6 +39,9 @@
 		EF63AD0D1667FAFE006D8652 /* FindNearbyPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = EF63AD081667FAFE006D8652 /* FindNearbyPlace.m */; };
 		EF63AD0E1667FAFE006D8652 /* WeatherForecast.m in Sources */ = {isa = PBXBuildFile; fileRef = EF63AD0A1667FAFE006D8652 /* WeatherForecast.m */; };
 		EF63AD0F1667FAFE006D8652 /* WeatherModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EF63AD0C1667FAFE006D8652 /* WeatherModel.m */; };
+		EF63AD331667FEE1006D8652 /* MainView.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF63AD311667FEE1006D8652 /* MainView.xib */; };
+		EF63AD341667FEE1006D8652 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF63AD321667FEE1006D8652 /* MainWindow.xib */; };
+		EF63AD361667FEF6006D8652 /* FlipsideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF63AD351667FEF6006D8652 /* FlipsideView.xib */; };
 		EFB2FA141478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png in Resources */ = {isa = PBXBuildFile; fileRef = EFB2FA131478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png */; };
 /* End PBXBuildFile section */
 
@@ -51,9 +51,6 @@
 		1D3623250D0F684500981E51 /* WeatherAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeatherAppDelegate.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* WeatherLux.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherLux.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		280E754A0DD40C5E005A515E /* FlipsideView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FlipsideView.xib; sourceTree = "<group>"; };
-		280E754B0DD40C5E005A515E /* MainView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainView.xib; sourceTree = "<group>"; };
-		280E754C0DD40C5E005A515E /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		288765580DF743DE002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		289233A80DB2D0DB0083E9F9 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainViewController.h; path = Classes/MainViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		289233A90DB2D0DB0083E9F9 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainViewController.m; path = Classes/MainViewController.m; sourceTree = "<group>"; };
@@ -98,6 +95,9 @@
 		EF63AD0A1667FAFE006D8652 /* WeatherForecast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeatherForecast.m; path = Classes/WeatherForecast.m; sourceTree = "<group>"; };
 		EF63AD0B1667FAFE006D8652 /* WeatherModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeatherModel.h; path = Classes/WeatherModel.h; sourceTree = "<group>"; };
 		EF63AD0C1667FAFE006D8652 /* WeatherModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeatherModel.m; path = Classes/WeatherModel.m; sourceTree = "<group>"; };
+		EF63AD311667FEE1006D8652 /* MainView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainView.xib; path = Resources/MainView.xib; sourceTree = "<group>"; };
+		EF63AD321667FEE1006D8652 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainWindow.xib; path = Resources/MainWindow.xib; sourceTree = "<group>"; };
+		EF63AD351667FEF6006D8652 /* FlipsideView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FlipsideView.xib; path = Resources/FlipsideView.xib; sourceTree = "<group>"; };
 		EFB2FA131478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "powered-by-google-on-non-white_WorldWeatherOnline.png"; path = "images/powered-by-google-on-non-white_WorldWeatherOnline.png"; sourceTree = "<group>"; };
 		EFBD1F96146B23CD00AFCAB9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -139,10 +139,10 @@
 		281C6CD70DB2D82200F60ACC /* Flipside View */ = {
 			isa = PBXGroup;
 			children = (
+				EF63AD351667FEF6006D8652 /* FlipsideView.xib */,
 				EF63ACF91667F9EA006D8652 /* RSAddGeo.h */,
 				EF63ACFA1667F9EA006D8652 /* RSAddGeo.m */,
 				EF63ACFB1667F9EA006D8652 /* RSAddGeo.xib */,
-				280E754A0DD40C5E005A515E /* FlipsideView.xib */,
 				289233AC0DB2D0DB0083E9F9 /* FlipsideViewController.h */,
 				289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */,
 			);
@@ -152,8 +152,8 @@
 		289233A00DB2D0730083E9F9 /* Main View */ = {
 			isa = PBXGroup;
 			children = (
-				280E754C0DD40C5E005A515E /* MainWindow.xib */,
-				280E754B0DD40C5E005A515E /* MainView.xib */,
+				EF63AD311667FEE1006D8652 /* MainView.xib */,
+				EF63AD321667FEE1006D8652 /* MainWindow.xib */,
 				289233A80DB2D0DB0083E9F9 /* MainViewController.h */,
 				289233A90DB2D0DB0083E9F9 /* MainViewController.m */,
 				EF63ACEB1667F8EE006D8652 /* RSLocalPageController.h */,
@@ -337,9 +337,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				280E754D0DD40C5E005A515E /* FlipsideView.xib in Resources */,
-				280E754E0DD40C5E005A515E /* MainView.xib in Resources */,
-				280E754F0DD40C5E005A515E /* MainWindow.xib in Resources */,
 				EFB2FA141478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png in Resources */,
 				EF06B6911650CF470063E7E9 /* fancy_deboss.png in Resources */,
 				EF63AB4416641840006D8652 /* arrow.png in Resources */,
@@ -352,6 +349,9 @@
 				EF63ACEF1667F8EE006D8652 /* RSLocalPageController.xib in Resources */,
 				EF63ACF81667F9A4006D8652 /* Default-568h@2x.png in Resources */,
 				EF63ACFD1667F9EA006D8652 /* RSAddGeo.xib in Resources */,
+				EF63AD331667FEE1006D8652 /* MainView.xib in Resources */,
+				EF63AD341667FEE1006D8652 /* MainWindow.xib in Resources */,
+				EF63AD361667FEF6006D8652 /* FlipsideView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
