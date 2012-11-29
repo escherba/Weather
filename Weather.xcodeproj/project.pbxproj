@@ -166,10 +166,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				EF63ACFE1667FA3C006D8652 /* UACellBackgroundView.h */,
-				EF63ACFF1667FA3C006D8652 /* UACellBackgroundView.m */,
-				EF63AD001667FA3C006D8652 /* UATableViewCell.h */,
-				EF63AD011667FA3C006D8652 /* UATableViewCell.m */,
 				EF63ABF91665129D006D8652 /* sunriset */,
 				EF63AB3D16641840006D8652 /* PullToRefresh */,
 				EF63AB1F1663EE39006D8652 /* UATableViewCell */,
@@ -249,6 +245,10 @@
 		EF63AB1F1663EE39006D8652 /* UATableViewCell */ = {
 			isa = PBXGroup;
 			children = (
+				EF63ACFE1667FA3C006D8652 /* UACellBackgroundView.h */,
+				EF63ACFF1667FA3C006D8652 /* UACellBackgroundView.m */,
+				EF63AD001667FA3C006D8652 /* UATableViewCell.h */,
+				EF63AD011667FA3C006D8652 /* UATableViewCell.m */,
 			);
 			name = UATableViewCell;
 			sourceTree = "<group>";
