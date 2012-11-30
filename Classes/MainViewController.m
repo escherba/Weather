@@ -156,7 +156,7 @@
     
     // Note: As long as we invalidate and release timer in viewDidDisappear, we
     // should set up a new timer object in viewDidAppear.
-    timer = [[NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(400.0f) target:self selector:@selector(timerFired) userInfo:nil repeats:YES] retain];
+    timer = [[NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(1.0f) target:self selector:@selector(timerFired) userInfo:nil repeats:YES] retain];
 }
 
 -(void) viewDidDisappear:(BOOL)animated
@@ -295,7 +295,7 @@
     NSLog(@"$$$$ Size of the restored array: %d", [modelArray count]);
 }
 
-// This will get called every 15 min in foreground mode
+// This will get called every second in foreground mode
 - (void)timerFired{
     if ([controllers count] > 0) {
         RSLocalPageController* controller = [controllers objectAtIndex:pageControl.currentPage];

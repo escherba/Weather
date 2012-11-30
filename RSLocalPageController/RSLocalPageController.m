@@ -31,7 +31,6 @@
     sunPosition = 0; // undefined
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
     wsymbols = appDelegate.wsymbols;
-    calendar = appDelegate.calendar;
     showingImperial = appDelegate.mainViewController.useImperial;
     
     UIColor *pattern = [UIColor colorWithPatternImage:[UIImage imageNamed: @"fancy_deboss.png"]];
@@ -72,10 +71,20 @@
     [pull setDelegate:self];
     [_tableView addSubview:pull];
     
+    // display time
     localCalendar = [appDelegate.calendar copy];
     if (locality.timeZoneId) {
         [localCalendar setTimeZone:[NSTimeZone timeZoneWithName:locality.timeZoneId]];
     }
+    NSDate *localCurrentTime = [appDelegate.calendar dateFromComponents:[localCalendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:[NSDate date]]];
+    NSString *timeLabelText = [timeFormatter stringFromDate:localCurrentTime];
+    nowTimeLabel.text = timeLabelText;
+    if (locality.timeZoneId) {
+        [nowTimeLabel setTextColor:[UIColor blackColor]];
+    } else {
+        [nowTimeLabel setTextColor:[UIColor blueColor]];
+    }
+    
     
     if (locality.haveCoord) {
         NSLog(@"Page %u: viewDidLoad: getting forecast", pageNumber);
@@ -103,7 +112,6 @@
     [locality removeObserver:self forKeyPath:@"timeZoneId" context:self];
     
     wsymbols = nil;
-    calendar = nil;
     
     [localCalendar release],            localCalendar = nil;
     [pull release],                     pull = nil;
@@ -156,10 +164,14 @@
     //NSTimeInterval interval = [currentTime timeIntervalSinceDate:locality.forecastTimestamp];
     
     // inserting this to display time
-    //NSDateComponents *comp = [localCalendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:currentTime];
-    NSDate *localCurrentTime = [calendar dateFromComponents:[localCalendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:currentTime]];
+    NSDate *localCurrentTime = [appDelegate.calendar dateFromComponents:[localCalendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:currentTime]];
     NSString *timeLabelText = [timeFormatter stringFromDate:localCurrentTime];
     nowTimeLabel.text = timeLabelText;
+    if (locality.timeZoneId) {
+        [nowTimeLabel setTextColor:[UIColor blackColor]];
+    } else {
+        [nowTimeLabel setTextColor:[UIColor blueColor]];
+    }
     //NSLog(@"local current time: %@", timeLabelText);
     
     // 900 seconds is 15 minutes
@@ -253,6 +265,7 @@
         // have timezone id, can show clock
         NSLog(@"Obtained timezoneId");
         [localCalendar setTimeZone:[NSTimeZone timeZoneWithName:locality.timeZoneId]];
+        [self viewMayNeedUpdate];
     }
 }
 

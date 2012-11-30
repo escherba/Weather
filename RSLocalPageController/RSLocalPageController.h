@@ -16,7 +16,6 @@
 
     WeatherAppDelegate *appDelegate;
     NSDictionary *wsymbols;
-    NSCalendar *calendar;
     
     IBOutlet UIActivityIndicatorView *loadingActivityIndicator;
     
