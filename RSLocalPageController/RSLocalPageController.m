@@ -56,7 +56,12 @@
     //appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
     
     weekdayFormatter = [[NSDateFormatter alloc] init];
+    [weekdayFormatter setLocale:[NSLocale currentLocale]];
     [weekdayFormatter setDateFormat: @"EEEE"];
+
+    timeFormatter = [[NSDateFormatter alloc] init];
+    [timeFormatter setLocale:[NSLocale currentLocale]];
+    [timeFormatter setTimeStyle:NSDateFormatterShortStyle];
     
     _tableView.dataSource = self;
     _tableView.delegate = self;
@@ -66,6 +71,11 @@
     pull = [[PullToRefreshView alloc] initWithScrollView:(UIScrollView *) _tableView];
     [pull setDelegate:self];
     [_tableView addSubview:pull];
+    
+    localCalendar = [appDelegate.calendar copy];
+    if (locality.timeZoneId) {
+        [localCalendar setTimeZone:[NSTimeZone timeZoneWithName:locality.timeZoneId]];
+    }
     
     if (locality.haveCoord) {
         NSLog(@"Page %u: viewDidLoad: getting forecast", pageNumber);
@@ -90,20 +100,24 @@
 {
     NSLog(@"Releasing observer");
     [locality removeObserver:self forKeyPath:@"coord" context:self];
+    [locality removeObserver:self forKeyPath:@"timeZoneId" context:self];
     
     wsymbols = nil;
     calendar = nil;
     
+    [localCalendar release],            localCalendar = nil;
     [pull release],                     pull = nil;
     [locality release],                 locality = nil;
     [loadingActivityIndicator release], loadingActivityIndicator = nil;
     [forecast release],                 forecast = nil;
     [weekdayFormatter release],         weekdayFormatter = nil;
+    [timeFormatter release],            timeFormatter = nil;
 	[nameLabel release],                nameLabel = nil;
 	[nowImage release],                 nowImage = nil;
 	[nowTempLabel release],             nowTempLabel = nil;
 	[nowHumidityLabel release],         nowHumidityLabel = nil;
 	[nowWindLabel release],             nowWindLabel = nil;
+    [nowTimeLabel release],             nowTimeLabel = nil;
 	[nowConditionLabel release],        nowConditionLabel = nil;
     [_tableView release],               _tableView = nil;
 	[super dealloc];
@@ -140,6 +154,13 @@
     NSDate *currentTime = [NSDate date];
     NSTimeInterval interval = [currentTime timeIntervalSinceDate:forecast.timestamp];
     //NSTimeInterval interval = [currentTime timeIntervalSinceDate:locality.forecastTimestamp];
+    
+    // inserting this to display time
+    //NSDateComponents *comp = [localCalendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:currentTime];
+    NSDate *localCurrentTime = [calendar dateFromComponents:[localCalendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:currentTime]];
+    NSString *timeLabelText = [timeFormatter stringFromDate:localCurrentTime];
+    nowTimeLabel.text = timeLabelText;
+    //NSLog(@"local current time: %@", timeLabelText);
     
     // 900 seconds is 15 minutes
     if (interval >= 900.0f) {
@@ -206,12 +227,16 @@
     {
         [localityValue retain];
         [locality removeObserver:self forKeyPath:@"coord" context:self];
+        [locality removeObserver:self forKeyPath:@"timeZoneId" context:self];
         [locality release];
         [localityValue addObserver:self
             forKeyPath:@"coord"
                 options:NSKeyValueObservingOptionNew
                     context:self];
-        
+        [localityValue addObserver:self
+            forKeyPath:@"timeZoneId"
+                options:NSKeyValueObservingOptionNew
+                    context:self];
         locality = localityValue;
     }
 }
@@ -220,9 +245,14 @@
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"coord"]) {
-        NSLog(@"RSLocalPageController observeValueForKeyPath:coord called");
+        // have coordinates, can get forecast
+        NSLog(@"Obtained coordinates");
         [loadingActivityIndicator startAnimating];
         [self getForecast];
+    } else if ([keyPath isEqualToString:@"timeZoneId"]) {
+        // have timezone id, can show clock
+        NSLog(@"Obtained timezoneId");
+        [localCalendar setTimeZone:[NSTimeZone timeZoneWithName:locality.timeZoneId]];
     }
 }
 

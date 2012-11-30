@@ -24,6 +24,7 @@
     NSURLConnection *apiConnection;
     NSMutableData *responseData;
     NSMutableDictionary *modelDict;
+    NSInteger detailRequestStage; // 0 - nothing, 1 - details request, 2 - timezone request
     
     UISwitch *switchView;
     UISegmentedControl *segmentedControl;

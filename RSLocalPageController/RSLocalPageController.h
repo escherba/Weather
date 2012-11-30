@@ -21,9 +21,12 @@
     IBOutlet UIActivityIndicatorView *loadingActivityIndicator;
     
     // different location (in different time zones) could have different dates
+    NSDateFormatter *timeFormatter;
     NSDateFormatter *weekdayFormatter;
     BOOL showingImperial;
     NSInteger sunPosition;
+    
+    NSCalendar *localCalendar;
     
     IBOutlet UIImageView *nowImage;
     IBOutlet UILabel *nameLabel;
@@ -31,6 +34,7 @@
     IBOutlet UILabel *nowHumidityLabel;
     IBOutlet UILabel *nowWindLabel;
     IBOutlet UILabel *nowConditionLabel;
+    IBOutlet UILabel *nowTimeLabel;
     
     PullToRefreshView *pull;
     IBOutlet UITableView *_tableView;
