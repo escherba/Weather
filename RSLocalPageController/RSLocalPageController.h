@@ -38,7 +38,7 @@
 
 -(void)viewMayNeedUpdate;
 -(void)currentLocationDidUpdate:(CLLocation *)location;
--(void)findNearbyPlaceDidFinish:(NSDictionary*)dict;
+-(void)findNearbyPlaceDidFinish:(NSString*)placeName;
 
 @property (nonatomic, retain) UIActivityIndicatorView *loadingActivityIndicator;
 @property (nonatomic, retain) WeatherForecast *forecast;

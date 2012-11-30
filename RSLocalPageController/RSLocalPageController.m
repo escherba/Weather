@@ -119,10 +119,9 @@
     //[forecast queryService:coord];
 }
 
--(void)findNearbyPlaceDidFinish:(NSDictionary*)dict
+-(void)findNearbyPlaceDidFinish:(NSString*)placeName
 {
     NSLog(@"RSLocalPageController findNearbyPlaceDidFinish:");
-    NSString* placeName = [dict objectForKey:@"name"];
     nameLabel.text = placeName;
     nameLabel.textColor = [UIColor blueColor];
 }

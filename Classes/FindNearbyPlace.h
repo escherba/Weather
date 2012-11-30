@@ -25,5 +25,5 @@
 @end
 
 @protocol FindNearbyPlaceDelegate
--(void)findNearbyPlaceDidFinish:(NSDictionary*)dict;
+-(void)findNearbyPlaceDidFinish:(NSString*)placeName;
 @end

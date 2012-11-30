@@ -368,9 +368,8 @@
 }
 
 #pragma mark - FindNearbyPlaceDelegate method
--(void)findNearbyPlaceDidFinish:(NSDictionary*)dict
+-(void)findNearbyPlaceDidFinish:(NSString*)placeName
 {
-    NSString* placeName = [dict objectForKey:@"name"];
     NSLog(@"MVC findNearbyPlaceDidFinish called, place name: %@", placeName);
     
     if ([modelArray count] > 0) {
@@ -384,7 +383,7 @@
     if ([controllers count] > 0) {
         RSLocalPageController *controller = [controllers objectAtIndex:0];
         if (controller) {
-            [controller findNearbyPlaceDidFinish:dict];
+            [controller findNearbyPlaceDidFinish:placeName];
         }
     }
 }
