@@ -208,9 +208,6 @@
         iconPath = [conditionInfo objectAtIndex:5];
     }
     
-    //NSString *nightIconName = [conditionInfo objectAtIndex:2];
-    //NSString *iconPath = [NSString stringWithFormat:@"%@.png", dayIconName];
-    //NSString *iconPath = [[NSBundle mainBundle] pathForResource:dayIconName ofType:@"png"];
     UIImage *img = [UIImage imageWithContentsOfFile:iconPath];
     NSLog(@"setting current condition image: %@", iconPath);
     nowImage.image = [img roundCornersWithRadius:6.0];
@@ -328,15 +325,10 @@
         // load icon image
         NSArray *conditionInfo = [wsymbols objectForKey:day.weatherCode];
         NSString *iconPath;
-        if (sunPosition < 0) {
-            // sun is below ground (night)
-            iconPath = [conditionInfo objectAtIndex:4];
-        } else {
-            // sun is either above ground (day) or undefined
-            iconPath = [conditionInfo objectAtIndex:3];
-        }
-        //NSString *nightIconName = [conditionInfo objectAtIndex:2];
-        //NSString *iconPath = [NSString stringWithFormat:@"%@.png", dayIconName];
+        
+        // always show daylight icon for forecasts
+        iconPath = [conditionInfo objectAtIndex:3];
+
         UIImage *img = [UIImage imageWithContentsOfFile:iconPath];
         NSLog(@"setting day image: %@", iconPath);
         cell.imageView.contentMode = UIViewContentModeCenter;

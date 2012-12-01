@@ -154,11 +154,11 @@
 			children = (
 				EF63AD311667FEE1006D8652 /* MainView.xib */,
 				EF63AD321667FEE1006D8652 /* MainWindow.xib */,
+				EF63ACED1667F8EE006D8652 /* RSLocalPageController.xib */,
 				289233A80DB2D0DB0083E9F9 /* MainViewController.h */,
 				289233A90DB2D0DB0083E9F9 /* MainViewController.m */,
 				EF63ACEB1667F8EE006D8652 /* RSLocalPageController.h */,
 				EF63ACEC1667F8EE006D8652 /* RSLocalPageController.m */,
-				EF63ACED1667F8EE006D8652 /* RSLocalPageController.xib */,
 			);
 			name = "Main View";
 			sourceTree = "<group>";
