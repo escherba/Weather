@@ -175,7 +175,7 @@
     //NSLog(@"local current time: %@", timeLabelText);
     
     // 900 seconds is 15 minutes
-    if (interval >= 900.0f) {
+    if (interval >= 3600.0f) {
         //TODO: find out if we need to update location at this point
         [loadingActivityIndicator startAnimating];
         [forecast queryService:locality.coord];
