@@ -180,7 +180,7 @@
         [loadingActivityIndicator startAnimating];
         [forecast queryService:locality.coord];
     }
-    NSLog(@"!!! Seconds since last update: %f", interval);
+    //NSLog(@"!!! Seconds since last update: %f", interval);
 }
 
 -(void)reloadDataViews

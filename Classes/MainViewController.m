@@ -303,7 +303,7 @@
             [controller viewMayNeedUpdate];
         }
     }
-    NSLog(@"Timer fired");
+    //NSLog(@"Timer fired");
 }
 
 -(void)currentLocationDidUpdate:(CLLocation *)location
