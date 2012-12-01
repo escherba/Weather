@@ -227,7 +227,6 @@
     // will stop animation in weatherForecastDidFinish
 }
 
-
 #pragma mark - Key-Value-Observing
 // override setter so that we register observing method whenever locality is added
 -(void)setLocality:(RSLocality *)localityValue

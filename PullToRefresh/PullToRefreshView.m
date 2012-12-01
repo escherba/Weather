@@ -140,9 +140,9 @@
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setLocale:[NSLocale currentLocale]];
-    [formatter setDateStyle:NSDateFormatterMediumStyle];
-    [formatter setTimeStyle:NSDateFormatterMediumStyle];
-    lastUpdatedLabel.text = [NSString stringWithFormat:@"Last Update: %@", [formatter stringFromDate:date]];
+    [formatter setDateStyle:NSDateFormatterShortStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    lastUpdatedLabel.text = [NSString stringWithFormat:@"Last Updated: %@", [formatter stringFromDate:date]];
     [formatter release];
 }
 
@@ -151,14 +151,14 @@
     
 	switch (state) {
 		case PullToRefreshViewStateReady:
-			statusLabel.text = @"Release to refresh...";
+			statusLabel.text = @"Release to update...";
 			[self showActivity:NO animated:NO];
             [self setImageFlipped:YES];
             scrollView.contentInset = UIEdgeInsetsZero;
 			break;
             
 		case PullToRefreshViewStateNormal:
-			statusLabel.text = @"Pull down to refresh...";
+			statusLabel.text = @"Pull down to update...";
 			[self showActivity:NO animated:NO];
             [self setImageFlipped:NO];
 			[self refreshLastUpdatedDate];
