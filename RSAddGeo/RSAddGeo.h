@@ -37,6 +37,7 @@
 @property (nonatomic, retain) NSString* name;
 @property (nonatomic, retain) NSString* vicinity;
 @property (nonatomic, retain) NSString* timeZoneId;
+@property (nonatomic, retain) NSString* countryCode;
 
 @property (nonatomic, assign) CLLocationCoordinate2D coord;
 @property (nonatomic, assign) BOOL haveCoord;

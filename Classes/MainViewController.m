@@ -368,14 +368,15 @@
 }
 
 #pragma mark - FindNearbyPlaceDelegate method
--(void)findNearbyPlaceDidFinish:(NSString*)placeName
+-(void)findNearbyPlaceDidFinish:(NSDictionary*)place
 {
-    NSLog(@"MVC findNearbyPlaceDidFinish called, place name: %@", placeName);
+    NSLog(@"MVC findNearbyPlaceDidFinish called, place name: %@, country:%@", [place objectForKey:@"placeName"], [place objectForKey:@"countryCode"]);
     
     if ([modelArray count] > 0) {
         RSLocality *locality = [modelArray objectAtIndex:0];
         if (locality) {
-            locality.description = placeName;
+            locality.description = [place objectForKey:@"neighborhood"];
+            locality.countryCode = [place objectForKey:@"countryCode"];
         } else {
             return;
         }
@@ -383,7 +384,7 @@
     if ([controllers count] > 0) {
         RSLocalPageController *controller = [controllers objectAtIndex:0];
         if (controller) {
-            [controller findNearbyPlaceDidFinish:placeName];
+            [controller findNearbyPlaceDidFinish];
         }
     }
 }

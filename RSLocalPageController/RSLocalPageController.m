@@ -141,10 +141,10 @@
     //[forecast queryService:coord];
 }
 
--(void)findNearbyPlaceDidFinish:(NSString*)placeName
+-(void)findNearbyPlaceDidFinish
 {
     NSLog(@"RSLocalPageController findNearbyPlaceDidFinish:");
-    nameLabel.text = placeName;
+    nameLabel.text = locality.description;
     nameLabel.textColor = [UIColor blueColor];
 }
 
