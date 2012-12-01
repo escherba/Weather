@@ -333,8 +333,10 @@
     
     // CLLocationDistance is a double measured in meters...
     // TODO: move the hardcoded value of 1000 meters somewhere outside.
+    
+    //TODO: make sure findNearbyPlace gets called here
     NSLog(@"The new place is %f meters from the old one", distance);
-    if (distance >= 1000.0f) {
+    if (distance >= 100.0f) {
         if (locality) {
             locality.coord = location.coordinate;
         } else {

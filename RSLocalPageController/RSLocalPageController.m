@@ -132,20 +132,22 @@
 }
 
 #pragma mark - internals
-
 -(void)currentLocationDidUpdate:(CLLocation *)location
 {
-    //TODO: see if we need to update forecast at this point
-    CLLocationCoordinate2D coord = location.coordinate;
-    [appDelegate.findNearby queryServiceWithCoord:coord];
-    //[forecast queryService:coord];
+    if (locality.trackLocation) {
+        //TODO: see if we need to update forecast at this point
+        [appDelegate.findNearby queryServiceWithCoord:location.coordinate];
+        //[forecast queryService:coord];
+    }
 }
 
 -(void)findNearbyPlaceDidFinish
 {
-    NSLog(@"RSLocalPageController findNearbyPlaceDidFinish:");
-    nameLabel.text = locality.description;
-    nameLabel.textColor = [UIColor blueColor];
+    if (locality.trackLocation) {
+        NSLog(@"RSLocalPageController findNearbyPlaceDidFinish:");
+        nameLabel.text = locality.description;
+        nameLabel.textColor = [UIColor blueColor];
+    }
 }
 
 -(void)viewMayNeedUpdate {
