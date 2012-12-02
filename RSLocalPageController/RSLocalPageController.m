@@ -134,16 +134,17 @@
 #pragma mark - internals
 -(void)currentLocationDidUpdate:(CLLocation *)location
 {
-    if (locality.trackLocation) {
+    if (locality.trackLocation && locality.haveCoord) {
         //TODO: see if we need to update forecast at this point
-        [appDelegate.findNearby queryServiceWithCoord:location.coordinate];
+        CLLocationCoordinate2D coord = locality.coord;
+        [appDelegate.findNearby queryServiceWithCoord:coord];
         //[forecast queryService:coord];
     }
 }
 
 -(void)findNearbyPlaceDidFinish
 {
-    if (locality.trackLocation) {
+    if (locality.trackLocation && locality.haveCoord) {
         NSLog(@"RSLocalPageController findNearbyPlaceDidFinish:");
         nameLabel.text = locality.description;
         nameLabel.textColor = [UIColor blueColor];
@@ -223,8 +224,9 @@
     // call to reload your data
     NSLog(@"getForecast called");
     [forecast queryService:locality.coord];
-    if (locality.trackLocation) {
-        [appDelegate.findNearby queryServiceWithCoord:locality.coord];
+    if (locality.trackLocation && locality.haveCoord) {
+        CLLocationCoordinate2D coord = locality.coord;
+        [appDelegate.findNearby queryServiceWithCoord:coord];
     }
     // will stop animation in weatherForecastDidFinish
 }

@@ -38,7 +38,9 @@
     
     defaults = [NSUserDefaults standardUserDefaults];
     appDelegate = (WeatherAppDelegate*)[[UIApplication sharedApplication] delegate];
-    [appDelegate startUpdatingLocation:self withCallback:@selector(currentLocationDidUpdate:)];
+    //appDelegate.callbackObject = self;
+    //appDelegate.callBackselector = @selector(currentLocationDidUpdate:);
+    //[appDelegate startUpdatingLocation:self withCallback:@selector(currentLocationDidUpdate:)];
     
     // restore user selections (do this before setupPage is called)
     [self restoreSettings];

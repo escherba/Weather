@@ -25,7 +25,7 @@
 #pragma mark - Lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
+
     calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     
     // initialize table of weather conditions
@@ -81,6 +81,8 @@
      Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
      Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
      */
+    [locationManager stopUpdatingLocation];
+    NSLog(@"UIApplication applicationWillResignActive");
 }
 
 
@@ -90,6 +92,9 @@
      Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
      If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
      */
+    
+    //TODO: invalidate timer here?
+    NSLog(@"UIApplication applicationDidEnterBackground");
 }
 
 
@@ -98,6 +103,7 @@
     /*
      Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
      */
+    NSLog(@"UIApplication applicationWillEnterForeground");
 }
 
 
@@ -106,6 +112,8 @@
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
+    [locationManager startUpdatingLocation];
+    NSLog(@"UIApplication applicationDidBecomeActive");
 }
 
 
@@ -115,6 +123,7 @@
      Called when the application is about to terminate.
      See also applicationDidEnterBackground:.
      */
+    NSLog(@"UIApplication applicationWillTerminate");
 }
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
@@ -122,6 +131,7 @@
     /*
      Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
      */
+    NSLog(@"UIApplication applicationDidReceiveMemoryWarning");
 }
 
 - (void)dealloc
@@ -141,24 +151,25 @@
 #pragma mark - wrappers for CDLocationManagerDelegate methods
 
 // wrapper with callback
--(void)startUpdatingLocation:(id)obj withCallback:(SEL)selector
-{
-    NSLog(@"....Starting location tracking");
-    callbackObject = obj;
-    callBackselector = selector;
-    [locationManager startUpdatingLocation];
-}
+//-(void)startUpdatingLocation:(id)obj withCallback:(SEL)selector
+//{
+//    NSLog(@"....Starting location tracking");
+//    callbackObject = obj;
+//    callBackselector = selector;
+//    [locationManager startUpdatingLocation];
+//}
 
 #pragma mark - CDLocationManager methods
 
 - (void)locationManager:(CDLocationManager *) manager
     didUpdateToLocation:(CLLocation *)location
 {
+    NSLog(@"locationManager didUpdateToLocation");
     if ([self isValidLocation:location withOldLocation:currentLocation]) {
         [currentLocation release];
         currentLocation = [location retain];
         NSLog(@"Got coord: lat=%f, long=%f", location.coordinate.latitude, location.coordinate.longitude);
-        [callbackObject performSelector:callBackselector withObject:location];
+        [mainViewController currentLocationDidUpdate:location];
     } else {
         NSLog(@"Bad location: lat=%f, long=%f", location.coordinate.latitude, location.coordinate.longitude);
     }
@@ -167,7 +178,7 @@
 -(void)locationManager:(CDLocationManager *) manager
       didFailWithError:(NSError *)error
 {
-    NSLog(@"Error: %@", [error description]);
+    NSLog(@"locationManager didFailWithError: %@", [error description]);
 }
 
 #pragma mark - internals

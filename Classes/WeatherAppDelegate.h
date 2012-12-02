@@ -17,15 +17,14 @@
     MainViewController *mainViewController;
     
     FindNearbyPlace *findNearby;
+    
+    // Location manager stuff
     CLLocation *currentLocation;
     CDLocationManager *locationManager;
     NSDate *locationManagerStartDate;
-    
-    id callbackObject;
-    SEL callBackselector;
 }
 
--(void)startUpdatingLocation:(id)obj withCallback:(SEL)selector;
+//-(void)startUpdatingLocation:(id)obj withCallback:(SEL)selector;
 -(NSInteger)getSunPositionWithCoord:(CLLocationCoordinate2D)coord;
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
@@ -34,6 +33,7 @@
 @property (nonatomic, retain, readonly) CLLocation *currentLocation;
 @property (nonatomic, retain, readonly) NSMutableDictionary *wsymbols;
 @property (nonatomic, retain, readonly) NSCalendar *calendar;
+
 //@property (nonatomic, retain) NSOperationQueue *operationQueue;
 
 @end
