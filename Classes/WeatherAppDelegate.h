@@ -17,7 +17,7 @@
     MainViewController *mainViewController;
     
     FindNearbyPlace *findNearby;
-    
+
     // Location manager stuff
     CLLocation *currentLocation;
     CDLocationManager *locationManager;
