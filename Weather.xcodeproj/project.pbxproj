@@ -98,6 +98,7 @@
 		EF63AD321667FEE1006D8652 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainWindow.xib; path = Resources/MainWindow.xib; sourceTree = "<group>"; };
 		EF63AD351667FEF6006D8652 /* FlipsideView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FlipsideView.xib; path = Resources/FlipsideView.xib; sourceTree = "<group>"; };
 		EF63AD401667FFBC006D8652 /* fancy_deboss.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fancy_deboss.png; path = images/fancy_deboss.png; sourceTree = "<group>"; };
+		EF912EF61677D221000D2FBE /* Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
 		EFB2FA131478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "powered-by-google-on-non-white_WorldWeatherOnline.png"; path = "images/powered-by-google-on-non-white_WorldWeatherOnline.png"; sourceTree = "<group>"; };
 		EFBD1F96146B23CD00AFCAB9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -166,6 +167,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				EF912EF61677D221000D2FBE /* Config.h */,
 				EF63ABF91665129D006D8652 /* sunriset */,
 				EF63AB3D16641840006D8652 /* PullToRefresh */,
 				EF63AB1F1663EE39006D8652 /* UATableViewCell */,

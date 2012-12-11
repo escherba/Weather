@@ -10,6 +10,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "WeatherModel.h"
 #import "WeatherAppDelegate.h"
+#include "Config.h"
 
 @class WeatherForecast;
 
