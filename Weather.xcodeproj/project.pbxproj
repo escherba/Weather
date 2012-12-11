@@ -17,9 +17,7 @@
 		EF527098146B38AF00335A36 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFBD1F96146B23CD00AFCAB9 /* CoreLocation.framework */; };
 		EF63AB4416641840006D8652 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = EF63AB3E16641840006D8652 /* arrow.png */; };
 		EF63AB4516641840006D8652 /* arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EF63AB3F16641840006D8652 /* arrow@2x.png */; };
-		EF63AB4616641840006D8652 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = EF63AB4016641840006D8652 /* LICENSE */; };
 		EF63AB4716641840006D8652 /* PullToRefreshView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF63AB4216641840006D8652 /* PullToRefreshView.m */; };
-		EF63AB4816641840006D8652 /* README in Resources */ = {isa = PBXBuildFile; fileRef = EF63AB4316641840006D8652 /* README */; };
 		EF63AB4B16641A70006D8652 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63AB4A16641A70006D8652 /* QuartzCore.framework */; };
 		EF63AB971664A8C2006D8652 /* icons.plist in Resources */ = {isa = PBXBuildFile; fileRef = EF63AB961664A8C2006D8652 /* icons.plist */; };
 		EF63ABFC1665129D006D8652 /* sunriset.c in Sources */ = {isa = PBXBuildFile; fileRef = EF63ABFA1665129D006D8652 /* sunriset.c */; };
@@ -61,10 +59,8 @@
 		8D1107310486CEB800E47090 /* Weather-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Weather-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		EF63AB3E16641840006D8652 /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		EF63AB3F16641840006D8652 /* arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow@2x.png"; sourceTree = "<group>"; };
-		EF63AB4016641840006D8652 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		EF63AB4116641840006D8652 /* PullToRefreshView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PullToRefreshView.h; sourceTree = "<group>"; };
 		EF63AB4216641840006D8652 /* PullToRefreshView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PullToRefreshView.m; sourceTree = "<group>"; };
-		EF63AB4316641840006D8652 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		EF63AB4A16641A70006D8652 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		EF63AB961664A8C2006D8652 /* icons.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = icons.plist; path = images/icons.plist; sourceTree = "<group>"; };
 		EF63ABFA1665129D006D8652 /* sunriset.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sunriset.c; sourceTree = "<group>"; };
@@ -269,10 +265,8 @@
 			children = (
 				EF63AB3E16641840006D8652 /* arrow.png */,
 				EF63AB3F16641840006D8652 /* arrow@2x.png */,
-				EF63AB4016641840006D8652 /* LICENSE */,
 				EF63AB4116641840006D8652 /* PullToRefreshView.h */,
 				EF63AB4216641840006D8652 /* PullToRefreshView.m */,
-				EF63AB4316641840006D8652 /* README */,
 			);
 			path = PullToRefresh;
 			sourceTree = "<group>";
@@ -342,8 +336,6 @@
 				EFB2FA141478D0B2005FA6A3 /* powered-by-google-on-non-white_WorldWeatherOnline.png in Resources */,
 				EF63AB4416641840006D8652 /* arrow.png in Resources */,
 				EF63AB4516641840006D8652 /* arrow@2x.png in Resources */,
-				EF63AB4616641840006D8652 /* LICENSE in Resources */,
-				EF63AB4816641840006D8652 /* README in Resources */,
 				EF63AB971664A8C2006D8652 /* icons.plist in Resources */,
 				EF63ACC116654BF0006D8652 /* wsymbols01_png_64 in Resources */,
 				EF63ACC216654BF0006D8652 /* wsymbols01_png_128 in Resources */,
